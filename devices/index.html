@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Web Interface</title>
+        <link rel="stylesheet" type="text/css" href="CSS/style.css">
+        <script src="JS/script.js"></script>    
+		<style>
+		</style>
+	</head>
+	<body onload="checkRequest()">
+        <div class="devicediv">
+            <h1 class="deviceName">Smart Lightbulb 1</h1>
+            
+            <div class="lightbulbdiv">
+                <img src="Images/lightbulb.png" id="lightbulb">
+                <img src="Images/overlay.png" id="overlay">
+            </div>
+        
+            <p class="E">Energy Consumption: 9.33W</p>
+
+            <div class="slidecontainer" id="R">
+                <p>
+                <input type="range" min="0" max="255" value="0" class="slider" id="RValue" oninput="changeBulb()">
+                R: <stan id="RNumber">0</stan>
+                </p>
+            </div>
+            <div class="slidecontainer" id="G">
+                <p>
+                <input type="range" min="0" max="255" value="0" class="slider" id="GValue" oninput="changeBulb()">
+                G: <stan id="GNumber">0</stan>
+                </p>
+            </div>
+            <div class="slidecontainer" id="B">
+                <p>
+                <input type="range" min="0" max="255" value="0" class="slider" id="BValue" oninput="changeBulb()">
+                B: <stan id="BNumber">0</stan> 
+                </p>
+            </div>
+
+            <div class="slidecontainer" id="I">
+                <p>
+                <input type="range" min="0" max="100" value="0" class="slider" id="IValue" oninput="changeBulb()">
+                Intensity: <stan id="INumber">0</stan>
+                </p>
+            </div>
+        </div>
+        
+        <div class="devicediv">
+            <h1 class="deviceName">Smart Plug 1</h1>
+            
+            <div class="plugdiv">
+                <img src="Images/plug.png" id="plug1" style="background-color: red">
+            </div>
+        
+            <p class="E">Energy Consumption: 10W</p>
+            <p class="plugStatus" id="plug1Status" onclick="changePlug()">OFF</p>
+        </div>
+    </body>
+</html> 
