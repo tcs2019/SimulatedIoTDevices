@@ -2,9 +2,11 @@ pragma solidity ^0.5.6;
 
 contract ElectricPlugs {
 
+    event NewElectricPlug(uint electricPlugId, string name, string description, bool status);
     event NameChange(uint electricPlugId, string name);
     event DescriptionChange(uint electricPlugId, string description);
-    event StatusChange(uint electricPlugId, bool status);
+    // FIXME: this event should only return id and status
+    event StatusChange(uint electricPlugId, string name, string description, bool status);
 
     struct ElectricPlug {
         string name; // front door 
@@ -19,6 +21,7 @@ contract ElectricPlugs {
     function _addElectricPlug(string memory _name, string memory _description) public {
         uint _id = electricPlugs.push(ElectricPlug(_name, _description, false)) - 1;
         electricPlugToOwner[_id] = msg.sender;
+        emit NewElectricPlug(_id, _name, _description, false);
     }
 
     function _changeName(uint _electricPlugId, string memory _name) public {
@@ -36,6 +39,9 @@ contract ElectricPlugs {
     function _changeStatus(uint _electricplugId, bool _status) public {
         require(msg.sender == electricPlugToOwner[_electricplugId]);
         electricPlugs[_electricplugId].status = _status;
-        emit StatusChange(_electricplugId, _status);
+        // FIXME: this event should only return id and status
+        string memory _name = electricPlugs[_electricplugId].name;
+        string memory _description = electricPlugs[_electricplugId].description;
+        emit StatusChange(_electricplugId, _name, _description, _status);
     }
 } 
