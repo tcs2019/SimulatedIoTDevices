@@ -1,0 +1,33 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='utf-8')
+    title Web Interface
+    link(rel='stylesheet', type='text/css', href='CSS/style.css')
+    script(src='JS/script.js')
+    style.
+  body
+    h1 Smart Home Devices
+    .deviceListDiv
+      h1.listHeading Lightbulbs
+      img.listImg(src='Images/lightbulb.png')
+      ul.deviceList
+        for lightbulb in lightbulbs
+          li
+            hr
+            a.deviceListItem(href='/lightbulb/' + lightbulb.id, type='button')= "Smart Lightbulb " + lightbulb.id
+            p= lightbulb.Description
+        else 
+          li There are no Lightbulbs
+
+   .deviceListDiv
+      h1.listHeading Plugs
+      img.listImg(src='Images/plug.png')
+      ul.deviceList
+        for plug in plugs
+          li
+            hr
+            a.deviceListItem(href='/plug/' + plug.id, type='button')= "Smart Plug " + plug.id
+            p= plug.Description
+        else 
+          li There are no Lightbulbs
