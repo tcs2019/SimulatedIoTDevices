@@ -2,12 +2,12 @@ var express = require('express');
 var router = express.Router();
 var fs = require('fs');
 
-var redis = require('redis')
-var client = redis.createClient()
-
-client.on('error', function (err) {
-  console.log('Error ' + err)
-})
+//var redis = require('redis')
+//var client = redis.createClient()
+//
+//client.on('error', function (err) {
+//  console.log('Error ' + err)
+//})
 
 var testLight = [{id: 1, Description: "This is a test lightbulb", status: "ON", RValue: 255, GValue: 0, BValue: 255, IValue: 100},
                   {id: 2, Description: "This is a test lightbulb 2", status: "OFF", RValue: 150, GValue: 255, BValue: 0, IValue: 750}];
