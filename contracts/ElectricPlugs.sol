@@ -1,12 +1,11 @@
-pragma solidity ^0.5.6;
+pragma solidity ^0.5.0;
 
 contract ElectricPlugs {
 
     event NewElectricPlug(uint electricPlugId, string name, string description, bool status);
     event NameChange(uint electricPlugId, string name);
     event DescriptionChange(uint electricPlugId, string description);
-    // FIXME: this event should only return id and status
-    event StatusChange(uint electricPlugId, string name, string description, bool status);
+    event StatusChange(uint electricPlugId, bool status);
 
     struct ElectricPlug {
         string name; // front door 
