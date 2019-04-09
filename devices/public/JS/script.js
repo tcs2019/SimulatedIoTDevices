@@ -1,3 +1,4 @@
+//Updates slider numbers and light bulb colour as sliders are changed
 function changeBulb() {
     var r = document.getElementById("RValue").value;
     var g = document.getElementById("GValue").value;
@@ -14,6 +15,7 @@ function changeBulb() {
     document.getElementById("overlay").style.backgroundColor = "rgba(" + r + ", " + g + ", " + b + ", " + i + ")";
 }
 
+//Changes text and colour of ON/OFF text
 function changeStatus() {
     if(document.getElementById("deviceStatus").innerHTML == "OFF") {
         document.getElementById("deviceStatus").innerHTML = "ON";

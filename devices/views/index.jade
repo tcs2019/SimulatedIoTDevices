@@ -15,8 +15,8 @@ html(lang='en')
         for lightbulb in lightbulbs
           li
             hr
-            a.deviceListItem(href='/lightbulb/' + lightbulb.id, type='button')= "Smart Lightbulb " + lightbulb.id
-            p= lightbulb.Description
+            a.deviceListItem(href='/lightbulb/' + lightbulb.id, type='button')= lightbulb.name
+            p= lightbulb.description
         else 
           li There are no Lightbulbs
 

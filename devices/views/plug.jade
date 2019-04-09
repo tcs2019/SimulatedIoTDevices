@@ -10,6 +10,6 @@ html(lang='en')
     .devicediv
       h1.deviceName Smart Plug #{id}
       .plugdiv
-        img#plug(src='../Images/plug.png', style='background-color: red')
+        img#plug(src='../Images/plug.png', style='background-color: #{statusColour}')
       p.E Description: #{Description}
       p.deviceStatusText#deviceStatus(style='color: #{statusColour}', onclick='changeStatus()') #{status}
