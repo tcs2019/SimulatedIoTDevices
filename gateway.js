@@ -48,6 +48,7 @@ function ElectricPlugsEvents() {
         'status',
         data.status
       );
+      // TODO: call sadd() to store the set of hashes
     })
     .on('error', console.error);
 
