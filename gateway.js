@@ -41,6 +41,8 @@ function ElectricPlugsEvents() {
       const data = event.returnValues;
       client.hmset(
         data.electricPlugId,
+        'id',
+        data.electricPlugId,
         'name',
         data.name,
         'description',
@@ -48,6 +50,7 @@ function ElectricPlugsEvents() {
         'status',
         data.status
       );
+      // TODO: call sadd() to store the set of hashes
     })
     .on('error', console.error);
 
@@ -87,6 +90,8 @@ function LightBulbsEvents() {
     .on('data', function(event) {
       const data = event.returnValues;
       client.hmset(
+        data.lightBulbId,
+        'id',
         data.lightBulbId,
         'name',
         data.name,

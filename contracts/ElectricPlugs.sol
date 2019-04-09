@@ -38,9 +38,6 @@ contract ElectricPlugs {
     function _changeStatus(uint _electricplugId, bool _status) public {
         require(msg.sender == electricPlugToOwner[_electricplugId]);
         electricPlugs[_electricplugId].status = _status;
-        // FIXME: this event should only return id and status
-        string memory _name = electricPlugs[_electricplugId].name;
-        string memory _description = electricPlugs[_electricplugId].description;
-        emit StatusChange(_electricplugId, _name, _description, _status);
+        emit StatusChange(_electricplugId, _status);
     }
 } 
