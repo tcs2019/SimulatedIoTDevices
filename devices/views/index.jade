@@ -27,7 +27,7 @@ html(lang='en')
         for plug in plugs
           li
             hr
-            a.deviceListItem(href='/plug/' + plug.id, type='button')= "Smart Plug " + plug.id
-            p= plug.Description
+            a.deviceListItem(href='/plug/' + plug.id, type='button')= plug.id
+            p= plug.description
         else 
           li There are no Lightbulbs
