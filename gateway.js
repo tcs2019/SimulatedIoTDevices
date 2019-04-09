@@ -41,6 +41,8 @@ function ElectricPlugsEvents() {
       const data = event.returnValues;
       client.hmset(
         data.electricPlugId,
+        'id',
+        data.electricPlugId,
         'name',
         data.name,
         'description',
@@ -88,6 +90,8 @@ function LightBulbsEvents() {
     .on('data', function(event) {
       const data = event.returnValues;
       client.hmset(
+        data.lightBulbId,
+        'id',
         data.lightBulbId,
         'name',
         data.name,
