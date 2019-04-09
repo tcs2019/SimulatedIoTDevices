@@ -12,7 +12,7 @@ client.on('error', function (err) {
 //Connects to Redis server and retrieves data
 client.on('connect', function() {
   console.log('Redis connected');
-  getLightbulbs();
+  getAllLightbulbs();
   getAllPlugs();
 });
 
@@ -21,7 +21,7 @@ var AllLightbulbs = [];
 var AllPlugs = [];
 
 //Gets data for all lightbulbs and stores it
-function getLightbulbs() {
+function getAllLightbulbs() {
   client.smembers('lightbulbs', function(err, reply) {
     AllLightbulbs = [];
     var lightbulbHashList = [];
@@ -50,76 +50,65 @@ function getAllPlugs() {
 
 //Gets home page and renders lists of devices
 router.get('/', function(req, res, next) {
-   getLightbulbs();
-   getAllPlugs();
+  getAllLightbulbs();
+  getAllPlugs();
   res.render('index', {lightbulbs: AllLightbulbs, plugs: AllPlugs});
 });
 
 //Renders individual lightbulb page
 router.get('/lightbulb/:id', function(req, res) {
-  getLightbulbs();
+  client.hgetall(req.params.id, function(err, object) {
+    var currentLightbulb = object;
+    
+    var IValueCalc = (currentLightbulb.intensity / 2) / 100;
 
-  var currentLightbulb = [];
-  
-  for(i in AllLightbulbs) {
-    if(req.params.id == AllLightbulbs[i].id) {
-      currentLightbulb = AllLightbulbs[i];
+    var setStatusColour;
+    var setStatus;
+    if(currentLightbulb.status == 1) {
+      setStatusColour = "green";
+      setStatus = "ON"
     }
-  }
-
-  var IValueCalc = (currentLightbulb.intensity / 2) / 100;
-  var setStatusColour;
-  var setStatus;
-  if(currentLightbulb.status == 1) {
-    setStatusColour = "green";
-    setStatus = "ON"
-  }
-  else {
-    setStatusColour = "red";
-    setStatus = "OFF"
-  }
-
-  res.render('lightbulb', { 
-    name: currentLightbulb.name, 
-    Description: currentLightbulb.description,
-    status: setStatus,
-    statusColour: setStatusColour,
-    RValue: currentLightbulb.red, 
-    GValue: currentLightbulb.green, 
-    BValue: currentLightbulb.blue, 
-    IValue: currentLightbulb.intensity, 
-    IValueCSS: IValueCalc
+    else {
+      setStatusColour = "red";
+      setStatus = "OFF"
+    }
+  
+    res.render('lightbulb', { 
+      name: currentLightbulb.name, 
+      Description: currentLightbulb.description,
+      status: setStatus,
+      statusColour: setStatusColour,
+      RValue: currentLightbulb.red, 
+      GValue: currentLightbulb.green, 
+      BValue: currentLightbulb.blue, 
+      IValue: currentLightbulb.intensity, 
+      IValueCSS: IValueCalc
+    });
   });
 });
 
 //Renders individual plug
 router.get('/plug/:id', function(req, res) {
-  getAllPlugs();
-
-  var currentPlug = [];
-  for(i in AllPlugs) {
-    if(req.params.id == AllPlugs[i].id) {
-      currentPlug = AllPlugs[i];
+  client.hgetall(req.params.id, function(err, object) {
+    var currentPlug = object;
+    
+    var setStatusColour;
+    var setStatus;
+    if(currentPlug.status == 1) {
+      setStatusColour = "green";
+      setStatus = "ON"
     }
-  }
-  
-  var setStatusColour;
-  var setStatus;
-  
-  if(currentPlug.status == 1) {
-    setStatusColour = "green";
-    setStatus = "ON"
-  }
-  else {
-    setStatusColour = "red";
-    setStatus = "OFF"
-  }
+    else {
+      setStatusColour = "red";
+      setStatus = "OFF"
+    }
 
-  res.render('plug', { 
-    name: currentPlug.name, 
-    Description: currentPlug.description,
-    status: setStatus,
-    statusColour: setStatusColour,
+    res.render('plug', { 
+      name: currentPlug.name, 
+      Description: currentPlug.description,
+      status: setStatus,
+      statusColour: setStatusColour,
+    });
   });
 });
 
@@ -211,5 +200,25 @@ client.hmset('lightbulb2', {'id': 'lightbulb2',
   });  
                                               
 }
+
+TO READ FROM ALL LIST INSTEAD
+Lightbulb:
+getAllLightbulbs();
+var currentLightbulb = [];
+for(i in AllLightbulbs) {
+  if(req.params.id == AllLightbulbs[i].id) {
+    currentLightbulb = AllLightbulbs[i];
+  }
+}
+
+Plug: 
+  getAllPlugs();
+
+  var currentPlug = [];
+  for(i in AllPlugs) {
+    if(req.params.id == AllPlugs[i].id) {
+      currentPlug = AllPlugs[i];
+    }
+  }
 
 */
