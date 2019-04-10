@@ -1,0 +1,132 @@
+.devicediv {
+    width: 550px;
+    height: 800px;
+    float: left;
+    border-style: solid;
+}
+
+.deviceName {
+    text-align: center;
+}
+
+.plugdiv {
+    position: relative;
+    left: 110px;
+    height: 500px;
+}
+
+#plug1 {
+    height: 100%;
+}
+
+.plugStatus{
+    font-size: 60px;
+    text-align: center;
+    color: red;
+}
+
+.lightbulbdiv {
+    position: relative;
+    left: 110px;
+    height: 500px;
+}
+
+#lightbulb {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+}
+
+#overlay {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0);
+    
+}
+
+.E {
+    text-align: center;
+}
+
+.slidecontainer#R {
+    width: 500px;
+    position: relative;
+    left: 30px;
+}
+
+.slidecontainer#G {
+    width: 500px;
+    position: relative;
+    left: 30px;
+}
+
+.slidecontainer#B {
+    width: 500px;
+    position: relative;
+    left: 30px;
+}
+
+.slidecontainer#I {
+    width: 500px;
+    position: relative;
+    left: 30px;
+}
+
+.slidecontainer#E {
+    width: 500px;
+    text-align: center;
+}
+
+
+/*FROM W3 SCHOOLS */
+.slider {
+  -webkit-appearance: none;
+  width: 80%;
+  height: 15px;
+  border-radius: 5px;   
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%; 
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+/*END*/
+
+.slider#RValue::-webkit-slider-thumb {
+    background: red;
+}
+
+.slider#GValue::-webkit-slider-thumb {
+    background: green;
+}
+
+.slider#BValue::-webkit-slider-thumb {
+    background: blue;
+}
+
+.slider#IValue::-webkit-slider-thumb {
+    background: black;
+}
+
+.slider#IValue::-moz-range-thumb {
+    background: black;
+}
