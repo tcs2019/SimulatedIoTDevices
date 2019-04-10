@@ -40,9 +40,7 @@ function ElectricPlugsEvents() {
     .on('data', function(event) {
       const data = event.returnValues;
       client.hmset(
-        data.electricPlugId,
-        'id',
-        data.electricPlugId,
+        data.hash_id,
         'name',
         data.name,
         'description',
@@ -50,7 +48,8 @@ function ElectricPlugsEvents() {
         'status',
         data.status
       );
-      // TODO: call sadd() to store the set of hashes
+      // call sadd(KEY_NAME VALUE1..VALUEN) to store the set of hash_id
+      client.sadd('ElectricPlugs', data.hash_id);
     })
     .on('error', console.error);
 
@@ -58,7 +57,7 @@ function ElectricPlugsEvents() {
     .NameChange()
     .on('data', function(event) {
       const data = event.returnValues;
-      client.hset(data.electricPlugId, 'name', data.name);
+      client.hset(data.hash_id, 'name', data.name);
     })
     .on('error', console.error);
 
@@ -66,7 +65,7 @@ function ElectricPlugsEvents() {
     .DescriptionChange()
     .on('data', function(event) {
       const data = event.returnValues;
-      client.hset(data.electricPlugId, 'description', data.description);
+      client.hset(data.hash_id, 'description', data.description);
     })
     .on('error', console.error);
 
@@ -74,7 +73,7 @@ function ElectricPlugsEvents() {
     .StatusChange()
     .on('data', function(event) {
       const data = event.returnValues;
-      client.hset(data.electricPlugId, 'status', data.status);
+      client.hset(data.hash_id, 'status', data.status);
     })
     .on('error', console.error);
 }
@@ -90,9 +89,7 @@ function LightBulbsEvents() {
     .on('data', function(event) {
       const data = event.returnValues;
       client.hmset(
-        data.lightBulbId,
-        'id',
-        data.lightBulbId,
+        data.hash_id,
         'name',
         data.name,
         'description',
@@ -108,6 +105,8 @@ function LightBulbsEvents() {
         'intensity',
         data.intensity
       );
+      // call sadd(KEY_NAME VALUE1..VALUEN) to store the set of hash_id
+      client.sadd('LightBulbs', data.hash_id);
     })
     .on('error', console.error);
 
@@ -115,7 +114,7 @@ function LightBulbsEvents() {
     .NameChange()
     .on('data', function(event) {
       const data = event.returnValues;
-      client.hset(data.lightBulbId, 'name', data.name);
+      client.hset(data.hash_id, 'name', data.name);
     })
     .on('error', console.error);
 
@@ -123,7 +122,7 @@ function LightBulbsEvents() {
     .DescriptionChange()
     .on('data', function(event) {
       const data = event.returnValues;
-      client.hset(data.lightBulbId, 'description', data.description);
+      client.hset(data.hash_id, 'description', data.description);
     })
     .on('error', console.error);
 
@@ -131,7 +130,7 @@ function LightBulbsEvents() {
     .StatusChange()
     .on('data', function(event) {
       const data = event.returnValues;
-      client.hset(data.lightBulbId, 'status', data.status);
+      client.hset(data.hash_id, 'status', data.status);
     })
     .on('error', console.error);
   LightBulbs.events
@@ -139,7 +138,7 @@ function LightBulbsEvents() {
     .on('data', function(event) {
       const data = event.returnValues;
       client.hmset(
-        data.lightBulbId,
+        data.hash_id,
         'red',
         data.red,
         'green',
@@ -153,7 +152,7 @@ function LightBulbsEvents() {
     .IntensityChange()
     .on('data', function(event) {
       const data = event.returnValues;
-      client.hset(data.lightBulbId, 'intensity', data.intensity);
+      client.hset(data.hash_id, 'intensity', data.intensity);
     })
     .on('error', console.error);
 }
