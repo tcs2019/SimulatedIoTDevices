@@ -1,0 +1,62 @@
+// Install Ubuntu docker gateway0
+docker run --name <containerName> -it -p 8545:8545 -p 30303:30303 ubuntu
+
+// Install Ubuntu docker u_xxx
+docker run --name <containerName> -it ubuntu
+
+// Ethereum installation
+1. apt-get update
+2. apt-get install software-properties-common
+3. add-apt-repository -y ppa:ethereum/ethereum
+4. apt-get update
+5. apt-get install ethereum
+
+// Create Ethereum account and store in ~/ethdata folder
+geth --datadir ethdata account new
+
+// Create a genesis.json file and copy to ~/ethdata folder in all machines
+// Remember to change accountNumber in genesis file
+// To copy file from host to docker
+docker cp <file_name> <container_id>:/<file_name>
+// To copy file from docker to host
+docker cp <container_id>:/<file_name> <file_name>
+
+// Initialize the nodes with genesis file we created
+geth --datadir="ethdata" init ethdata/genesis.json
+
+// Start all the nodes
+// Make sure to replace the account number and network id
+geth --datadir="ethdata" --networkid <networkID> --nodiscover console --unlock <accountNumber> --rpc --rpcport "8000" --rpcaddr "0.0.0.0" --rpccorsdomain "*" --rpcapi "eth,net,web3,miner,debug,personal,rpc"
+
+// Connect to a node
+admin.addPeer("<enode://>@<ipAddress>:<PORT>")
+
+// Start/Stop mining
+miner.start()
+miner.stop()
+
+// Install NodeJS on main machine
+apt install nodejs npm
+
+// Install Truffle & SOLC on main machine
+npm install -g truffle
+npm install -g solc
+
+// Create a new folder in the ~/ethdata directory to initialize truffle
+mkdir truffle
+cd truffle
+truffle init
+
+// Copy smart contract to truffle/contracts
+// Copy 2_deploy_contracts.js to truffle/migrations
+// Update truffle_config.js in truffle folder
+
+// While miner is started, compile and deploy contract
+truffle compile
+truffle migrate
+
+// Install NodeJS, Redis on gateway0
+// In case of MacOS as main machine, install these on main machine to avoid port open issue
+apt-get install redis-server
+apt install nodejs npm
+npm install -g redis
