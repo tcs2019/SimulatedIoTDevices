@@ -139,7 +139,7 @@ App = {
         App.contracts.IoTDevices.deployed().then(function(instance) {
             instance.NewLightBulb({}, {}).watch(function(error, event) {
                 if (!error) {
-                    $("#events").append('<li class="list-group-item">' + event.args._name + ' (' + event.args._description + ' )' + ' is now added</li>');
+                    $("#events").append('<li class="list-group-item">' + event.args.name + ' (' + event.args.description + ' )' + ' is now added</li>');
                 } else {
                     console.error(error);
                 }
