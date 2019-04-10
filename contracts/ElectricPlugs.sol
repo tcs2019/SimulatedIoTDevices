@@ -1,43 +1,93 @@
 pragma solidity ^0.5.0;
 
 contract ElectricPlugs {
+  
+  event NewElectricPlug(string hash_id, string name, string description, bool status);
+  event NameChange(string hash_id, string name);
+  event DescriptionChange(string hash_id, string description);
+  event StatusChange(string hash_id, bool status);
 
-    event NewElectricPlug(uint electricPlugId, string name, string description, bool status);
-    event NameChange(uint electricPlugId, string name);
-    event DescriptionChange(uint electricPlugId, string description);
-    event StatusChange(uint electricPlugId, bool status);
+  struct ElectricPlug {
+    string hash_id; //in format Ele_1
+    string name; // front door 
+    string description; // for plug -> what to, where
+    bool status; // true/false = on/off
+  }
+  
+  uint deviceCounter = 0;
+  ElectricPlug[] public electricPlugs;
 
-    struct ElectricPlug {
-        string name; // front door 
-        string description; // for plug -> what to, where
-        bool status; // true/false = on/off
+  mapping (uint => address) public electricPlugToOwner;
+  
+  // return current number of devices
+  function getNumberOfdevices() public view returns (uint) {
+    return  deviceCounter;
+  }
+  
+  // help function to convert uint 2 string
+  function uint2str(uint _i) internal pure returns (string memory _uintAsString) {
+    if (_i == 0) {
+        return "0";
     }
-
-    ElectricPlug[] public electricPlugs;
-
-    mapping (uint => address) public electricPlugToOwner;
-
-    function _addElectricPlug(string memory _name, string memory _description) public {
-        uint _id = electricPlugs.push(ElectricPlug(_name, _description, false)) - 1;
-        electricPlugToOwner[_id] = msg.sender;
-        emit NewElectricPlug(_id, _name, _description, false);
+    uint j = _i;
+    uint len;
+    while (j != 0) {
+        len++;
+        j /= 10;
     }
-
-    function _changeName(uint _electricPlugId, string memory _name) public {
-        require(msg.sender == electricPlugToOwner[_electricPlugId]);
-        electricPlugs[_electricPlugId].name = _name;
-        emit NameChange(_electricPlugId, _name);
+    bytes memory bstr = new bytes(len);
+    uint k = len - 1;
+    while (_i != 0) {
+        bstr[k--] = byte(uint8(48 + _i % 10));
+        _i /= 10;
     }
+    return string(bstr);
+  }
 
-    function _changeDescription(uint _electricPlugId, string memory _description) public {
-        require(msg.sender == electricPlugToOwner[_electricPlugId]);
-        electricPlugs[_electricPlugId].description = _description;
-        emit DescriptionChange(_electricPlugId, _description);
-    }
+  // fetch a device's information
+  function fetchDeviceStatus(uint256 _id) external view returns (
+    string memory _hash_id,
+    string memory _name,
+    string memory _description,
+    bool _status // true/false = on/off
+    ) {
+    return (
+    _hash_id = electricPlugs[_id].hash_id,
+    _name = electricPlugs[_id].name,
+    _description = electricPlugs[_id].description,
+    _status = electricPlugs[_id].status
+    );
+  }
 
-    function _changeStatus(uint _electricplugId, bool _status) public {
-        require(msg.sender == electricPlugToOwner[_electricplugId]);
-        electricPlugs[_electricplugId].status = _status;
-        emit StatusChange(_electricplugId, _status);
-    }
-} 
+  // Add a new device
+  function _addElectricPlug(string memory _name, string memory _description) public {
+    uint _electricPlugId = electricPlugs.push(ElectricPlug("Ele_X",_name, _description, false)) - 1;
+    string memory _hash_id = string(abi.encodePacked("Ele_", uint2str(_electricPlugId)));
+    electricPlugs[_electricPlugId].hash_id = _hash_id;
+
+    deviceCounter = _electricPlugId+1;
+
+    electricPlugToOwner[_electricPlugId] = msg.sender;
+    emit NewElectricPlug(_hash_id, _name, _description, false);
+  }
+
+  // All changes
+  function _changeName(uint _electricPlugId, string memory _name) public {
+    require(msg.sender == electricPlugToOwner[_electricPlugId]);
+    electricPlugs[_electricPlugId].name = _name;
+    emit NameChange(electricPlugs[_electricPlugId].hash_id, _name);
+  }
+
+  function _changeDescription(uint _electricPlugId, string memory _description) public {
+    require(msg.sender == electricPlugToOwner[_electricPlugId]);
+    electricPlugs[_electricPlugId].description = _description;
+    emit DescriptionChange(electricPlugs[_electricPlugId].hash_id, _description);
+  }
+
+  function _changeStatus(uint _electricPlugId, bool _status) public {
+    require(msg.sender == electricPlugToOwner[_electricPlugId]);
+    electricPlugs[_electricPlugId].status = _status;
+    emit StatusChange(electricPlugs[_electricPlugId].hash_id, _status);
+  }
+
+} // end of contract
