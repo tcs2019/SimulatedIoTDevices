@@ -22,7 +22,7 @@ var AllPlugs = [];
 
 //Gets data for all lightbulbs and stores it
 function getAllLightbulbs() {
-  client.smembers('lightbulbs', function(err, reply) {
+  client.smembers('LightBulbs', function(err, reply) {
     AllLightbulbs = [];
     var lightbulbHashList = [];
     lightbulbHashList = reply;
@@ -36,7 +36,7 @@ function getAllLightbulbs() {
 
 //Gets data for all plugs and stores it
 function getAllPlugs() {
-  client.smembers('plugs', function(err, reply) {
+  client.smembers('ElectricPlugs', function(err, reply) {
   AllPlugs = [];
   var plugHashList = [];
     plugHashList = reply;
