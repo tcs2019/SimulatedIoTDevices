@@ -1,22 +1,21 @@
 App = {
-    web3Provider: null,
-    contracts: {},
-    account: 0x0,
-    loading: false,
+  web3Provider: null,
+  contracts: {},
+  account: 0x0,
+  loading: false,
 
-
-    init: function() {
+  init() {
         return App.initWeb3();
     },
 
-    initWeb3: function() {
+  initWeb3() {
         // initialize web3
         if (typeof web3 !== 'undefined') {
             //reuse the provider of the Web3 object injected by Metamask
             App.web3Provider = web3.currentProvider;
         } else {
             //create a new provider and plug it directly into our local node
-            App.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
+            App.web3Provider = new Web3.providers.HttpProvider('http://localhost:8000');
         }
         web3 = new Web3(App.web3Provider);
 
@@ -25,7 +24,7 @@ App = {
         return App.initContract();
     },
 
-    displayAccountInfo: function() {
+  displayAccountInfo() {
 
 
         web3.eth.getCoinbase(function(err, account) {
@@ -42,7 +41,7 @@ App = {
         });
     },
 
-    initContract: function() {
+  initContract() {
         $.getJSON('LightBulbs.json', function(ioTDevicesArtifact) {
             // get the contract artifact file and use it to instantiate a truffle contract abstraction
             App.contracts.IoTDevices = TruffleContract(ioTDevicesArtifact);
@@ -55,7 +54,7 @@ App = {
         });
     },
 
-    reloadDevicesList: function() {
+  reloadDevicesList() {
         // avoid reentry
         if (App.loading) {
             return;
@@ -89,7 +88,7 @@ App = {
         });
     },
 
-    displayDevice: function(id, name, description) {
+  displayDevice(id, name, description) {
         var devicesRow = $('#devicesRow');
         // var deviceid = $('#deviceid');
 
@@ -111,7 +110,7 @@ App = {
         devicesRow.append(deviceTemplate.html());
     },
 
-    addDevice: function() {
+  addDevice() {
         // retrieve the detail of the device
         var _device_name = $('#device_name').val();
         var _description = $('#device_description').val();
@@ -134,8 +133,8 @@ App = {
         });
     },
 
-    // listen to events triggered by the contract
-    listenToEvents: function() {
+  // listen to events triggered by the contract
+  listenToEvents() {
         App.contracts.IoTDevices.deployed().then(function(instance) {
             instance.NewLightBulb({}, {}).watch(function(error, event) {
                 if (!error) {
@@ -150,7 +149,7 @@ App = {
 };
 
 $(function() {
-    $(window).load(function() {
-        App.init();
-    });
+  $(window).load(function() {
+    App.init();
+  });
 });

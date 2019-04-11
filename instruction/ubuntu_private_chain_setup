@@ -1,5 +1,6 @@
 // Install Ubuntu docker gateway0
-docker run --name <containerName> -it -p 8545:8545 -p 30303:30303 ubuntu
+// Only open neccessary port
+docker run --name <containerName> -it -p 30303:30303 ubuntu
 
 // Install Ubuntu docker u_xxx
 docker run --name <containerName> -it ubuntu
@@ -26,7 +27,7 @@ geth --datadir="ethdata" init ethdata/genesis.json
 
 // Start all the nodes
 // Make sure to replace the account number and network id
-geth --datadir="ethdata" --networkid <networkID> --nodiscover console --unlock <accountNumber> --rpc --rpcport "8000" --rpcaddr "0.0.0.0" --rpccorsdomain "*" --rpcapi "eth,net,web3,miner,debug,personal,rpc"
+geth --datadir="ethdata" --networkid <networkID> --nodiscover console --unlock <accountNumber> --ws --wsport "8546" --wsapi "eth,net,web3,miner,debug,personal,rpc" --wsorigins="*" --rpc --rpcport "8545" --rpcaddr "0.0.0.0" --rpccorsdomain "*" --rpcapi "eth,net,web3,miner,debug,personal,rpc"
 
 // Connect to a node
 admin.addPeer("<enode://>@<ipAddress>:<PORT>")

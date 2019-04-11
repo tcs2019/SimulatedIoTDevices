@@ -1,0 +1,15 @@
+{
+  "name": "simulatediotdevices",
+  "version": "1.0.0",
+  "description": "1. Setting environemnt using docker:   Please check instruction/ubuntu_private_chain_setup.txt",
+  "main": "gateway.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "redis": "^2.8.0",
+    "web3": "^1.0.0-beta.52"
+  }
+}

@@ -1,0 +1,5 @@
+# gitignore contributors:
+*/.svn/
+.DS_Store
+.svn/
+node_modules/

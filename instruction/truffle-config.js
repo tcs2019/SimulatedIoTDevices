@@ -27,14 +27,14 @@
 module.exports = {
   rpc: {
     host: 'localhost',
-    port: 8000,
+    port: 8545,
   },
   networks: {
     development: {
       host: 'localhost', // our network is running on localhost
-      port: 8000, // port where your blockchain is running (HTTP endpoint opened)
+      port: 8545, // port where your blockchain is running (HTTP endpoint opened)
       network_id: '15', // network_id: '15',
-      from: '2e5e0dc1b8f998bb576fae8ac18f16e4a3177da0', // use the account-id generated during the setup process
+      from: '411de0924c6abb6a11d9770ac87956b41ed61831', // use the account-id generated during the setup process
       gas: 20000000,
     },
   },
