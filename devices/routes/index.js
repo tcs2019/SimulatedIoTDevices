@@ -64,7 +64,7 @@ router.get('/lightbulb/:id', function(req, res) {
 
     var setStatusColour;
     var setStatus;
-    if(currentLightbulb.status == 1) {
+    if(currentLightbulb.status == "true") {
       setStatusColour = "green";
       setStatus = "ON"
     }
@@ -94,7 +94,7 @@ router.get('/plug/:id', function(req, res) {
     
     var setStatusColour;
     var setStatus;
-    if(currentPlug.status == 1) {
+    if(currentPlug.status == "true") {
       setStatusColour = "green";
       setStatus = "ON"
     }
