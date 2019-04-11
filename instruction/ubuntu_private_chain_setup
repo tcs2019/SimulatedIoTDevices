@@ -53,8 +53,7 @@ truffle init
 // Update truffle_config.js in truffle folder
 
 // While miner is started, compile and deploy contract
-truffle compile
-truffle migrate
+truffle migrate --compile-all --reset
 
 // Collect contract address and add to gateway.js
 // Copy contractABI.json to SimulatedIoTDevices/contracts

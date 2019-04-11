@@ -15,14 +15,14 @@ client.on('error', function(err) {
 });
 
 // ElectricPlugs contract
-const parsedJson = JSON.parse(fs.readFileSync('./contracts/ElectricPlugs.json'));
+let parsedJson = JSON.parse(fs.readFileSync('./contracts/ElectricPlugs.json'));
 const abiEP = parsedJson.abi;
-const addEP = '0xCE1702d51A160C756EBc2bce64Ee7C1771b5e566';
+const addEP = '0x15Fb766Df06BA326AaAdC3D40c299A1928bF6d7E';
 
 // LightBulbs contract
-// parsedJson = JSON.parse(fs.readFileSync('./contracts/LightBulbs.json'));
-// const abiLB = parsedJson.abi;
-// const addLB = '0x6Afd71Ac4c9cc622ccd85018671be8e05bA9454E';
+parsedJson = JSON.parse(fs.readFileSync('./contracts/LightBulbs.json'));
+const abiLB = parsedJson.abi;
+const addLB = '0x73435d2F2105c426EE5421f39949Cb6b9865B919';
 
 // Web3js connection & contract
 const web3js = new Web3(Web3.givenProvider || new Web3.providers.WebsocketProvider('ws://127.0.0.1:8546'));
@@ -34,15 +34,14 @@ let ElectricPlugs;
 function ElectricPlugsEvents() {
   // Assign contract for event listenning of ElectricPlugs
   ElectricPlugs = new web3js.eth.Contract(abiEP, addEP);
-  console.log('EL started');
 
   // Listenning to all events of ElectricPlugs
   ElectricPlugs.events
     .NewElectricPlug()
     .on('data', function(event) {
-      console.log('Added');
       const data = event.returnValues;
       client.hmset(data.hash_id, {
+        'id': data.hash_id,
         'name': data.name,
         'description': data.description,
         'status': data.status,
@@ -57,7 +56,7 @@ function ElectricPlugsEvents() {
     .NameChange()
     .on('data', function(event) {
       const data = event.returnValues;
-      client.hset(data.hash_id, 'name', data.name);
+      client.hset(data.hash_id, {'name': data.name});
     })
     .on('error', console.error);
 
@@ -65,7 +64,7 @@ function ElectricPlugsEvents() {
     .DescriptionChange()
     .on('data', function(event) {
       const data = event.returnValues;
-      client.hset(data.hash_id, 'description', data.description);
+      client.hset(data.hash_id, {'description': data.description});
     })
     .on('error', console.error);
 
@@ -73,112 +72,86 @@ function ElectricPlugsEvents() {
     .StatusChange()
     .on('data', function(event) {
       const data = event.returnValues;
-      client.hset(data.hash_id, 'status', data.status);
+      client.hset(data.hash_id, {'status': data.status});
     })
     .on('error', console.error);
 }
 
 // // This function listenning to all LightBulbs events
-// function LightBulbsEvents() {
-//   // Assign contract for event listenning of LightBulbs
-//   LightBulbs = new web3js.eth.Contract(abiLB, addLB);
+function LightBulbsEvents() {
+  // Assign contract for event listenning of LightBulbs
+  LightBulbs = new web3js.eth.Contract(abiLB, addLB);
 
-//   // Listenning to all events of LightBulbs
-//   LightBulbs.events
-//     .NewLightBulb()
-//     .on('data', function(event) {
-//       const data = event.returnValues;
-//       client.hmset(
-//         data.hash_id,
-//         'name',
-//         data.name,
-//         'description',
-//         data.description,
-//         'status',
-//         data.status,
-//         'red',
-//         data.red,
-//         'green',
-//         data.green,
-//         'blue',
-//         data.blue,
-//         'intensity',
-//         data.intensity
-//       );
-//       // call sadd(KEY_NAME VALUE1..VALUEN) to store the set of hash_id
-//       client.sadd('LightBulbs', data.hash_id);
-//     })
-//     .on('error', console.error);
+  // Listenning to all events of LightBulbs
+  LightBulbs.events
+    .NewLightBulb()
+    .on('data', function(event) {
+      const data = event.returnValues;
+      client.hmset(
+        data.hash_id, {
+          'id': data.hash_id,
+          'name': data.name,
+          'description': data.description,
+          'status': data.status,
+          'red': data.red,
+          'green': data.green,
+          'blue': data.blue,
+          'intensity': data.intensity
+        }
+        
+      );
+      // call sadd(KEY_NAME VALUE1..VALUEN) to store the set of hash_id
+      client.sadd('LightBulbs', data.hash_id);
+    })
+    .on('error', console.error);
 
-//   LightBulbs.events
-//     .NameChange()
-//     .on('data', function(event) {
-//       const data = event.returnValues;
-//       client.hset(data.hash_id, 'name', data.name);
-//     })
-//     .on('error', console.error);
+  LightBulbs.events
+    .NameChange()
+    .on('data', function(event) {
+      const data = event.returnValues;
+      client.hset(data.hash_id, {'name': data.name});
+    })
+    .on('error', console.error);
 
-//   LightBulbs.events
-//     .DescriptionChange()
-//     .on('data', function(event) {
-//       const data = event.returnValues;
-//       client.hset(data.hash_id, 'description', data.description);
-//     })
-//     .on('error', console.error);
+  LightBulbs.events
+    .DescriptionChange()
+    .on('data', function(event) {
+      const data = event.returnValues;
+      client.hset(data.hash_id, {'description': data.description});
+    })
+    .on('error', console.error);
 
-//   LightBulbs.events
-//     .StatusChange()
-//     .on('data', function(event) {
-//       const data = event.returnValues;
-//       client.hset(data.hash_id, 'status', data.status);
-//     })
-//     .on('error', console.error);
-//   LightBulbs.events
-//     .ColorChange()
-//     .on('data', function(event) {
-//       const data = event.returnValues;
-//       client.hmset(
-//         data.hash_id,
-//         'red',
-//         data.red,
-//         'green',
-//         data.green,
-//         'blue',
-//         data.blue
-//       );
-//     })
-//     .on('error', console.error);
-//   LightBulbs.events
-//     .IntensityChange()
-//     .on('data', function(event) {
-//       const data = event.returnValues;
-//       client.hset(data.hash_id, 'intensity', data.intensity);
-//     })
-//     .on('error', console.error);
-// }
-
-/*
- * This function initializes:
- * a web3 connection to the private ethereum network
- * a connection to redis client
- */
-
-function startServer() {
-  // Start Web3 connection
-  // web3js = new Web3(new Web3.providers.HttpProvider('http://localhost:8000'));
-  // web3js = new Web3.providers.HttpProvider('http://localhost:8000');
-  // web3js = new Web3(new Web3.providers.HttpProvider('http://localhost:8000'));
-  // web3js = new Web3(Web3.givenProvider || 'ws://localhost:8000');
-
-  // LightBulbsEvents();
-  
-
-  console.log('>> Server Started!');
+  LightBulbs.events
+    .StatusChange()
+    .on('data', function(event) {
+      const data = event.returnValues;
+      client.hset(data.hash_id, {'status': data.status});
+    })
+    .on('error', console.error);
+  LightBulbs.events
+    .ColorChange()
+    .on('data', function(event) {
+      const data = event.returnValues;
+      client.hmset(
+        data.hash_id,
+        {'red': data.red,
+        'green': data.green,
+        'blue': data.blue}
+      );
+    })
+    .on('error', console.error);
+  LightBulbs.events
+    .IntensityChange()
+    .on('data', function(event) {
+      const data = event.returnValues;
+      client.hset(data.hash_id, {'intensity': data.intensity});
+    })
+    .on('error', console.error);
 }
 
 /*
  * ----- Start of the main server code -----
  */
 
-// startServer();
 ElectricPlugsEvents();
+LightBulbsEvents();
