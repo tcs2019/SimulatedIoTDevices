@@ -1,3 +1,7 @@
+/* eslint-disable no-loop-func */
+/* eslint-disable no-undef */
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable guard-for-in */
 const express = require('express');
 
 const router = express.Router();
@@ -5,18 +9,7 @@ const fs = require('fs');
 
 const redis = require('redis');
 
-let client = redis.createClient();
-
-client.on('error', function(err) {
-  console.log(`Error ${err}`);
-});
-
-// Connects to Redis server and retrieves data
-client.on('connect', function() {
-  console.log('Redis connected');
-  getAllLightbulbs();
-  getAllPlugs();
-});
+const client = redis.createClient();
 
 // Stores objects for use on server
 let AllLightbulbs = [];
@@ -29,7 +22,7 @@ function getAllLightbulbs() {
     let lightbulbHashList = [];
     lightbulbHashList = reply;
     for (i in lightbulbHashList) {
-      client.hgetall(lightbulbHashList[i], function(err, object) {
+      client.hgetall(lightbulbHashList[i], function(_err, object) {
         AllLightbulbs.push(object);
       });
     }
@@ -50,6 +43,17 @@ function getAllPlugs() {
   });
 }
 
+client.on('error', function(err) {
+  console.log(`Error ${err}`);
+});
+
+// Connects to Redis server and retrieves data
+client.on('connect', function() {
+  console.log('Redis connected');
+  getAllLightbulbs();
+  getAllPlugs();
+});
+
 // Gets home page and renders lists of devices
 router.get('/', function(req, res, next) {
   getAllLightbulbs();
@@ -66,7 +70,7 @@ router.get('/lightbulb/:id', function(req, res) {
 
     let setStatusColour;
     let setStatus;
-    if (currentLightbulb.status == 'true') {
+    if (currentLightbulb.status === 'true') {
       setStatusColour = 'green';
       setStatus = 'ON';
     } else {
@@ -95,7 +99,7 @@ router.get('/plug/:id', function(req, res) {
 
     let setStatusColour;
     let setStatus;
-    if (currentPlug.status == 'true') {
+    if (currentPlug.status === 'true') {
       setStatusColour = 'green';
       setStatus = 'ON';
     } else {

@@ -58,8 +58,17 @@ truffle migrate --compile-all --reset
 // Collect contract address and add to gateway.js
 // Copy contractABI.json to SimulatedIoTDevices/contracts
 
-// Install NodeJS, Redis on gateway0
-// In case of MacOS as main machine, install these on main machine to avoid port open issue
+// Install NodeJS & Redis on gateway device
 apt-get install redis-server
 apt install nodejs npm
-npm install -g redis
+
+// Install node dependency locally
+npm init
+npm install redis --save
+npm install web3 --save
+npm install express --save
+
+// Stating gateway by openning 3 command windows
+redis-server
+node gateway.js
+npm start

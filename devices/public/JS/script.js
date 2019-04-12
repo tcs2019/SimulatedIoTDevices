@@ -1,9 +1,10 @@
+/* eslint-disable no-unused-vars */
 // Updates slider numbers and light bulb colour as sliders are changed
 function changeBulb() {
-  var r = document.getElementById('RValue').value;
-  var g = document.getElementById('GValue').value;
-  var b = document.getElementById('BValue').value;
-  var i = document.getElementById('IValue').value;
+  const r = document.getElementById('RValue').value;
+  const g = document.getElementById('GValue').value;
+  const b = document.getElementById('BValue').value;
+  let i = document.getElementById('IValue').value;
 
   document.getElementById('RNumber').innerHTML = r;
   document.getElementById('GNumber').innerHTML = g;
@@ -12,13 +13,14 @@ function changeBulb() {
 
   i /= 100;
 
-  document.getElementById('overlay').style.backgroundColor =
-    'rgba(' + r + ', ' + g + ', ' + b + ', ' + i + ')';
+  document.getElementById(
+    'overlay'
+  ).style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${i})`;
 }
 
 // Changes text and colour of ON/OFF text
 function changeStatus() {
-  if (document.getElementById('deviceStatus').innerHTML == 'OFF') {
+  if (document.getElementById('deviceStatus').innerHTML === 'OFF') {
     document.getElementById('deviceStatus').innerHTML = 'ON';
     document.getElementById('deviceStatus').style.color = 'green';
     document.getElementById('plug').style.backgroundColor = 'green';
