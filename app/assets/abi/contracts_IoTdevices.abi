@@ -1,0 +1,399 @@
+[
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "lightBulbToOwner",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x0e951d69"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "lightBulbs",
+      "outputs": [
+        {
+          "name": "hash_id",
+          "type": "string"
+        },
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "name": "status",
+          "type": "bool"
+        },
+        {
+          "name": "red",
+          "type": "uint8"
+        },
+        {
+          "name": "green",
+          "type": "uint8"
+        },
+        {
+          "name": "blue",
+          "type": "uint8"
+        },
+        {
+          "name": "intensity",
+          "type": "uint8"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x34ae3122"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "hash_id",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "name": "status",
+          "type": "bool"
+        },
+        {
+          "indexed": false,
+          "name": "red",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "name": "green",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "name": "blue",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "name": "intensity",
+          "type": "uint8"
+        }
+      ],
+      "name": "NewLightBulb",
+      "type": "event",
+      "signature": "0x3b606a1747d7fe065735b8898b68258ccaa96b58e664383caaac5c2cfe1e5217"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "hash_id",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "name": "name",
+          "type": "string"
+        }
+      ],
+      "name": "NameChange",
+      "type": "event",
+      "signature": "0x82aa352f0c38e74351692e2b87665d1943c491c15543eee23c2d16643e7ff13c"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "hash_id",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "name": "description",
+          "type": "string"
+        }
+      ],
+      "name": "DescriptionChange",
+      "type": "event",
+      "signature": "0x4571e3c20940ff74f66733464cc30f0654a372baaa5aba0cc7b8e5d4f37fcdb8"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "hash_id",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "name": "status",
+          "type": "bool"
+        }
+      ],
+      "name": "StatusChange",
+      "type": "event",
+      "signature": "0x8b7f6acba3b055579f158c2af4f518759366ed0a247fad9b45ce8aad59b2c51f"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "hash_id",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "name": "red",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "name": "green",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "name": "blue",
+          "type": "uint8"
+        }
+      ],
+      "name": "ColorChange",
+      "type": "event",
+      "signature": "0x47b2f1f5f164c0daa8c8ca922f29fee9a9989dbd6f72a72b4dd2bfbddbc69add"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "hash_id",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "name": "intensity",
+          "type": "uint8"
+        }
+      ],
+      "name": "IntensityChange",
+      "type": "event",
+      "signature": "0x75bbd057c7080cf9fd9b5a1a3852168fc5199e9c92834ae862b8acdc0580bdf1"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getNumberOfdevices",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x4dc4d0e5"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_id",
+          "type": "uint256"
+        }
+      ],
+      "name": "fetchDeviceStatus",
+      "outputs": [
+        {
+          "name": "_name",
+          "type": "string"
+        },
+        {
+          "name": "_description",
+          "type": "string"
+        },
+        {
+          "name": "_status",
+          "type": "bool"
+        },
+        {
+          "name": "_red",
+          "type": "uint8"
+        },
+        {
+          "name": "_green",
+          "type": "uint8"
+        },
+        {
+          "name": "_blue",
+          "type": "uint8"
+        },
+        {
+          "name": "_intensity",
+          "type": "uint8"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function",
+      "signature": "0x6bb68b86"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_name",
+          "type": "string"
+        },
+        {
+          "name": "_description",
+          "type": "string"
+        }
+      ],
+      "name": "_addNewLightBulb",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x8a9daf5e"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_lightBulbId",
+          "type": "uint256"
+        },
+        {
+          "name": "_name",
+          "type": "string"
+        }
+      ],
+      "name": "_changeName",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x4da89bfb"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_lightBulbId",
+          "type": "uint256"
+        },
+        {
+          "name": "_status",
+          "type": "bool"
+        }
+      ],
+      "name": "_changeStatus",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0xc470af65"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_lightBulbId",
+          "type": "uint256"
+        },
+        {
+          "name": "_description",
+          "type": "string"
+        }
+      ],
+      "name": "_changeDescription",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x447f9992"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_lightBulbId",
+          "type": "uint256"
+        },
+        {
+          "name": "_red",
+          "type": "uint8"
+        },
+        {
+          "name": "_green",
+          "type": "uint8"
+        },
+        {
+          "name": "_blue",
+          "type": "uint8"
+        }
+      ],
+      "name": "_changeColor",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0xed2d4ccc"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_lightBulbId",
+          "type": "uint256"
+        },
+        {
+          "name": "_intensity",
+          "type": "uint8"
+        }
+      ],
+      "name": "_changeIntensity",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function",
+      "signature": "0x094be136"
+    }
+  ]
