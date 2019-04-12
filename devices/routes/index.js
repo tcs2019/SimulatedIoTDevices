@@ -1,32 +1,34 @@
-var express = require('express');
-var router = express.Router();
-var fs = require('fs');
+const express = require('express');
 
-var redis = require('redis')
-var client = redis.createClient()
+const router = express.Router();
+const fs = require('fs');
 
-client.on('error', function (err) {
-  console.log('Error ' + err);
-})
+const redis = require('redis');
 
-//Connects to Redis server and retrieves data
+let client = redis.createClient();
+
+client.on('error', function(err) {
+  console.log(`Error ${err}`);
+});
+
+// Connects to Redis server and retrieves data
 client.on('connect', function() {
   console.log('Redis connected');
   getAllLightbulbs();
   getAllPlugs();
 });
 
-//Stores objects for use on server
-var AllLightbulbs = [];
-var AllPlugs = [];
+// Stores objects for use on server
+let AllLightbulbs = [];
+let AllPlugs = [];
 
-//Gets data for all lightbulbs and stores it
+// Gets data for all lightbulbs and stores it
 function getAllLightbulbs() {
   client.smembers('LightBulbs', function(err, reply) {
     AllLightbulbs = [];
-    var lightbulbHashList = [];
+    let lightbulbHashList = [];
     lightbulbHashList = reply;
-    for(i in lightbulbHashList) {
+    for (i in lightbulbHashList) {
       client.hgetall(lightbulbHashList[i], function(err, object) {
         AllLightbulbs.push(object);
       });
@@ -34,13 +36,13 @@ function getAllLightbulbs() {
   });
 }
 
-//Gets data for all plugs and stores it
+// Gets data for all plugs and stores it
 function getAllPlugs() {
   client.smembers('ElectricPlugs', function(err, reply) {
-  AllPlugs = [];
-  var plugHashList = [];
+    AllPlugs = [];
+    let plugHashList = [];
     plugHashList = reply;
-    for(i in plugHashList) {
+    for (i in plugHashList) {
       client.hgetall(plugHashList[i], function(err, object) {
         AllPlugs.push(object);
       });
@@ -48,63 +50,61 @@ function getAllPlugs() {
   });
 }
 
-//Gets home page and renders lists of devices
+// Gets home page and renders lists of devices
 router.get('/', function(req, res, next) {
   getAllLightbulbs();
   getAllPlugs();
-  res.render('index', {lightbulbs: AllLightbulbs, plugs: AllPlugs});
+  res.render('index', { lightbulbs: AllLightbulbs, plugs: AllPlugs });
 });
 
-//Renders individual lightbulb page
+// Renders individual lightbulb page
 router.get('/lightbulb/:id', function(req, res) {
   client.hgetall(req.params.id, function(err, object) {
-    var currentLightbulb = object;
-    
-    var IValueCalc = (currentLightbulb.intensity / 2) / 100;
+    const currentLightbulb = object;
 
-    var setStatusColour;
-    var setStatus;
-    if(currentLightbulb.status == "true") {
-      setStatusColour = "green";
-      setStatus = "ON"
+    const IValueCalc = currentLightbulb.intensity / 100;
+
+    let setStatusColour;
+    let setStatus;
+    if (currentLightbulb.status == 'true') {
+      setStatusColour = 'green';
+      setStatus = 'ON';
+    } else {
+      setStatusColour = 'red';
+      setStatus = 'OFF';
     }
-    else {
-      setStatusColour = "red";
-      setStatus = "OFF"
-    }
-  
-    res.render('lightbulb', { 
-      name: currentLightbulb.name, 
+
+    res.render('lightbulb', {
+      name: currentLightbulb.name,
       Description: currentLightbulb.description,
       status: setStatus,
       statusColour: setStatusColour,
-      RValue: currentLightbulb.red, 
-      GValue: currentLightbulb.green, 
-      BValue: currentLightbulb.blue, 
-      IValue: currentLightbulb.intensity, 
-      IValueCSS: IValueCalc
+      RValue: currentLightbulb.red,
+      GValue: currentLightbulb.green,
+      BValue: currentLightbulb.blue,
+      IValue: currentLightbulb.intensity,
+      IValueCSS: IValueCalc,
     });
   });
 });
 
-//Renders individual plug
+// Renders individual plug
 router.get('/plug/:id', function(req, res) {
   client.hgetall(req.params.id, function(err, object) {
-    var currentPlug = object;
-    
-    var setStatusColour;
-    var setStatus;
-    if(currentPlug.status == "true") {
-      setStatusColour = "green";
-      setStatus = "ON"
-    }
-    else {
-      setStatusColour = "red";
-      setStatus = "OFF"
+    const currentPlug = object;
+
+    let setStatusColour;
+    let setStatus;
+    if (currentPlug.status == 'true') {
+      setStatusColour = 'green';
+      setStatus = 'ON';
+    } else {
+      setStatusColour = 'red';
+      setStatus = 'OFF';
     }
 
-    res.render('plug', { 
-      name: currentPlug.name, 
+    res.render('plug', {
+      name: currentPlug.name,
       Description: currentPlug.description,
       status: setStatus,
       statusColour: setStatusColour,

@@ -17,12 +17,12 @@ client.on('error', function(err) {
 // ElectricPlugs contract
 let parsedJson = JSON.parse(fs.readFileSync('./contracts/ElectricPlugs.json'));
 const abiEP = parsedJson.abi;
-const addEP = '0x15Fb766Df06BA326AaAdC3D40c299A1928bF6d7E';
+const addEP = '0x8EDE8A2944f08898d90BF8963DcC65e836351288';
 
 // LightBulbs contract
 parsedJson = JSON.parse(fs.readFileSync('./contracts/LightBulbs.json'));
 const abiLB = parsedJson.abi;
-const addLB = '0x73435d2F2105c426EE5421f39949Cb6b9865B919';
+const addLB = '0x545742ACD9EcB0016c678113a405af641d5B1949';
 
 // Web3js connection & contract
 const web3js = new Web3(Web3.givenProvider || new Web3.providers.WebsocketProvider('ws://127.0.0.1:8546'));
@@ -56,7 +56,7 @@ function ElectricPlugsEvents() {
     .NameChange()
     .on('data', function(event) {
       const data = event.returnValues;
-      client.hset(data.hash_id, {'name': data.name});
+      client.hmset(data.hash_id, {'name': data.name});
     })
     .on('error', console.error);
 
@@ -64,7 +64,7 @@ function ElectricPlugsEvents() {
     .DescriptionChange()
     .on('data', function(event) {
       const data = event.returnValues;
-      client.hset(data.hash_id, {'description': data.description});
+      client.hmset(data.hash_id, {'description': data.description});
     })
     .on('error', console.error);
 
@@ -72,7 +72,7 @@ function ElectricPlugsEvents() {
     .StatusChange()
     .on('data', function(event) {
       const data = event.returnValues;
-      client.hset(data.hash_id, {'status': data.status});
+      client.hmset(data.hash_id, {'status': data.status});
     })
     .on('error', console.error);
 }
@@ -109,7 +109,7 @@ function LightBulbsEvents() {
     .NameChange()
     .on('data', function(event) {
       const data = event.returnValues;
-      client.hset(data.hash_id, {'name': data.name});
+      client.hmset(data.hash_id, {'name': data.name});
     })
     .on('error', console.error);
 
@@ -117,7 +117,7 @@ function LightBulbsEvents() {
     .DescriptionChange()
     .on('data', function(event) {
       const data = event.returnValues;
-      client.hset(data.hash_id, {'description': data.description});
+      client.hmset(data.hash_id, {'description': data.description});
     })
     .on('error', console.error);
 
@@ -125,7 +125,7 @@ function LightBulbsEvents() {
     .StatusChange()
     .on('data', function(event) {
       const data = event.returnValues;
-      client.hset(data.hash_id, {'status': data.status});
+      client.hmset(data.hash_id, {'status': data.status});
     })
     .on('error', console.error);
   LightBulbs.events
@@ -144,7 +144,7 @@ function LightBulbsEvents() {
     .IntensityChange()
     .on('data', function(event) {
       const data = event.returnValues;
-      client.hset(data.hash_id, {'intensity': data.intensity});
+      client.hmset(data.hash_id, {'intensity': data.intensity});
     })
     .on('error', console.error);
 }
