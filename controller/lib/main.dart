@@ -1,12 +1,14 @@
 import 'dart:convert';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:iotdevices/class/device.dart';
+import 'package:flutter/services.dart';
 import 'package:iotdevices/class/event.dart';
 import 'package:iotdevices/pages/adddevice.dart';
 import 'package:iotdevices/pages/detail.dart';
 import 'package:iotdevices/web3/web3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
 void main() => runApp(MyApp());
 
@@ -17,15 +19,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
         primarySwatch: Colors.blue,
       ),
       home: MyHomePage(),
@@ -40,6 +33,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int devicenumber = 0;
+  String _barcode = 'Unknown';
   List<DeviceStatus> devicelist = new List();
 
   _getDevicelist() async {
@@ -68,6 +62,21 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  Future<void> _scanBarcode() async {
+    String barcodeScanRes;
+    try {
+      barcodeScanRes =
+          await FlutterBarcodeScanner.scanBarcode('#ff0000', 'CANCEL', false);
+    } on PlatformException {
+      barcodeScanRes = 'Failed to get platform version.';
+    }
+    if (!mounted) return;
+
+    setState(() {
+      _barcode = barcodeScanRes;
+    });
+  }
+
   @override
   void initState() {
     _getDevicelist();
@@ -77,136 +86,149 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text("Light Bulb Devices"),
-      ),
-      body: Padding(
-        padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 20.0),
-        child: Container(
-          // height: 400.0,
-          child: ListView.builder(
-            itemCount: devicelist.length,
-            scrollDirection: Axis.vertical,
-            itemBuilder: (context, position) {
-              return Container(
-                  height: 100.0,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Column(
-                        children: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                "Device Name:",
+        appBar: AppBar(
+          title: Text("Light Bulb Devices"),
+        ),
+        body: Padding(
+          padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 20.0),
+          child: Container(
+            // height: 400.0,
+            child: ListView.builder(
+              itemCount: devicelist.length,
+              scrollDirection: Axis.vertical,
+              itemBuilder: (context, position) {
+                return Container(
+                    height: 100.0,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Column(
+                          children: <Widget>[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  "Device Name:",
+                                  style: TextStyle(
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(devicelist[position].name.toString())
+                              ],
+                            ),
+                            Column(
+                              // crossAxisAlignment: CrossAxisAlignment.center,
+                              // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                Text(
+                                  "Device Description:",
+                                  style: TextStyle(
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                    devicelist[position].description.toString())
+                              ],
+                            ),
+                            Center(
+                              child: Container(
+                                margin: EdgeInsets.symmetric(vertical: 8.0),
+                                height: 0.5,
+                                color: Color(0xffDEDEDE),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: <Widget>[
+                            RaisedButton(
+                              child: const Text(
+                                'Detail',
                                 style: TextStyle(
-                                    fontSize: 16.0,
+                                    fontSize: 14.0,
+                                    color: Colors.white,
                                     fontWeight: FontWeight.bold),
                               ),
-                              Text(devicelist[position].name.toString())
-                            ],
-                          ),
-                          Column(
-                            // crossAxisAlignment: CrossAxisAlignment.center,
-                            // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
-                              Text(
-                                "Device Description:",
+                              color: Theme.of(context).primaryColor,
+                              padding: const EdgeInsets.all(8.0),
+                              onPressed: () {
+                                Navigator.of(context).push(PageRouteBuilder(
+                                    pageBuilder: (_, __, ___) =>
+                                        new DeviceDetailPage(
+                                            curdevice: devicelist[position]),
+                                    transitionDuration:
+                                        Duration(milliseconds: 750),
+                                    transitionsBuilder: (_,
+                                        Animation<double> animation,
+                                        __,
+                                        Widget child) {
+                                      return Opacity(
+                                        opacity: animation.value,
+                                        child: child,
+                                      );
+                                    }));
+                              },
+                            ),
+                            RaisedButton(
+                              child: const Text(
+                                'Delete',
                                 style: TextStyle(
-                                    fontSize: 16.0,
+                                    color: Colors.white,
                                     fontWeight: FontWeight.bold),
                               ),
-                              Text(devicelist[position].description.toString())
-                            ],
-                          ),
-                          Center(
-                            child: Container(
-                              margin: EdgeInsets.symmetric(vertical: 8.0),
-                              height: 0.5,
-                              color: Color(0xffDEDEDE),
+                              color: Theme.of(context).primaryColor,
+                              padding: const EdgeInsets.all(3.0),
+                              onPressed: () {
+                                // _onCalculatePressed();
+                              },
                             ),
-                          ),
-                        ],
-                      ),
-                      Column(
-                        children: <Widget>[
-                          RaisedButton(
-                            child: const Text(
-                              'Detail',
-                              style: TextStyle(
-                                  fontSize: 14.0,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            color: Theme.of(context).primaryColor,
-                            padding: const EdgeInsets.all(8.0),
-                            onPressed: () {
-                              Navigator.of(context).push(PageRouteBuilder(
-                                  pageBuilder: (_, __, ___) =>
-                                      new DeviceDetailPage(
-                                          curdevice: devicelist[position]),
-                                  transitionDuration:
-                                      Duration(milliseconds: 750),
-                                  transitionsBuilder: (_,
-                                      Animation<double> animation,
-                                      __,
-                                      Widget child) {
-                                    return Opacity(
-                                      opacity: animation.value,
-                                      child: child,
-                                    );
-                                  }));
-                            },
-                          ),
-                          RaisedButton(
-                            child: const Text(
-                              'Delete',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            color: Theme.of(context).primaryColor,
-                            padding: const EdgeInsets.all(3.0),
-                            onPressed: () {
-                              // _onCalculatePressed();
-                            },
-                          ),
-                        ],
-                      ),
-                    ],
-                  ));
-            },
+                          ],
+                        ),
+                      ],
+                    ));
+              },
+            ),
           ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).push(PageRouteBuilder(
-              pageBuilder: (_, __, ___) => new AddDevicePage(),
-              transitionDuration: Duration(milliseconds: 750),
+        floatingActionButton: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(bottom: 8.0),
+              child: FloatingActionButton(
+                tooltip: 'Scan QR Code',
+                child: Icon(Icons.camera),
+                heroTag: null,
+                onPressed: () {
+                  _scanBarcode();
+                },
+              ),
+            ),
+            FloatingActionButton(
+              tooltip: 'Add New Device',
+              child: Icon(Icons.add),
+              heroTag: null,
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AddDevicePage()),
+                  // PageRouteBuilder(
+                  //   pageBuilder: (_, __, ___) => new AddDevicePage(),
+                  //   transitionDuration: Duration(milliseconds: 750),
 
-              /// Set animation with opacity
-              transitionsBuilder:
-                  (_, Animation<double> animation, __, Widget child) {
-                return Opacity(
-                  opacity: animation.value,
-                  child: child,
+                  //   /// Set animation with opacity
+                  //   transitionsBuilder:
+                  //       (_, Animation<double> animation, __, Widget child) {
+                  //     return Opacity(
+                  //       opacity: animation.value,
+                  //       child: child,
+                  //     );
+                  //   })
                 );
-              }));
-        },
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+              },
+            ), // This trailing comma makes auto-formatting nicer for build methods.
+          ],
+        ));
   }
 }
