@@ -3,3 +3,6 @@
 .DS_Store
 .svn/
 */node_modules/
+*/.built_contracts/
+*/.deployed_contracts/
+*./vscode/

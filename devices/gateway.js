@@ -4,19 +4,12 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable import/no-extraneous-dependencies */
 
-// TODO: do not need fs
 const fs = require('fs');
 const Web3 = require('web3');
 const redis = require('redis');
-const deploy = require('./deploy');
-
-// TODO: command to read address & password
-// Retrieve the command line arguments
-// var argv = require('minimist')(process.argv.slice(2), { string: ['checkminter'] });
 
 // Ethereum Blockchain
 const host = 'ws://127.0.0.1:8546';
-deploy.host = host;
 const web3js = new Web3(Web3.givenProvider || new Web3.providers.WebsocketProvider(host));
 
 // create new Redis client
@@ -28,11 +21,20 @@ client.on('error', function(err) {
   console.log(`Something went wrong ${err}`);
 });
 
-/*
- * Deploy contracts
-*/
-const contractElecTricPlugs = deploy.deployContracts('ElectricPlugs.sol');
-const contractLightBulbs = deploy.deployContracts('LightBulbs.sol');
+// FIXME: parse both ABI & Address
+// ElectricPlugs contract
+let parsedJson = JSON.parse(fs.readFileSync('./.deployed_contracts/ElectricPlugs.json'));
+const contractEP = {
+  abi: parsedJson.abi,
+  contractAddress: parsedJson.contractAddress
+}
+
+// LightBulbs contract
+parsedJson = JSON.parse(fs.readFileSync('./.deployed_contracts/LightBulbs.json'));
+const contractLB = {
+  abi: parsedJson.abi,
+  contractAddress: parsedJson.contractAddress
+}
 
 let LightBulbs;
 let ElectricPlugs;
@@ -40,7 +42,7 @@ let ElectricPlugs;
 // This function listenning to all ElectricPlugs events
 function ElectricPlugsEvents() {
   // Assign contract for event listenning of ElectricPlugs
-  ElectricPlugs = new web3js.eth.Contract(contractElecTricPlugs.abi, contractElecTricPlugs.contractAddress);
+  ElectricPlugs = new web3js.eth.Contract(contractEP.abi, contractEP.contractAddress);
 
   // Listenning to all events of ElectricPlugs
   ElectricPlugs.events
@@ -87,7 +89,7 @@ function ElectricPlugsEvents() {
 // // This function listenning to all LightBulbs events
 function LightBulbsEvents() {
   // Assign contract for event listenning of LightBulbs
-  LightBulbs = new web3js.eth.Contract(contractLightBulbs.abi, contractLightBulbs.contractAddress);
+  LightBulbs = new web3js.eth.Contract(contractLB.abi, contractLB.contractAddress);
 
   // Listenning to all events of LightBulbs
   LightBulbs.events
