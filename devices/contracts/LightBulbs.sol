@@ -123,7 +123,7 @@ contract LightBulbs {
       require(msg.sender == lightBulbToOwner[_lightBulbId], "Error: Incorrect LightBulb owner (_changeColor)");
       lightBulbs[_lightBulbId].red = _red;
       lightBulbs[_lightBulbId].green = _green;
-      lightBulbs[_lightBulbId].green = _blue;
+      lightBulbs[_lightBulbId].blue = _blue;
       emit ColorChange(lightBulbs[_lightBulbId].hash_id, _red, _green, _blue);
   }
 
