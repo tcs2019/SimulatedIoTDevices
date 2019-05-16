@@ -6,3 +6,4 @@
 */.built_contracts/
 */.deployed_contracts/
 *./vscode/
+*/dump.rdb

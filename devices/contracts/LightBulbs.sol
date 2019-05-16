@@ -1,5 +1,13 @@
 pragma solidity ^0.5.0;
 
+// interface Aion
+// contract Aion {
+//     uint256 public serviceFee;
+//     function ScheduleCall(uint256 blocknumber, address to, uint256 value, uint256 gaslimit, uint256 gasprice, bytes memory data, bool schedType) public payable returns (uint,address);
+
+// }
+
+// main Contract
 contract LightBulbs {
 
   event NewLightBulb(string hash_id, string name, string description, bool status, uint8 red, uint8 green, uint8 blue, uint8 intensity);
@@ -21,10 +29,18 @@ contract LightBulbs {
     uint8 intensity; // 0-100
   }
 
+  // Aion aion;
   uint deviceCounter = 0;
   LightBulb[] public lightBulbs;
 
   mapping (uint => address) public lightBulbToOwner;
+
+  // function _scheduleChangeStatus(uint _lightBulbId, bool _status) public {
+  //   aion = Aion(0x4d06bD288125d8D3Cb966a95aa019ddb3E5ca933);
+  //   bytes memory data = abi.encodeWithSelector(bytes4(keccak256('_changeStatus(uint, bool)')), _lightBulbId, _status);
+  //   uint callCost = 200000*1e9 + aion.serviceFee();
+  //   aion.ScheduleCall.value(callCost)(block.timestamp + 5, address(this), 0, 200000, 1e9, data, false);
+  // }
 
   // fetch the number of  deviceslist in the contract
   function getNumberOfdevices() public view returns (uint) {
@@ -132,5 +148,7 @@ contract LightBulbs {
       lightBulbs[_lightBulbId].intensity = _intensity;
       emit IntensityChange(lightBulbs[_lightBulbId].hash_id, _intensity);
   }
+
+  // function () external payable {}
 
 } // end of contract
