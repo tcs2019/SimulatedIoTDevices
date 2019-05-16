@@ -42,8 +42,9 @@ class TransColor {
     int red = rgbColor.r;
     int green = rgbColor.g;
     int blue = rgbColor.b;
-    print('red$red');
-    print('blue$blue');
+    print('trancolorred$red');
+    print('trancolorgreen$green');
+    print('trancolorblue$blue');
     RGB color = new RGB();
     color.red = red;
     color.green = green;
