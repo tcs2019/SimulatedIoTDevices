@@ -13,32 +13,14 @@ const compileContract = require('./compile');
 // TODO: Retrieve the command line arguments
 // let argv = require('minimist')(process.argv.slice(2));
 
+// TODO: change to structure where gateway.js is inside ethdata
 // const ethKeystore = '/Users/kainguyen/ethdata';
-// const ethAccount = '5c2fba29b8dd90a63b2a7f450c81facbb69bdbfa';
+const ethAccount = '5c2fba29b8dd90a63b2a7f450c81facbb69bdbfa';
 // const ethPassword = '123';
 
 // const ethObject= keythereum.importFromFile(ethAccount, ethKeystore);
 // const ethKey = keythereum.recover(ethPassword, ethObject);
-
-// TODO: change this to only 1 account
-const accounts = [
-  {
-    // Ganache Default Accounts, do not use it for your production
-    // Develop 1
-    address: '0x2a28ac204dc195e7fa8aa09fea65465758bc0578',
-    key: '613259f6674cb62cb3050cb7d6aeca062793372481f3117bb7a4acafeb9f00c0',
-  },
-  {
-    // Develop 2
-    address: '0xf17f52151EbEF6C7334FAD080c5704D77216b732',
-    key: 'ae6ae8e5ccbfb04590405997ee2d52d2b330726137b875053c36d94e974d162f',
-  },
-  {
-    // Develop 3
-    address: '0xC5fdf4076b8F3A5357c5E395ab970B5B54098Fef',
-    key: '0dbbe8e4ae425a6d2687f1a7e3ba17bc98c673636790f1b8ad91193c05875ef1',
-  },
-];
+const ethKey = ''; // TODO: hardcode for testing purpose
 
 // Ganache or Private Ethereum Blockchain
 const selectedHost = 'http://127.0.0.1:8545';
@@ -92,48 +74,46 @@ const objTx = {
   gasPrice: web3.utils.toHex(web3.eth.gasPrice),
   gasLimit: web3.utils.toHex(6000000),
   data: contractData,
-  from: accounts[selectedAccountIndex].address,
+  from: ethAccount,
 };
 
-web3.eth
-  .getTransactionCount(accounts[selectedAccountIndex].address, 'pending')
-  .then(nonce => {
-    objTx.nonce = nonce;
+web3.eth.getTransactionCount(ethAccount, 'pending').then(nonce => {
+  objTx.nonce = nonce;
 
-    const rawTx = new Tx(objTx);
-    // Get the account private key, need to use it to sign the transaction later.
-    const privateKey = Buffer.from(accounts[selectedAccountIndex].key, 'hex');
-    // Sign the transaction
-    rawTx.sign(privateKey);
-    const serializedTx = rawTx.serialize();
-    const signedTx = `0x${serializedTx.toString('hex')}`;
+  const rawTx = new Tx(objTx);
+  // Get the account private key, need to use it to sign the transaction later.
+  const privateKey = Buffer.from(ethKey, 'hex');
+  // Sign the transaction
+  rawTx.sign(privateKey);
+  const serializedTx = rawTx.serialize();
+  const signedTx = `0x${serializedTx.toString('hex')}`;
 
-    // Submit the smart contract deployment transaction
-    web3.eth.sendSignedTransaction(signedTx, (error, txHash) => {
-      // console.log(chalk.green("sendSignedTransaction error, txHash"), error, txHash);
+  // Submit the smart contract deployment transaction
+  web3.eth.sendSignedTransaction(signedTx, (error, txHash) => {
+    // console.log(chalk.green("sendSignedTransaction error, txHash"), error, txHash);
+    if (error) {
+      console.log(error);
+    }
+    // else
+    console.log('Successful');
+    web3.eth.getTransactionReceipt(txHash, (error, receipt) => {
       if (error) {
         console.log(error);
       }
       // else
-      console.log('Successful');
-      web3.eth.getTransactionReceipt(txHash, (error, receipt) => {
-        if (error) {
-          console.log(error);
-        }
-        // else
-        console.log(receipt.contractAddress);
-        // Update JSON
-        jsonOutput.contracts[contract].contractAddress =
-          receipt.contractAddress;
-        // Web frontend only need abi & contract address
-        const webJsonOutput = {
-          abi,
-          contractAddress: receipt.contractAddress,
-        };
-        const formattedJson = JSON.stringify(jsonOutput, null, 4);
-        const formattedWebJson = JSON.stringify(webJsonOutput);
-        fs.writeFileSync(jsonFile, formattedJson);
-        fs.writeFileSync(webJsonFile, formattedWebJson);
-      });
+      console.log(receipt.contractAddress);
+      // Update JSON
+      jsonOutput.contracts[contract].contractAddress = receipt.contractAddress;
+      // Web frontend only need abi & contract address
+      const webJsonOutput = {
+        abi,
+        contractAddress: receipt.contractAddress,
+        accountAddress: ethAccount,
+      };
+      const formattedJson = JSON.stringify(jsonOutput, null, 4);
+      const formattedWebJson = JSON.stringify(webJsonOutput);
+      fs.writeFileSync(jsonFile, formattedJson);
+      fs.writeFileSync(webJsonFile, formattedWebJson);
     });
   });
+});
