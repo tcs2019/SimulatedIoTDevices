@@ -1,5 +1,13 @@
 pragma solidity ^0.5.0;
 
+// interface Aion
+contract Aion {
+    uint256 public serviceFee;
+    function ScheduleCall(uint256 blocknumber, address to, uint256 value, uint256 gaslimit, uint256 gasprice, bytes memory data, bool schedType) public payable returns (uint,address);
+
+}
+
+// main Contract
 contract ElectricPlugs {
 
   event NewElectricPlug(string hash_id, string name, string description, bool status);
@@ -15,10 +23,18 @@ contract ElectricPlugs {
     bool status; // true/false = on/off
   }
 
+  Aion aion;
   uint deviceCounter = 0;
   ElectricPlug[] public electricPlugs;
 
   mapping (uint => address) public electricPlugToOwner;
+
+  function _scheduleChangeStatus(uint _electricPlugId, bool _status) public {
+    aion = Aion(0x0);
+    bytes memory data = abi.encodeWithSelector(bytes4(keccak256('_changeStatus(uint, bool)')), _electricPlugId, _status);
+    uint callCost = 200000*1e9 + aion.serviceFee();
+    aion.ScheduleCall.value(callCost)(block.timestamp + 5, address(this), 0, 200000, 1e9, data, false);
+  }
 
   // return current number of devices
   function getNumberOfdevices() public view returns (uint) {

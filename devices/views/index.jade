@@ -7,27 +7,28 @@ html(lang='en')
     script(src='JS/script.js')
     style.
   body
-    h1 Smart Home Devices
+    //- h1 Smart Home Devices
     .deviceListDiv
       h1.listHeading Lightbulbs
-      img.listImg(src='Images/lightbulb.png')
+      //- img.listImg(src='Images/lightbulb.png')
       ul.deviceList
         for lightbulb in lightbulbs
-          li
-            hr
-            a.deviceListItem(href='/lightbulb/' + lightbulb.id, type='button')= lightbulb.name
-            p= lightbulb.description
+          li.horizontal
+            //- hr
+            //- a.deviceListItem(href='/lightbulb/' + lightbulb.id, type='button')= lightbulb.name
+            //- p= lightbulb.description
+            iframe.deviceIf(src='/lightbulb/' + lightbulb.id)
         else 
           li There are no Lightbulbs
 
-   .deviceListDiv
-      h1.listHeading Plugs
-      img.listImg(src='Images/plug.png')
-      ul.deviceList
-        for plug in plugs
-          li
-            hr
-            a.deviceListItem(href='/plug/' + plug.id, type='button')= plug.id
-            p= plug.description
-        else 
-          li There are no Lightbulbs
+  //-  .deviceListDiv
+  //-     h1.listHeading Plugs
+  //-     img.listImg(src='Images/plug.png')
+  //-     ul.deviceList
+  //-       for plug in plugs
+  //-         li
+  //-           hr
+  //-           a.deviceListItem(href='/plug/' + plug.id, type='button')= plug.id
+  //-           p= plug.description
+  //-       else 
+  //-         li There are no Lightbulbs

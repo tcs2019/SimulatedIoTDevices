@@ -4,17 +4,28 @@
 
 .deviceListDiv {
     border: solid;
-    width: 400px;
+    width: 100%;
+    height: 100%;
     display: inline-block;
     vertical-align: top;
 }
 
 .deviceList {
     list-style-type: none;
+    overflow: hidden;
     margin: 0;
     padding: 0;
     margin-left: 5%;
     margin-right: 5%;
+}
+
+.horizontal {
+    float: left;
+}
+
+.deviceIf {
+    width: 400px;
+    height: 560px;
 }
 
 .deviceListItem{
@@ -41,12 +52,12 @@
 }
 
 .devicediv {
-    width: -webkit-fit-content;
+    width: 385px;
     height: -webkit-fit-content;
     width: -moz-fit-content;
     height: -moz-fit-content;
     float: left;
-    border-style: solid;
+    border-style: none;
 }
 
 .deviceName {
@@ -70,7 +81,7 @@
 }
 
 .deviceStatusText{
-    font-size: 60px;
+    font-size: 30px;
     text-align: center;
     color: red;
     margin: 0px;
@@ -78,9 +89,9 @@
 
 .lightbulbdiv {
     position: relative;
-    width: 600px;
-    height: 500px;
-    left: 25%;
+    width: 100px;
+    height: 200px;
+    left: 35%;
 }
 
 #lightbulb {
@@ -106,7 +117,7 @@
 /*FROM W3 SCHOOLS */
 .slider {
   -webkit-appearance: none;
-  width: 80%;
+  width: 70%;
   height: 15px;
   border-radius: 5px;   
   background: #d3d3d3;
