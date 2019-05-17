@@ -12,7 +12,7 @@ A few resources to get you started if this is your first Flutter project:
 - [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
 
 ## Screenshot
-![GitHub Logo](/Screen/Screenshot_20190517_135414_com.iot.newuicontrollor.jpg)
+![GitHub Logo](https://github.com/tcs2019/SimulatedIoTDevices/blob/master/newuicontrollor/Screen/Screenshot_20190517_135414_com.iot.newuicontrollor.jpg)
 
 
 
