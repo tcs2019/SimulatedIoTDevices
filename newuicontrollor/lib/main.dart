@@ -5,7 +5,7 @@ import 'package:newuicontrollor/class/shareddata.dart';
 import 'package:newuicontrollor/pages/login/init.dart';
 
 void main() => runApp(MyApp());
-
+  
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
