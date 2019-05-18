@@ -14,22 +14,20 @@ const compileContract = require('./compile');
 // let argv = require('minimist')(process.argv.slice(2));
 
 // TODO: change to structure where gateway.js is inside ethdata
-// const ethKeystore = '/Users/kainguyen/ethdata';
-const ethAccount = '5c2fba29b8dd90a63b2a7f450c81facbb69bdbfa';
-// const ethPassword = '123';
+const ethKeystore = '/Users/kainguyen/PoA/node1/';
+const ethAccount = '2973717e00b7e24869c4a04018dfeecbc409faae';
+const ethPassword = '123';
 
-// const ethObject= keythereum.importFromFile(ethAccount, ethKeystore);
-// const ethKey = keythereum.recover(ethPassword, ethObject);
-const ethKey = ''; // TODO: hardcode for testing purpose
+const ethObject = keythereum.importFromFile(ethAccount, ethKeystore);
+const ethKey = keythereum.recover(ethPassword, ethObject);
+// const ethKey = ''; // TODO: hardcode for testing purpose
 
 // Ganache or Private Ethereum Blockchain
 const selectedHost = 'http://127.0.0.1:8545';
 
-const selectedAccountIndex = 0; // Using the first account in the list
-
 const web3 = new Web3(new Web3.providers.HttpProvider(selectedHost));
 
-const contract = 'LightBulbs.sol';
+const contract = 'ElectricPlugs.sol';
 
 // Compile contracts
 compileContract.buildContract(contract);
@@ -95,12 +93,12 @@ web3.eth.getTransactionCount(ethAccount, 'pending').then(nonce => {
       console.log(error);
     }
     // else
-    console.log('Successful');
+    console.log(`Successful: ${txHash}`);
+
     web3.eth.getTransactionReceipt(txHash, (error, receipt) => {
       if (error) {
         console.log(error);
       }
-      // else
       console.log(receipt.contractAddress);
       // Update JSON
       jsonOutput.contracts[contract].contractAddress = receipt.contractAddress;
@@ -108,7 +106,7 @@ web3.eth.getTransactionCount(ethAccount, 'pending').then(nonce => {
       const webJsonOutput = {
         abi,
         contractAddress: receipt.contractAddress,
-        accountAddress: ethAccount,
+        keyObject: ethObject,
       };
       const formattedJson = JSON.stringify(jsonOutput, null, 4);
       const formattedWebJson = JSON.stringify(webJsonOutput);
