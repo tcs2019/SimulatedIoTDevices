@@ -61,6 +61,16 @@ router.get('/', function(req, res, next) {
   res.render('index', { lightbulbs: AllLightbulbs, plugs: AllPlugs });
 });
 
+router.get('/lightbulbs', function(req, res, next) {
+  getAllLightbulbs();
+  res.render('lightbulbs', {lightbulbs: AllLightbulbs});
+});
+
+router.get('/electricplugs', function(req, res, next) {
+  getAllPlugs();
+  res.render('plugs', {plugs: AllPlugs});
+});
+
 // Renders individual lightbulb page
 router.get('/lightbulb/:id', function(req, res) {
   client.hgetall(req.params.id, function(err, object) {
@@ -147,9 +157,11 @@ router.get('/plugchange', function(req, res) {
 
   res.render('index', {lightbulbs: AllLightbulbs, plugs: AllPlugs});
 });
+*/
+/*
 
 function testAdd() {
-  client.sadd(['lightbulbs', 'lightbulb1', 'lightbulb2', 'lightbulb3'], function(err, reply) {
+  client.sadd(['LightBulbs', 'lightbulb1', 'lightbulb2', 'lightbulb3'], function(err, reply) {
     console.log(reply);
     client.hmset('lightbulb1', {'id': 'lightbulb1',
     'name': 'Smart Lightbulb 1',
@@ -204,7 +216,7 @@ client.hmset('lightbulb2', {'id': 'lightbulb2',
   });  
                                               
 }
-
+/*
 TO READ FROM ALL LIST INSTEAD
 Lightbulb:
 getAllLightbulbs();

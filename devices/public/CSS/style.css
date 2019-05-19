@@ -12,20 +12,27 @@
 
 .deviceList {
     list-style-type: none;
-    overflow: hidden;
     margin: 0;
     padding: 0;
     margin-left: 5%;
     margin-right: 5%;
+    white-space: nowrap;
+    overflow: auto;
 }
 
 .horizontal {
-    float: left;
+    display: inline-block;
 }
 
 .deviceIf {
-    width: 400px;
+    width: 410px;
     height: 560px;
+}
+
+.listIf {
+    height: 700px;
+    width: 100%;
+    display: block;
 }
 
 .deviceListItem{
