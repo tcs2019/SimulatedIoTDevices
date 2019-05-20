@@ -5,7 +5,7 @@ import 'package:newuicontrollor/class/shareddata.dart';
 import 'package:newuicontrollor/pages/login/init.dart';
 
 void main() => runApp(MyApp());
-  
+
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
@@ -34,6 +34,10 @@ class _MyHomePageState extends State<MyHomePage> {
   var isfirsttime;
   var isLogedIn;
   _startTime() async {
+    String address = await SharedData.getServerAddress();
+    if (address == null) {
+      SharedData.saveServerAddress("");
+    }
     isfirsttime = await SharedData.isFirstTimeUse();
     print('$isfirsttime in main.dart');
     return new Timer(Duration(milliseconds: 5000), _navigatorPage);
@@ -41,19 +45,21 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _navigatorPage() {
     if (isfirsttime != false) {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (BuildContext context) => new InitPage()));
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (BuildContext context) => new InitPage()));
     }
     //  else if (isLogedIn != true) {
     //   Navigator.of(context).pushReplacement(MaterialPageRoute(
     //       builder: (BuildContext context) => new ChoseLogin()));
     // }
   }
-@override
+
+  @override
   void initState() {
     _startTime();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:newuicontrollor/class/shareddata.dart';
-import 'package:newuicontrollor/pages/login/address.dart';
+import 'package:newuicontrollor/pages/devices/lights.dart';
 
 class PasswordPage extends StatefulWidget {
   @override
@@ -131,7 +131,7 @@ class _PasswordPageState extends State<PasswordPage> {
             SharedData.saveAccountPassword(passwordcontroller.text);
             Future.delayed(new Duration(seconds: 1), () {
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (BuildContext context) => new AddressPage()));
+                  builder: (BuildContext context) => new LightsHomePage()));
             });
           } else {
             globalKey.currentState.showSnackBar(new SnackBar(
