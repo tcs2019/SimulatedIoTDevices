@@ -7,3 +7,5 @@
 */.deployed_contracts/
 *./vscode/
 */dump.rdb
+devices/node_modules/
+/node_modules/

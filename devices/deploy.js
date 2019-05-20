@@ -14,22 +14,20 @@ const compileContract = require('./compile');
 // let argv = require('minimist')(process.argv.slice(2));
 
 // TODO: change to structure where gateway.js is inside ethdata
-// const ethKeystore = '/Users/kainguyen/ethdata';
-const ethAccount = '5c2fba29b8dd90a63b2a7f450c81facbb69bdbfa';
-// const ethPassword = '123';
+const ethKeystore = '/Users/kainguyen/PoA/node1/';
+const ethAccount = '781bf137f6de67525658cae995cf37f8476229b7';
+const ethPassword = '123';
 
-// const ethObject= keythereum.importFromFile(ethAccount, ethKeystore);
-// const ethKey = keythereum.recover(ethPassword, ethObject);
-const ethKey = ''; // TODO: hardcode for testing purpose
+const ethObject = keythereum.importFromFile(ethAccount, ethKeystore);
+const ethKey = keythereum.recover(ethPassword, ethObject);
+// const ethKey = ''; // TODO: hardcode for testing purpose
 
 // Ganache or Private Ethereum Blockchain
 const selectedHost = 'http://127.0.0.1:8545';
 
-const selectedAccountIndex = 0; // Using the first account in the list
-
 const web3 = new Web3(new Web3.providers.HttpProvider(selectedHost));
 
-const contract = 'LightBulbs.sol';
+const contract = 'ElectricPlugs.sol';
 
 // Compile contracts
 compileContract.buildContract(contract);
@@ -95,25 +93,32 @@ web3.eth.getTransactionCount(ethAccount, 'pending').then(nonce => {
       console.log(error);
     }
     // else
-    console.log('Successful');
-    web3.eth.getTransactionReceipt(txHash, (error, receipt) => {
-      if (error) {
-        console.log(error);
-      }
-      // else
-      console.log(receipt.contractAddress);
-      // Update JSON
-      jsonOutput.contracts[contract].contractAddress = receipt.contractAddress;
-      // Web frontend only need abi & contract address
-      const webJsonOutput = {
-        abi,
-        contractAddress: receipt.contractAddress,
-        accountAddress: ethAccount,
-      };
-      const formattedJson = JSON.stringify(jsonOutput, null, 4);
-      const formattedWebJson = JSON.stringify(webJsonOutput);
-      fs.writeFileSync(jsonFile, formattedJson);
-      fs.writeFileSync(webJsonFile, formattedWebJson);
-    });
+    console.log(`Successful: ${txHash}`);
+    console.log('waiting for Transaction Receipt');
+
+    // wait 3s before moving foward
+    setTimeout(function() {
+      web3.eth
+        .getTransactionReceipt(txHash)
+        .then(receipt => {
+          console.log(receipt.contractAddress);
+          // Update JSON
+          jsonOutput.contracts[contract].contractAddress =
+            receipt.contractAddress;
+          // Web frontend only need abi & contract address
+          const webJsonOutput = {
+            abi,
+            contractAddress: receipt.contractAddress,
+            keyObject: ethObject,
+          };
+          const formattedJson = JSON.stringify(jsonOutput, null, 4);
+          const formattedWebJson = JSON.stringify(webJsonOutput);
+          fs.writeFileSync(jsonFile, formattedJson);
+          fs.writeFileSync(webJsonFile, formattedWebJson);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }, 3000);
   });
 });
