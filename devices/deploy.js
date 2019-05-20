@@ -15,7 +15,7 @@ const compileContract = require('./compile');
 
 // TODO: change to structure where gateway.js is inside ethdata
 const ethKeystore = '/Users/kainguyen/PoA/node1/';
-const ethAccount = '2973717e00b7e24869c4a04018dfeecbc409faae';
+const ethAccount = '781bf137f6de67525658cae995cf37f8476229b7';
 const ethPassword = '123';
 
 const ethObject = keythereum.importFromFile(ethAccount, ethKeystore);
@@ -94,24 +94,31 @@ web3.eth.getTransactionCount(ethAccount, 'pending').then(nonce => {
     }
     // else
     console.log(`Successful: ${txHash}`);
+    console.log('waiting for Transaction Receipt');
 
-    web3.eth.getTransactionReceipt(txHash, (error, receipt) => {
-      if (error) {
-        console.log(error);
-      }
-      console.log(receipt.contractAddress);
-      // Update JSON
-      jsonOutput.contracts[contract].contractAddress = receipt.contractAddress;
-      // Web frontend only need abi & contract address
-      const webJsonOutput = {
-        abi,
-        contractAddress: receipt.contractAddress,
-        keyObject: ethObject,
-      };
-      const formattedJson = JSON.stringify(jsonOutput, null, 4);
-      const formattedWebJson = JSON.stringify(webJsonOutput);
-      fs.writeFileSync(jsonFile, formattedJson);
-      fs.writeFileSync(webJsonFile, formattedWebJson);
-    });
+    // wait 3s before moving foward
+    setTimeout(function() {
+      web3.eth
+        .getTransactionReceipt(txHash)
+        .then(receipt => {
+          console.log(receipt.contractAddress);
+          // Update JSON
+          jsonOutput.contracts[contract].contractAddress =
+            receipt.contractAddress;
+          // Web frontend only need abi & contract address
+          const webJsonOutput = {
+            abi,
+            contractAddress: receipt.contractAddress,
+            keyObject: ethObject,
+          };
+          const formattedJson = JSON.stringify(jsonOutput, null, 4);
+          const formattedWebJson = JSON.stringify(webJsonOutput);
+          fs.writeFileSync(jsonFile, formattedJson);
+          fs.writeFileSync(webJsonFile, formattedWebJson);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }, 3000);
   });
 });
