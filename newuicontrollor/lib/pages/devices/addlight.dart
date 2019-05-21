@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:newuicontrollor/class/event.dart';
 import 'package:newuicontrollor/class/shareddata.dart';
-import 'package:newuicontrollor/pages/setting/changeserver.dart';
 import 'package:newuicontrollor/web3/web3.dart';
 import 'package:newuicontrollor/web3/web3p.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+
+import 'lights.dart';
 
 var images = ["assets/img/light.png", "assets/img/light.png"];
 var title = ["Lights", "Smart Tv"];
@@ -41,14 +42,18 @@ class _AddLightPageState extends State<AddLightPage> {
       globalKey.currentState.showSnackBar(new SnackBar(
         content: new Text("Added successfully!"),
       ));
-      setState(() {
-        added = true;
-      });
+      print("added successfully");
 
-      Event.eventBus.fire(new DeviceAdd(namecontroller.text));
-
-      Future.delayed(new Duration(seconds: 3), () {
-        Navigator.pop(context);
+      Future.delayed(new Duration(seconds: 2), () {
+        setState(() {
+          added = true;
+        });
+        // Event.eventBus.fire(new DeviceAdd(namecontroller.text));
+        Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(
+          builder: (BuildContext context) {
+            return new LightsHomePage();
+          },
+        ), (route) => route == null);
       });
     } else {
       globalKey.currentState.showSnackBar(new SnackBar(
@@ -69,6 +74,7 @@ class _AddLightPageState extends State<AddLightPage> {
       color: Colors.lightGreen[200], //Color(0xFFA4B4A9)
       child: Scaffold(
         backgroundColor: Colors.transparent,
+        key: globalKey,
         body: Stack(
           fit: StackFit.expand,
           children: <Widget>[
@@ -90,7 +96,7 @@ class _AddLightPageState extends State<AddLightPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         IconButton(
                           icon: Icon(Icons.chevron_left,
@@ -106,6 +112,7 @@ class _AddLightPageState extends State<AddLightPage> {
                             fontSize: 30,
                           ),
                         ),
+                        SizedBox(),
                         // IconButton(
                         //   icon:
                         //       Icon(Icons.settings, color: Colors.white, size: 30),
@@ -181,7 +188,30 @@ class _AddLightPageState extends State<AddLightPage> {
                               ],
                             ),
                           )),
-                    )
+                    ),
+                    added
+                        ? Container(
+                            height: 70.0,
+                          )
+                        : Container(
+                            height: 70.0,
+                            child: Column(
+                              children: <Widget>[
+                                SpinKitFadingCircle(
+                                  itemBuilder: (_, int index) {
+                                    return DecoratedBox(
+                                      decoration: BoxDecoration(
+                                        color: index.isEven
+                                            ? Colors.red
+                                            : Colors.green,
+                                      ),
+                                    );
+                                  },
+                                ),
+                                Text("Adding new device"),
+                              ],
+                            ),
+                          ),
                   ],
                 ),
               ),
@@ -191,8 +221,9 @@ class _AddLightPageState extends State<AddLightPage> {
               bottom: 10,
               child: InkWell(
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => new AddLightPage()));
+                  _adddevice();
+                  // Navigator.of(context).push(MaterialPageRoute(
+                  //     builder: (BuildContext context) => new AddLightPage()));
                 },
                 child: Padding(
                   padding: EdgeInsets.all(8),

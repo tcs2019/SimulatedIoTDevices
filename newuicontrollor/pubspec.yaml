@@ -19,7 +19,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  web3dart: ^1.0.0-rc.0
+  web3dart: ^1.0.0-rc.2
   http:
   shared_preferences: ^0.5.1+2
   event_bus: ^1.0.1

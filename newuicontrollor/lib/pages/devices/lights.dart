@@ -5,11 +5,9 @@ import 'package:newuicontrollor/class/shareddata.dart';
 import 'package:newuicontrollor/pages/setting/changeserver.dart';
 import 'package:newuicontrollor/web3/web3.dart';
 import 'package:newuicontrollor/web3/web3p.dart';
-
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'addlight.dart';
-
-var images = ["assets/img/light.png", "assets/img/light.png"];
-var title = ["Lights", "Smart Tv"];
+import 'lightdetail.dart';
 
 class LightsHomePage extends StatefulWidget {
   @override
@@ -23,11 +21,11 @@ class _LightsHomePageState extends State<LightsHomePage> {
   var account = './assets/abi/account.json';
   int devicenumber = 0;
   int number;
-  String _barcode = 'Unknown';
   String curnetwork = 'Getting';
   List<DeviceStatus> devicelist = new List();
 
   _getDevicelist() async {
+    print("getting devicelist");
     devicelist.clear();
     setState(() {
       loaded = false;
@@ -60,7 +58,7 @@ class _LightsHomePageState extends State<LightsHomePage> {
         }
       }
     }
-    if (devicelist != null) {
+    if (devicelist != null && mounted) {
       setState(() {
         loaded = true;
       });
@@ -75,6 +73,9 @@ class _LightsHomePageState extends State<LightsHomePage> {
   }
 
   _getNetwork() async {
+    setState(() {
+      loaded = false;
+    });
     SharedData.setNetwork("null");
     var address = await SharedData.getServerAddress();
     if (address == null) {
@@ -115,12 +116,14 @@ class _LightsHomePageState extends State<LightsHomePage> {
 
   _eventHandler() async {
     Event.eventBus.on<DeviceAdd>().listen((event) {
-      Future.delayed(new Duration(seconds: 5), () {
-        _getDevicelist();
-      });
+      // Future.delayed(new Duration(seconds: 3), () {
+      print("fired");
+      _getDevicelist();
+      // });
     });
     Event.eventBus.on<ServerChanged>().listen((event) {
       Future.delayed(new Duration(seconds: 5), () {
+        print("fired");
         _getNetwork();
       });
     });
@@ -135,6 +138,7 @@ class _LightsHomePageState extends State<LightsHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    MediaQueryData mediaQueryData = MediaQuery.of(context);
     return new Container(
       color: Colors.lightGreen[200], //Color(0xFFA4B4A9)
       child: Scaffold(
@@ -224,55 +228,140 @@ class _LightsHomePageState extends State<LightsHomePage> {
               child: Padding(
                 padding: EdgeInsets.only(left: 30, bottom: 50),
                 child: SizedBox(
-                  height: 270,
-                  child: ListView.builder(
-                    itemCount: devicelist.length,
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding:
-                            EdgeInsets.only(left: 16, right: 8, bottom: 40),
-                        child: Container(
-                          width: 180,
-                          height: 250,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16),
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.black12,
-                                    offset: Offset(0, 10),
-                                    blurRadius: 10)
-                              ]),
+                  height: 250,
+                  child: loaded
+                      ? ListView.builder(
+                          itemCount: devicelist.length,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: EdgeInsets.only(
+                                  left: 16, right: 8, bottom: 40),
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.of(context).push(PageRouteBuilder(
+                                      pageBuilder: (_, __, ___) =>
+                                          new LightDetailPage(
+                                              curdevice: devicelist[index]),
+                                      transitionDuration:
+                                          Duration(milliseconds: 750),
+                                      transitionsBuilder: (_,
+                                          Animation<double> animation,
+                                          __,
+                                          Widget child) {
+                                        return Opacity(
+                                          opacity: animation.value,
+                                          child: child,
+                                        );
+                                      }));
+                                },
+                                child: Container(
+                                  width: 180,
+                                  height: 250,
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(16),
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color: Colors.black12,
+                                            offset: Offset(0, 10),
+                                            blurRadius: 10)
+                                      ]),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Container(
+                                        width: 120,
+                                        height: 120,
+                                        decoration: BoxDecoration(
+                                            color: Color(0xFFECECEC),
+                                            shape: BoxShape.circle),
+                                        child: Image.asset(images[0]),
+                                      ),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Text(devicelist[index].name,
+                                          style: TextStyle(
+                                            fontSize: 22,
+                                          ))
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        )
+                      : Container(
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              Container(
-                                width: 120,
-                                height: 120,
-                                decoration: BoxDecoration(
-                                    color: Color(0xFFECECEC),
-                                    shape: BoxShape.circle),
-                                child: Image.asset(images[0]),
+                              SpinKitFadingCircle(
+                                itemBuilder: (_, int index) {
+                                  return DecoratedBox(
+                                    decoration: BoxDecoration(
+                                      color: index.isEven
+                                          ? Colors.red
+                                          : Colors.green,
+                                    ),
+                                  );
+                                },
                               ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Text(devicelist[index].name,
-                                  style: TextStyle(
-                                    fontSize: 22,
-                                  ))
+                              Text("Loading"),
                             ],
                           ),
                         ),
-                      );
-                    },
+                ),
+              ),
+            ),
+            Positioned(
+              left: 20,
+              bottom: 10,
+              child: InkWell(
+                onTap: () {
+                  _refresh();
+                },
+                child: Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Container(
+                    width: 110,
+                    height: 35,
+                    decoration: BoxDecoration(
+                        color: Color(0xFFFF9B52),
+                        borderRadius: BorderRadius.circular(8)),
+                    child: Row(
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(left: 10),
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.white, width: 2),
+                          ),
+                          child: Icon(
+                            Icons.refresh,
+                            color: Colors.white,
+                            size: 16,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 8,
+                        ),
+                        Text(
+                          "Refresh",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
             Positioned(
-              left: 140,
+              right: 20,
               bottom: 10,
               child: InkWell(
                 onTap: () {
@@ -310,7 +399,7 @@ class _LightsHomePageState extends State<LightsHomePage> {
                           "Add new Light",
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 22,
+                            fontSize: 18,
                           ),
                         )
                       ],

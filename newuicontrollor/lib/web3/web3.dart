@@ -28,6 +28,9 @@ class Web3 {
   static var apiUrl =
       "https://ropsten.infura.io/v3/4164c4424c7d465daab94864544fa622"; //Ropsten
 
+  static var wsUrl =
+      "wss://ropsten.infura.io/ws/v3/4164c4424c7d465daab94864544fa622"; //Ropsten
+
   static var credentials = EthPrivateKey.fromHex(privatekey);
   static Future<String> web3adddevice(String name, String description) async {
     // String accountjson = await rootBundle.loadString(account);
