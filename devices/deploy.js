@@ -43,6 +43,8 @@ if (!fs.existsSync(webJsonDir)) {
 }
 // After the smart deployment, it will generate another simple json file for web frontend.
 const webJsonFile = `${webJsonDir}/${jsonOutputName}`;
+const abiFileName = `${webJsonDir}/abi.json`;
+const keystoreFileName = `${webJsonDir}/keystore.json`;
 
 // Read the JSON file contents
 const contractJsonContent = fs.readFileSync(jsonFile, 'utf8');
@@ -107,14 +109,18 @@ web3.eth.getTransactionCount(ethAccount, 'pending').then(nonce => {
                         receipt.contractAddress;
                     // Web frontend only need abi & contract address
                     const webJsonOutput = {
-                        abi,
+                        // abi,
                         contractAddress: receipt.contractAddress,
-                        keyObject: ethObject,
+                        // keyObject: ethObject,
                     };
                     const formattedJson = JSON.stringify(jsonOutput, null, 4);
                     const formattedWebJson = JSON.stringify(webJsonOutput);
+                    const formattedABIJson = JSON.stringify(abi);
+                    const formattedKeystoreJson = JSON.stringify(ethObject);
                     fs.writeFileSync(jsonFile, formattedJson);
                     fs.writeFileSync(webJsonFile, formattedWebJson);
+                    fs.writeFileSync(abiFileName, formattedABIJson);
+                    fs.writeFileSync(keystoreFileName, formattedKeystoreJson);
                 })
                 .catch(error => {
                     console.log(error);

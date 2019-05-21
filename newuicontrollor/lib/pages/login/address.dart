@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:newuicontrollor/class/serverapi.dart';
 import 'package:newuicontrollor/class/shareddata.dart';
+import 'package:newuicontrollor/class/writefile.dart';
 import 'package:newuicontrollor/pages/login/password.dart';
 import 'package:http/http.dart' as http;
 
@@ -35,14 +36,23 @@ class _AddressPageState extends State<AddressPage> {
       final response = await http
           .get("http://$ip:3000/LightBulbs.json")
           .timeout(Duration(seconds: 5));
-      res = response.body.toString();
-      print(res.length);
-      int firstk = res.indexOf("[");
-      int lastk = res.lastIndexOf("]");
-      print(lastk);
-      String abi = res.substring(firstk,lastk+1);
-      print(abi.length);
-      print(abi);
+      // print(response.body.toString());
+      int po = response.body.toString().indexOf(":");
+      int polast = response.body.toString().lastIndexOf('"');
+      String contractaddress = response.body.toString().substring(po+2,polast);
+      SharedData.setContractAddress(contractaddress);
+      print(contractaddress);
+      File abifile = await WriteFlie.downloadABIFile("http://$ip:3000/abi.json","abi.json");
+      File keystorefile = await WriteFlie.downloadKeystoreFile("http://$ip:3000/keystore.json","keystore.json");
+
+      // res = response.body.toString();
+      // print(res.length);
+      // int firstk = res.indexOf("[");
+      // int lastk = res.lastIndexOf("]");
+      // print(lastk);
+      // String abi = res.substring(firstk,lastk+1);
+      // print(abi.length);
+      // print(abi);
 
     } on SocketException {
       print("error");
@@ -164,7 +174,7 @@ class _AddressPageState extends State<AddressPage> {
                                   labelStyle: TextStyle(
                                       fontSize: 18.0,
                                       letterSpacing: 0.3,
-                                      color: Colors.black,
+                                      color: Colors.white,
                                       fontWeight: FontWeight.w600),
                                 ),
                                 keyboardType: TextInputType.text,
