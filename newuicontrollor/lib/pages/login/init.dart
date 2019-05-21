@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:barcode_scan/barcode_scan.dart';
 import 'package:newuicontrollor/pages/login/address.dart';
 import 'package:newuicontrollor/pages/login/password.dart';
 import 'package:newuicontrollor/pages/login/qrcode.dart';
@@ -37,13 +39,32 @@ class _InitPageState extends State<InitPage> {
     Timer(Duration(milliseconds: 2000), _navigatorPage);
   }
 
+  // QR Code Scanner
+  Future<void> _scanBarcode() async {
+    String _barcode;
+    try {
+      _barcode = await BarcodeScanner.scan();
+    } on PlatformException catch (e) {
+      if (e.code == BarcodeScanner.CameraAccessDenied) {
+        _barcode = 'FThe user did not grant the camera permission!';
+      } else {
+        _barcode = 'Unknown error: $e';
+      }
+    } on FormatException {
+      _barcode =
+          'null (User returned using the "back"-button before scanning anything. Result)';
+    } catch (e) {
+      _barcode = 'Unknown error: $e';
+    }
+  }
+
   void _navigatorPage() {
     _check();
   }
 
   @override
   void initState() {
-    // _autorun();
+    _autorun();
     super.initState();
   }
 
@@ -139,7 +160,8 @@ class _InitPageState extends State<InitPage> {
                                     ),
                             ),
                             Padding(
-                              padding: EdgeInsets.only(top: 40.0, left: 20.0,bottom: 20.0),
+                              padding: EdgeInsets.only(
+                                  top: 40.0, left: 20.0, bottom: 20.0),
                               child: auth
                                   ? Text(
                                       "You are good to go!",
@@ -176,17 +198,18 @@ class _InitPageState extends State<InitPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          if (auth) {
-            _nextstep();
-          } else {
-            globalKey.currentState.showSnackBar(new SnackBar(
-              content:
-                  new Text("Use your Fingerprint or FaceID to get started."),
-            ));
-          }
+          // if (auth) {
+          //   _nextstep();
+          // } else {
+          //   globalKey.currentState.showSnackBar(new SnackBar(
+          //     content:
+          //         new Text("Use your Fingerprint or FaceID to get started."),
+          //   ));
+          // }
+          _scanBarcode();
         },
-        tooltip: 'Next Step',
-        child: Icon(Icons.keyboard_arrow_right),
+        tooltip: 'Scan QR Code',
+        child: Icon(Icons.camera_alt),
       ),
     );
   }

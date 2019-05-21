@@ -104,7 +104,7 @@ class Web3 {
     return curdevice;
   }
 
-  static Future<String> web3changedevicecolor(BigInt bid, RGB color) async {
+  static Future<bool> web3changedevicecolor(BigInt bid, RGB color) async {
     // String serveraddress = await SharedData.getServerAddress();
     // if (serveraddress.length > 5) {
     //   apiUrl = serveraddress;
@@ -135,9 +135,39 @@ class Web3 {
     print(res);
 
     if (res.toString().contains("0x")) {
-      return "success";
+      return true;
     } else {
-      return "fail";
+      return false;
+    }
+  }
+
+  static Future<bool> web3changedevicestatus(BigInt bid) async {
+    // String serveraddress = await SharedData.getServerAddress();
+    // if (serveraddress.length > 5) {
+    //   apiUrl = serveraddress;
+    // }
+    final client = Web3Client(apiUrl, Client());
+    String jsonContent = await rootBundle.loadString(abi);
+    final ownAddress = await credentials.extractAddress();
+    // final abiCode = await abiFile.readAsString();
+    final contract = DeployedContract(
+        ContractAbi.fromJson(jsonContent, 'LightBulbs'), contractAddr);
+    final changeStatus = contract.function('_changeStatus');
+
+    var res = await client.sendTransaction(
+        credentials,
+        Transaction.callContract(
+            contract: contract,
+            function: changeStatus,
+            maxGas: 6521975,
+            parameters: [bid]),
+        chainId: chainid);
+    print(res);
+
+    if (res.toString().contains("0x")) {
+      return true;
+    } else {
+      return false;
     }
   }
 
