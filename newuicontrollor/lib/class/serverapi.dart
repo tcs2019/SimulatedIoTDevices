@@ -1,28 +1,23 @@
 class ServerAPI {
-  String news_id;
-  String news_display;
-  String news_tittle;
-  String news_author;
-  String news_link;
+  List<dynamic> abi;
+  String contractAddress;
+  List<dynamic> keyObject;
+
 
 
 
   ServerAPI (
-      {this.news_id,
-      this.news_display,
-      this.news_tittle,
-      this.news_author,
-      this.news_link});
+      {this.abi,
+      this.contractAddress,
+      this.keyObject});
       
 
 
-  factory ServerAPI.fromJson(Map json) {
-    return new ServerAPI(
-      news_id: json['news_id'],
-      news_display: json['news_display'],
-      news_tittle: json['news_tittle'],
-      news_author: json['news_author'],
-      news_link: json['news_link'],
+  factory ServerAPI.fromJson(Map<String, dynamic> json) {
+    return ServerAPI(
+      abi: json['abi'],
+      contractAddress: json['contractAddress'],
+      keyObject: json['keyObject'],
     );
   }
 }

@@ -131,7 +131,7 @@ class _LightDetailPageState extends State<LightDetailPage> {
               currentColor = Color(devcolor);
             });
           }
-          // Event.eventBus.fire(new DeviceAdd(curdevices.name));
+          Event.eventBus.fire(new DeviceAdd(curdevices.name));
         }
       });
       await subscription.asFuture();

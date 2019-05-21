@@ -15,10 +15,10 @@ const web3js = new Web3(Web3.givenProvider || new Web3.providers.WebsocketProvid
 // create new Redis client
 const client = redis.createClient(); // using default connection (127.0.0.1 : 6379)
 client.on('connect', function() {
-  console.log('Redis client connected');
+    console.log('Redis client connected');
 });
 client.on('error', function(err) {
-  console.log(`Something went wrong ${err}`);
+    console.log(`Something went wrong ${err}`);
 });
 
 // ElectricPlugs contract
@@ -29,10 +29,10 @@ client.on('error', function(err) {
 // };
 
 // LightBulbs contract
-const parsedJson = JSON.parse(fs.readFileSync('./.deployed_contracts/LightBulbs.json'));
+const parsedJson = JSON.parse(fs.readFileSync('./public/LightBulbs.json'));
 const contractLB = {
-  abi: parsedJson.abi,
-  contractAddress: parsedJson.contractAddress
+    abi: parsedJson.abi,
+    contractAddress: parsedJson.contractAddress
 };
 
 let LightBulbs;
@@ -87,82 +87,83 @@ let LightBulbs;
 
 // // This function listenning to all LightBulbs events
 function LightBulbsEvents() {
-  // Assign contract for event listenning of LightBulbs
-  LightBulbs = new web3js.eth.Contract(contractLB.abi, contractLB.contractAddress);
+    // Assign contract for event listenning of LightBulbs
+    LightBulbs = new web3js.eth.Contract(contractLB.abi, contractLB.contractAddress);
 
-  // Listenning to all events of LightBulbs
-  LightBulbs.events
-    .NewLightBulb()
-    .on('data', function(event) {
-      const data = event.returnValues;
-      client.hmset(
-        data.hash_id, {
-          'id': data.hash_id,
-          'name': data.name,
-          'description': data.description,
-          'status': data.status,
-          'red': data.red,
-          'green': data.green,
-          'blue': data.blue,
-          'intensity': data.intensity
-        }
-        
-      );
-      // call sadd(KEY_NAME VALUE1..VALUEN) to store the set of hash_id
-      client.sadd('LightBulbs', data.hash_id);
-    })
-    .on('error', console.error);
+    // Listenning to all events of LightBulbs
+    LightBulbs.events
+        .NewLightBulb()
+        .on('data', function(event) {
+            const data = event.returnValues;
+            client.hmset(
+                data.hash_id, {
+                    'id': data.hash_id,
+                    'name': data.name,
+                    'description': data.description,
+                    'status': data.status,
+                    'red': data.red,
+                    'green': data.green,
+                    'blue': data.blue,
+                    'intensity': data.intensity
+                }
 
-  LightBulbs.events
-    .NameChange()
-    .on('data', function(event) {
-      const data = event.returnValues;
-      client.hmset(data.hash_id, {'name': data.name});
-    })
-    .on('error', console.error);
+            );
+            // call sadd(KEY_NAME VALUE1..VALUEN) to store the set of hash_id
+            client.sadd('LightBulbs', data.hash_id);
+        })
+        .on('error', console.error);
 
-  LightBulbs.events
-    .DescriptionChange()
-    .on('data', function(event) {
-      const data = event.returnValues;
-      client.hmset(data.hash_id, {'description': data.description});
-    })
-    .on('error', console.error);
+    LightBulbs.events
+        .NameChange()
+        .on('data', function(event) {
+            const data = event.returnValues;
+            client.hmset(data.hash_id, { 'name': data.name });
+        })
+        .on('error', console.error);
 
-  LightBulbs.events
-    .StatusChange()
-    .on('data', function(event) {
-      const data = event.returnValues;
-      client.hmset(data.hash_id, {'status': data.status});
-      console.log(data);
-    })
-    .on('error', console.error);
+    LightBulbs.events
+        .DescriptionChange()
+        .on('data', function(event) {
+            const data = event.returnValues;
+            client.hmset(data.hash_id, { 'description': data.description });
+        })
+        .on('error', console.error);
 
-  LightBulbs.events
-    .ColorChange()
-    .on('data', function(event) {
-      const data = event.returnValues;
-      client.hmset(
-        data.hash_id,
-        {'red': data.red,
-        'green': data.green,
-        'blue': data.blue}
-      );
-      console.log(data);
-    })
-    .on('error', console.error);
-  LightBulbs.events
-    .IntensityChange()
-    .on('data', function(event) {
-      const data = event.returnValues;
-      client.hmset(data.hash_id, {'intensity': data.intensity});
-    })
-    .on('error', console.error);
+    LightBulbs.events
+        .StatusChange()
+        .on('data', function(event) {
+            const data = event.returnValues;
+            client.hmset(data.hash_id, { 'status': data.status });
+            console.log(data);
+        })
+        .on('error', console.error);
+
+    LightBulbs.events
+        .ColorChange()
+        .on('data', function(event) {
+            const data = event.returnValues;
+            client.hmset(
+                data.hash_id, {
+                    'red': data.red,
+                    'green': data.green,
+                    'blue': data.blue
+                }
+            );
+            console.log(data);
+        })
+        .on('error', console.error);
+    LightBulbs.events
+        .IntensityChange()
+        .on('data', function(event) {
+            const data = event.returnValues;
+            client.hmset(data.hash_id, { 'intensity': data.intensity });
+        })
+        .on('error', console.error);
 }
 
 /*
  * ----- Start of the main server code -----
-*/
+ */
 
 // ElectricPlugsEvents();
 LightBulbsEvents();

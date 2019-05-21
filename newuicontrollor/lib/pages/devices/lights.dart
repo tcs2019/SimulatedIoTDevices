@@ -116,10 +116,10 @@ class _LightsHomePageState extends State<LightsHomePage> {
 
   _eventHandler() async {
     Event.eventBus.on<DeviceAdd>().listen((event) {
-      // Future.delayed(new Duration(seconds: 3), () {
+      Future.delayed(new Duration(seconds: 3), () {
       print("fired");
       _getDevicelist();
-      // });
+      });
     });
     Event.eventBus.on<ServerChanged>().listen((event) {
       Future.delayed(new Duration(seconds: 5), () {

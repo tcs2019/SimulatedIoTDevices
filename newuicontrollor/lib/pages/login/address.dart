@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:newuicontrollor/class/serverapi.dart';
 import 'package:newuicontrollor/class/shareddata.dart';
 import 'package:newuicontrollor/pages/login/password.dart';
 import 'package:http/http.dart' as http;
@@ -27,16 +29,27 @@ class _AddressPageState extends State<AddressPage> {
     int iplast = addresscontroller.text.lastIndexOf(":");
     String ip = addresscontroller.text.substring(ippos + 3, iplast);
     print(ip);
+    List<ServerAPI> list = List();
+    ServerAPI serverdata = new ServerAPI();
     try {
       final response = await http
-          .get("http://$ip:3000/getsubnames.php")
+          .get("http://$ip:3000/LightBulbs.json")
           .timeout(Duration(seconds: 5));
-      res = response.body;
+      res = response.body.toString();
+      print(res.length);
+      int firstk = res.indexOf("[");
+      int lastk = res.lastIndexOf("]");
+      print(lastk);
+      String abi = res.substring(firstk,lastk+1);
+      print(abi.length);
+      print(abi);
+
     } on SocketException {
       print("error");
     } on TimeoutException {
       print("timeout");
     }
+    // print(serverdata);
     success = true;
     if (res != null) {
       success = true;
