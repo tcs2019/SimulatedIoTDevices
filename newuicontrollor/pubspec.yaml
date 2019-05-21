@@ -19,7 +19,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  web3dart: ^1.0.0-rc.0
+  web3dart: ^1.0.0-rc.2
   http:
   shared_preferences: ^0.5.1+2
   event_bus: ^1.0.1
@@ -56,6 +56,9 @@ flutter:
    - assets/img/0.jpg
    - assets/abi/contracts_IoTdevices.abi
    - assets/abi/account.json
+   - assets/img/lamp.png
+   - assets/img/light.png
+   - assets/img/homelight.png
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

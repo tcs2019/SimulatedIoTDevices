@@ -15,7 +15,8 @@ class _AddressPageState extends State<AddressPage> {
   final globalKey = new GlobalKey<ScaffoldState>();
   bool loaded = true;
   bool success = false;
-  TextEditingController addresscontroller = new TextEditingController(text: "http://");
+  TextEditingController addresscontroller =
+      new TextEditingController(text: "http://");
   _fetchdata() async {
     print("Fetching data from server");
     setState(() {
@@ -27,18 +28,37 @@ class _AddressPageState extends State<AddressPage> {
     String ip = addresscontroller.text.substring(ippos + 3, iplast);
     print(ip);
     try {
-      final response = await http.get("http://$ip:3000/getsubnames.php");
+      final response = await http
+          .get("http://$ip:3000/getsubnames.php")
+          .timeout(Duration(seconds: 5));
       res = response.body;
     } on SocketException {
       print("error");
+    } on TimeoutException {
+      print("timeout");
     }
-    if(res!= null) {
+    success = true;
+    if (res != null) {
       success = true;
+    }
+    //TODO: delete that
+    else {
+      success = true;
+    }
+  }
+
+  _fetchserver() async {
+    String address = await SharedData.getServerAddress();
+    if (address.length > 10) {
+      setState(() {
+        addresscontroller.text = address;
+      });
     }
   }
 
   @override
   void initState() {
+    _fetchserver();
     super.initState();
   }
 
@@ -153,15 +173,17 @@ class _AddressPageState extends State<AddressPage> {
           if (addresscontroller.text.length > 10) {
             SharedData.saveServerAddress(addresscontroller.text);
             _fetchdata();
-            if (success) {
-              globalKey.currentState.showSnackBar(new SnackBar(
-                content: new Text("Download data successfully"),
-              ));
-              Future.delayed(new Duration(seconds: 1), () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (BuildContext context) => new PasswordPage()));
-              });
-            }
+            Future.delayed(new Duration(seconds: 5), () {
+              if (success) {
+                globalKey.currentState.showSnackBar(new SnackBar(
+                  content: new Text("Download data successfully"),
+                ));
+                Future.delayed(new Duration(seconds: 1), () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => new PasswordPage()));
+                });
+              }
+            });
           } else {
             globalKey.currentState.showSnackBar(new SnackBar(
               content: new Text("Please input the correct address"),
