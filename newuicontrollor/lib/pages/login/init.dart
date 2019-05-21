@@ -43,7 +43,7 @@ class _InitPageState extends State<InitPage> {
 
   @override
   void initState() {
-    _autorun();
+    // _autorun();
     super.initState();
   }
 
