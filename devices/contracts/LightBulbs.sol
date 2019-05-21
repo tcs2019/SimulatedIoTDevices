@@ -123,10 +123,15 @@ contract LightBulbs {
       emit NameChange(lightBulbs[_lightBulbId].hash_id, _name);
   }
 
-  function _changeStatus(uint _lightBulbId, bool _status) public {
+  function _changeStatus(uint _lightBulbId) public {
       require(msg.sender == lightBulbToOwner[_lightBulbId], "Error: Incorrect LightBulb owner (_changeStatus)");
-      lightBulbs[_lightBulbId].status = _status;
-      emit StatusChange(lightBulbs[_lightBulbId].hash_id, _status);
+      if (lightBulbs[_lightBulbId].status == true) {
+        lightBulbs[_lightBulbId].status = false;
+        _changeColor(_lightBulbId, 0, 0, 0);
+      } else {
+        lightBulbs[_lightBulbId].status = true;
+      }
+      emit StatusChange(lightBulbs[_lightBulbId].hash_id, lightBulbs[_lightBulbId].status);
   }
 
   function _changeDescription(uint _lightBulbId, string memory _description) public {
