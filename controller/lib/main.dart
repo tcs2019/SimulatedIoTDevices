@@ -11,7 +11,7 @@ import 'package:iotdevices/pages/detail.dart';
 import 'package:iotdevices/web3/web3.dart';
 import 'package:iotdevices/web3/web3p.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:barcode_scan/barcode_scan.dart';
 
 void main() => runApp(MyApp());
 
@@ -41,8 +41,9 @@ class _MyHomePageState extends State<MyHomePage> {
   var account = './assets/abi/account.json';
   int devicenumber = 0;
   int number;
-  String _barcode = 'Unknown';
+  String barcodeScanRes = 'Unknown';
   String curnetwork = 'Getting';
+  final globalKey = new GlobalKey<ScaffoldState>();
   List<DeviceStatus> devicelist = new List();
 
   _getDevicelist() async {
@@ -145,17 +146,24 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _scanBarcode() async {
-    String barcodeScanRes;
+    String _barcode;
     try {
-      barcodeScanRes =
-          await FlutterBarcodeScanner.scanBarcode('#ff0000', 'CANCEL', false);
-    } on PlatformException {
-      barcodeScanRes = 'Failed to get platform version.';
+      _barcode = await BarcodeScanner.scan();
+    } on PlatformException catch (e) {
+      if (e.code == BarcodeScanner.CameraAccessDenied) {
+        _barcode = 'FThe user did not grant the camera permission!';
+      } else {
+        _barcode = 'Unknown error: $e';
+      }
+    } on FormatException {
+      _barcode =
+          'null (User returned using the "back"-button before scanning anything. Result)';
+    } catch (e) {
+      _barcode = 'Unknown error: $e';
     }
-    if (!mounted) return;
 
     setState(() {
-      _barcode = barcodeScanRes;
+      this.barcodeScanRes = _barcode;
     });
   }
 
@@ -170,6 +178,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        key: globalKey,
         appBar: AppBar(
           title: Text("Simulated Light Bulb Devices"),
           actions: <Widget>[
