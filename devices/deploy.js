@@ -40,7 +40,7 @@ const jsonOutputName = `${path.parse(contract).name}.json`;
 const jsonFile = `./.built_contracts/${jsonOutputName}`;
 
 // Check if .built_contracts exist, if not, make 1
-const webJsonDir = './public/CSS';
+const webJsonDir = './public/json';
 if (!fs.existsSync(webJsonDir)) {
   fs.mkdirSync(webJsonDir);
 }

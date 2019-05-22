@@ -61,7 +61,7 @@ class _AddressPageState extends State<AddressPage> {
     ServerAPI serverdata = new ServerAPI();
     try {
       final response = await http
-          .get("http://$ip:3000/CSS/Contract.json")
+          .get("http://$ip:3000/json/Contract.json")
           .timeout(Duration(seconds: 5));
       // print(response.body.toString());
       int po = response.body.toString().indexOf(":");
@@ -71,14 +71,14 @@ class _AddressPageState extends State<AddressPage> {
       SharedData.setContractAddress(contractaddress);
       print(contractaddress);
       final chainidres = await http
-          .get("http://$ip:3000/CSS/ChainID.json")
+          .get("http://$ip:3000/json/ChainID.json")
           .timeout(Duration(seconds: 5));
       int chainid = int.parse(chainidres.body.toString());
       print(chainid);
       SharedData.setChainID(chainid);
 
       final privatekeyres = await http
-          .get("http://$ip:3000/CSS/privatekey.json")
+          .get("http://$ip:3000/json/privatekey.json")
           .timeout(Duration(seconds: 5));
       String privatekey =
           privatekeyres.body.substring(1, privatekeyres.body.length - 1);
@@ -86,9 +86,9 @@ class _AddressPageState extends State<AddressPage> {
       SharedData.setPrivateKey(privatekey);
 
       File abifile = await WriteFlie.downloadABIFile(
-          "http://$ip:3000/CSS/abi.json", "abi.json");
+          "http://$ip:3000/json/abi.json", "abi.json");
       File keystorefile = await WriteFlie.downloadKeystoreFile(
-          "http://$ip:3000/CSS/keystore.json", "keystore.json");
+          "http://$ip:3000/json/keystore.json", "keystore.json");
       success = true;
 
       // res = response.body.toString();
