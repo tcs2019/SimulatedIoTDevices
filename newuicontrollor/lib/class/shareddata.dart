@@ -1,6 +1,60 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedData {
+
+  static Future setPrivateKey(String privatekey) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("PrivateKey", privatekey);
+  }
+
+  static Future<String> getPrivateKey() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    print("getting PrivateKey");
+    return prefs.getString("PrivateKey");
+  }
+    static Future setChainID(int path) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt("ChainID", path);
+  }
+
+  static Future<int> getChainID() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    print("getting ChainID");
+    return prefs.getInt("ChainID");
+  }
+  static Future setContractAddress(String path) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("ContractAddress", path);
+  }
+
+  static Future<String> getContractAddress() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    print("getting ContractAddress");
+    return prefs.getString("ContractAddress");
+  }
+
+  static Future setKeystoreFilePath(String path) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("KeystoreFilePath", path);
+  }
+
+  static Future<String> getKeystoreFilePath() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    print("getting KeystoreFilePath");
+    return prefs.getString("KeystoreFilePath");
+  }
+
+  static Future setABIFilePath(String path) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("ABIFilePath", path);
+  }
+
+  static Future<String> getABIFilePath() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    print("getting ABIFilePath");
+    return prefs.getString("ABIFilePath");
+  }
+
   static Future<String> saveServerAddress(String address) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("ServerAddress", address);
@@ -47,16 +101,15 @@ class SharedData {
     return prefs.getString("AccountJson");
   }
 
-    static Future saveAccountPassword(String password) async {
+  static Future saveAccountPassword(String password) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     print("setting password");
     return prefs.setString("AccountPassword", password);
   }
 
-    static Future<String> getAccountPassword() async {
+  static Future<String> getAccountPassword() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     print("getting AccountPassword");
     return prefs.getString("AccountPassword");
   }
-
 }

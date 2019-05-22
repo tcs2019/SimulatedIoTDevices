@@ -106,9 +106,9 @@ class _PasswordPageState extends State<PasswordPage> {
                                 decoration: InputDecoration(
                                   labelText: "Blockchain Account Password",
                                   labelStyle: TextStyle(
-                                      fontSize: 18.0,
+                                      fontSize: 14.0,
                                       letterSpacing: 0.3,
-                                      color: Colors.black,
+                                      color: Colors.white,
                                       fontWeight: FontWeight.w600),
                                 ),
                                 keyboardType: TextInputType.text,

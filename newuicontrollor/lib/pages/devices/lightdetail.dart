@@ -144,7 +144,7 @@ class _LightDetailPageState extends State<LightDetailPage> {
     if (network == "Private") {
       res = await Web3P.web3changedevicecolor(curdevices.bid, color);
     } else {
-      res = await Web3.web3changedevicecolor(curdevices.bid, color);
+      // res = await Web3.web3changedevicecolor(curdevices.bid, color);
     }
 
     if (res == "success") {

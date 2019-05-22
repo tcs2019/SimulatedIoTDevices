@@ -40,7 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
     isfirsttime = await SharedData.isFirstTimeUse();
     print('$isfirsttime in main.dart');
-    return new Timer(Duration(milliseconds: 5000), _navigatorPage);
+    return new Timer(Duration(milliseconds: 2000), _navigatorPage);
   }
 
   void _navigatorPage() {

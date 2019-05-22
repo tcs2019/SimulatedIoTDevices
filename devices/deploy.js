@@ -14,17 +14,19 @@ const compileContract = require('./compile');
 // let argv = require('minimist')(process.argv.slice(2));
 
 // TODO: change to structure where gateway.js is inside ethdata
-const ethKeystore = '/Users/mac/ChainSkills/private';
-const ethAccount = '8acd17e6f4fef86fdf75078d179ec2612fb354ae';
-const ethPassword = 'aa';
+// const ethKeystore = '/Users/mac/ChainSkills/private';
+// const ethAccount = '8acd17e6f4fef86fdf75078d179ec2612fb354ae'; //private
+// const ethPassword = 'aa';
 
-const ethObject = keythereum.importFromFile(ethAccount, ethKeystore);
-const ethKey = keythereum.recover(ethPassword, ethObject);
-// const ethKey = '91fd0bb9c0735d750279cfc92728e53fcd70116e6e69f8299c3e33c6d6cb5bb5'; // TODO: hardcode for testing purpose
+const ethAccount = 'bD54Aa1B52e2d550E8caA789eeaABF144d2Af02F'; //ganache
+
+// const ethObject = keythereum.importFromFile(ethAccount, ethKeystore);
+// const ethKey = keythereum.recover(ethPassword, ethObject);
+const ethKey = '91fd0bb9c0735d750279cfc92728e53fcd70116e6e69f8299c3e33c6d6cb5bb5'; // TODO: hardcode for testing purpose
 
 // Ganache or Private Ethereum Blockchain
-const selectedHost = 'http://127.0.0.1:8545';
-
+const selectedHost = 'http://10.201.20.51:7545';
+const htmlcode = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Scan it</title></head><body><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + selectedHost + '" /></body></html>';
 const web3 = new Web3(new Web3.providers.HttpProvider(selectedHost));
 
 const contract = 'LightBulbs.sol';
@@ -37,12 +39,18 @@ const jsonOutputName = `${path.parse(contract).name}.json`;
 const jsonFile = `./.built_contracts/${jsonOutputName}`;
 
 // Check if .built_contracts exist, if not, make 1
-const webJsonDir = './public';
+const webJsonDir = './public/CSS';
 if (!fs.existsSync(webJsonDir)) {
     fs.mkdirSync(webJsonDir);
 }
 // After the smart deployment, it will generate another simple json file for web frontend.
 const webJsonFile = `${webJsonDir}/${jsonOutputName}`;
+const abiFileName = `${webJsonDir}/abi.json`;
+const keystoreFileName = `${webJsonDir}/keystore.json`;
+const privateFileName = `${webJsonDir}/privatekey.json`;
+const contractAddressFileName = `${webJsonDir}/Contract.json`;
+const chainIDFileName = `${webJsonDir}/ChainID.json`;
+const htmlFileName = `${webJsonDir}/qrcode.html`;
 
 // Read the JSON file contents
 const contractJsonContent = fs.readFileSync(jsonFile, 'utf8');
@@ -57,6 +65,10 @@ const bytecode =
 
 // let tokenContract = new web3.eth.Contract(abi);
 let contractData = null;
+var chainid;
+web3.eth.net.getId().then(id => {
+    chainid = id;
+});
 
 // Prepare the smart contract deployment payload
 // If the smart contract constructor has mandatory parameters, you supply the input parameters like below
@@ -109,16 +121,30 @@ web3.eth.getTransactionCount(ethAccount, 'pending').then(nonce => {
                     const webJsonOutput = {
                         abi,
                         contractAddress: receipt.contractAddress,
-                        keyObject: ethObject,
+                        // keyObject: ethObject,
+                    };
+                    const ContractOutput = {
+                        contractAddress: receipt.contractAddress,
+                        // keyObject: ethObject,
                     };
                     const formattedJson = JSON.stringify(jsonOutput, null, 4);
                     const formattedWebJson = JSON.stringify(webJsonOutput);
+                    const formattedABIJson = JSON.stringify(abi);
+                    const formattedContractAddress = JSON.stringify(ContractOutput);
+                    // const formattedKeystoreJson = JSON.stringify();
+                    const formattedPrivatekeyJson = JSON.stringify(ethKey);
+                    const formattedChainIDJson = JSON.stringify(chainid);
                     fs.writeFileSync(jsonFile, formattedJson);
                     fs.writeFileSync(webJsonFile, formattedWebJson);
+                    fs.writeFileSync(abiFileName, formattedABIJson);
+                    fs.writeFileSync(privateFileName, formattedPrivatekeyJson);
+                    fs.writeFileSync(contractAddressFileName, formattedContractAddress);
+                    fs.writeFileSync(chainIDFileName, formattedChainIDJson);
+                    fs.writeFileSync(htmlFileName, htmlcode);
                 })
                 .catch(error => {
                     console.log(error);
                 });
-        }, 30000);
+        }, 3000);
     });
 });
