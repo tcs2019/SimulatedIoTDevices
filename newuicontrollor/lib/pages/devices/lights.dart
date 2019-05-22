@@ -63,13 +63,13 @@ class _LightsHomePageState extends State<LightsHomePage> {
         loaded = true;
       });
     }
-    if (readaccountjson != null) {
-      if (mounted) {
-        setState(() {
-          accountjson = "http://qr.topscan.com/api.php?text=" + readaccountjson;
-        });
-      }
-    }
+    // if (readaccountjson != null) {
+    //   if (mounted) {
+    //     setState(() {
+    //       accountjson = "http://qr.topscan.com/api.php?text=" + readaccountjson;
+    //     });
+    //   }
+    // }
   }
 
   _getNetwork() async {
@@ -89,7 +89,7 @@ class _LightsHomePageState extends State<LightsHomePage> {
     }
 
     print("......$number");
-    if (number == null) {
+    if (number == null || number == 10000) {
       setState(() {
         private = false;
       });
@@ -172,7 +172,7 @@ class _LightsHomePageState extends State<LightsHomePage> {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (BuildContext context) =>
                                   new ChangeServerPage(
-                                    img: accountjson,
+                                    // img: accountjson,
                                   )));
                         },
                       )

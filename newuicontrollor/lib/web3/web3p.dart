@@ -214,7 +214,7 @@ class Web3P {
     final contract = DeployedContract(
         ContractAbi.fromJson(abiCode, 'LightBulbs'), contractAddress);
     final getNumberOfdevices = contract.function('getNumberOfdevices');
-    int number;
+    int number=10000;
 
     try {
       final response = await client.call(

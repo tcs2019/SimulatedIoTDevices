@@ -120,8 +120,12 @@ class _AddressPageState extends State<AddressPage> {
       });
     } else {
       globalKey.currentState.showSnackBar(new SnackBar(
-        content: new Text("Please input the correct address"),
+        content: new Text("Private Contract can not be connected"),
       ));
+      Future.delayed(new Duration(seconds: 1), () {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (BuildContext context) => new LightsHomePage()));
+      });
     }
   }
 
