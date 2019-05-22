@@ -1,6 +1,27 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedData {
+
+  static Future setPrivateKey(String privatekey) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("PrivateKey", privatekey);
+  }
+
+  static Future<String> getPrivateKey() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    print("getting PrivateKey");
+    return prefs.getString("PrivateKey");
+  }
+    static Future setChainID(int path) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt("ChainID", path);
+  }
+
+  static Future<int> getChainID() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    print("getting ChainID");
+    return prefs.getInt("ChainID");
+  }
   static Future setContractAddress(String path) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("ContractAddress", path);

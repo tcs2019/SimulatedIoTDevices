@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:newuicontrollor/pages/login/address.dart';
-import 'package:newuicontrollor/pages/login/password.dart';
-import 'package:newuicontrollor/pages/login/qrcode.dart';
 
 class InitPage extends StatefulWidget {
   @override
@@ -29,7 +27,7 @@ class _InitPageState extends State<InitPage> {
   }
 
   _nextstep() {
-    Future.delayed(new Duration(seconds: 1), () {
+    Future.delayed(new Duration(milliseconds: 30), () {
       Navigator.of(context).push(MaterialPageRoute(
           builder: (BuildContext context) => new AddressPage()));
     });
@@ -44,6 +42,7 @@ class _InitPageState extends State<InitPage> {
     String _barcode;
     try {
       _barcode = await BarcodeScanner.scan();
+      print(_barcode);
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         _barcode = 'FThe user did not grant the camera permission!';
@@ -56,6 +55,7 @@ class _InitPageState extends State<InitPage> {
     } catch (e) {
       _barcode = 'Unknown error: $e';
     }
+    print(_barcode);
   }
 
   void _navigatorPage() {
@@ -64,7 +64,7 @@ class _InitPageState extends State<InitPage> {
 
   @override
   void initState() {
-    _autorun();
+    // _autorun();
     super.initState();
   }
 
@@ -176,7 +176,7 @@ class _InitPageState extends State<InitPage> {
                                         _check();
                                       },
                                       child: Text(
-                                        "Click to Authenticate again",
+                                        "Click here to Authenticate",
                                         style: TextStyle(
                                           color: Colors.white,
                                           fontWeight: FontWeight.w600,
