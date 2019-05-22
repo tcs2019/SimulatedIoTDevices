@@ -7,8 +7,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 
 class ChangeServerPage extends StatefulWidget {
-  String img;
-  ChangeServerPage({Key key, @required this.img}) : super(key: key);
+  // String img;
+  // ChangeServerPage({Key key, @required this.img}) : super(key: key);
 
   @override
   _ChangeServerPageState createState() => _ChangeServerPageState();
@@ -125,12 +125,12 @@ class _ChangeServerPageState extends State<ChangeServerPage> {
                     padding: EdgeInsets.only(top: 20.0),
                   ),
                   Text("Please scan the QR code when control this device"),
-                  CachedNetworkImage(
-                    imageUrl: widget.img,
-                    height: 200.0,
-                    width: 200.0,
-                    fit: BoxFit.cover,
-                  )
+                  // CachedNetworkImage(
+                  //   imageUrl: widget.img,
+                  //   height: 200.0,
+                  //   width: 200.0,
+                  //   fit: BoxFit.cover,
+                  // )
                 ],
               ),
             ),
