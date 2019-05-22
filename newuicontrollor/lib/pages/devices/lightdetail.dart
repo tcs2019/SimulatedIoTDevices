@@ -140,14 +140,14 @@ class _LightDetailPageState extends State<LightDetailPage> {
 
   _webchangecolor() async {
     RGB color = TransColor.trancolortorgb(currentColor.toString());
-    String res;
+    bool res;
     if (network == "Private") {
       res = await Web3P.web3changedevicecolor(curdevices.bid, color);
     } else {
       // res = await Web3.web3changedevicecolor(curdevices.bid, color);
     }
 
-    if (res == "success") {
+    if (res == true) {
       globalKey.currentState.showSnackBar(new SnackBar(
         content: new Text("Change the color successfully!"),
       ));

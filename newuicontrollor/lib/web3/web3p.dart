@@ -116,7 +116,7 @@ class Web3P {
     return curdevice;
   }
 
-  static Future<String> web3changedevicecolor(BigInt bid, RGB color) async {
+  static Future<bool> web3changedevicecolor(BigInt bid, RGB color) async {
     String privatekey = await SharedData.getPrivateKey();
     var credentials = EthPrivateKey.fromHex(privatekey);
     int chainid = await SharedData.getChainID();
@@ -153,9 +153,45 @@ class Web3P {
     print(res);
 
     if (res.toString().contains("0x")) {
-      return "success";
+      return true;
     } else {
-      return "fail";
+      return false;
+    }
+  }
+
+  static Future<bool> web3changedevicestatus(BigInt bid) async {
+    String privatekey = await SharedData.getPrivateKey();
+    var credentials = EthPrivateKey.fromHex(privatekey);
+    int chainid = await SharedData.getChainID();
+    String contractaddress = await SharedData.getContractAddress();
+    print(contractaddress);
+    EthereumAddress contractAddress = EthereumAddress.fromHex(contractaddress);
+    String serveraddress = await SharedData.getServerAddress();
+    if (serveraddress.length > 5) {
+      apiUrl = serveraddress;
+    }
+    final client = Web3Client(apiUrl, Client());
+    String jsonContent = await rootBundle.loadString(abi);
+    final ownAddress = await credentials.extractAddress();
+    // final abiCode = await abiFile.readAsString();
+    final contract = DeployedContract(
+        ContractAbi.fromJson(jsonContent, 'LightBulbs'), contractAddr);
+    final changeStatus = contract.function('_changeStatus');
+
+    var res = await client.sendTransaction(
+        credentials,
+        Transaction.callContract(
+            contract: contract,
+            function: changeStatus,
+            maxGas: 6521975,
+            parameters: [bid]),
+        chainId: chainid);
+    print(res);
+
+    if (res.toString().contains("0x")) {
+      return true;
+    } else {
+      return false;
     }
   }
 

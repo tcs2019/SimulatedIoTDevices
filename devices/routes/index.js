@@ -63,12 +63,12 @@ router.get('/', function(req, res, next) {
 
 router.get('/lightbulbs', function(req, res, next) {
   getAllLightbulbs();
-  res.render('lightbulbs', {lightbulbs: AllLightbulbs});
+  res.render('lightbulbs', { lightbulbs: AllLightbulbs });
 });
 
 router.get('/electricplugs', function(req, res, next) {
   getAllPlugs();
-  res.render('plugs', {plugs: AllPlugs});
+  res.render('plugs', { plugs: AllPlugs });
 });
 
 // Renders individual lightbulb page

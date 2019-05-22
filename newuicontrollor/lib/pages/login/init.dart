@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:newuicontrollor/pages/login/address.dart';
+import 'package:newuicontrollor/class/shareddata.dart';
+import 'package:newuicontrollor/class/orchestration.dart';
 
 class InitPage extends StatefulWidget {
   @override
@@ -42,11 +44,10 @@ class _InitPageState extends State<InitPage> {
     String _barcode;
     try {
       _barcode = await BarcodeScanner.scan();
-      // TODO: check shared pref if the person back home or leave
+      // TODO: call orchestration, return true or false (back home/leave)
       globalKey.currentState.showSnackBar(new SnackBar(
         content: new Text('Welcome home, ' + _barcode),
       ));
-      print(_barcode);
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
         _barcode = 'The user did not grant the camera permission!';

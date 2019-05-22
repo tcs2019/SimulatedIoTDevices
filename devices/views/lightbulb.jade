@@ -13,24 +13,24 @@ html(lang='en')
         img#lightbulb(src='../Images/lightbulb.png')
         img#overlay(style='background-color: rgba(#{RValue},#{GValue},#{BValue},#{IValueCSS})', src='../Images/overlay.png')
       p.E Description: #{Description}
-      p.deviceStatusText#deviceStatus(style='color: #{statusColour}', onclick='changeStatus()') #{status}
-      .slidecontainer
-        p
-          input#RValue.slider(type='range', min='0', max='255', value='#{RValue}', oninput='changeBulb()')
-          |                 R: 
-          stan#RNumber #{RValue}
-      .slidecontainer
-        p
-          input#GValue.slider(type='range', min='0', max='255', value='#{GValue}', oninput='changeBulb()')
-          |                 G: 
-          stan#GNumber #{GValue}
-      .slidecontainer
-        p
-          input#BValue.slider(type='range', min='0', max='255', value='#{BValue}', oninput='changeBulb()')
-          |                 B: 
-          stan#BNumber #{BValue}
-      .slidecontainer
-        p
-          input#IValue.slider(type='range', min='0', max='100', value='#{IValue}', oninput='changeBulb()')
-          |                 Intensity: 
-          stan#INumber #{IValue}
+      //- p.deviceStatusText#deviceStatus(style='color: #{statusColour}', onclick='changeStatus()') #{status}
+      //- .slidecontainer
+      //-   p
+      //-     input#RValue.slider(type='range', min='0', max='255', value='#{RValue}', oninput='changeBulb()')
+      //-     |                 R: 
+      //-     stan#RNumber #{RValue}
+      //- .slidecontainer
+      //-   p
+      //-     input#GValue.slider(type='range', min='0', max='255', value='#{GValue}', oninput='changeBulb()')
+      //-     |                 G: 
+      //-     stan#GNumber #{GValue}
+      //- .slidecontainer
+      //-   p
+      //-     input#BValue.slider(type='range', min='0', max='255', value='#{BValue}', oninput='changeBulb()')
+      //-     |                 B: 
+      //-     stan#BNumber #{BValue}
+      //- .slidecontainer
+      //-   p
+      //-     input#IValue.slider(type='range', min='0', max='100', value='#{IValue}', oninput='changeBulb()')
+      //-     |                 Intensity: 
+      //-     stan#INumber #{IValue}

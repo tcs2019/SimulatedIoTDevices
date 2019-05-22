@@ -1,7 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedData {
-
   static Future setPrivateKey(String privatekey) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("PrivateKey", privatekey);
@@ -12,7 +11,8 @@ class SharedData {
     print("getting PrivateKey");
     return prefs.getString("PrivateKey");
   }
-    static Future setChainID(int path) async {
+
+  static Future setChainID(int path) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setInt("ChainID", path);
   }
@@ -22,6 +22,7 @@ class SharedData {
     print("getting ChainID");
     return prefs.getInt("ChainID");
   }
+
   static Future setContractAddress(String path) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("ContractAddress", path);
@@ -111,5 +112,23 @@ class SharedData {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     print("getting AccountPassword");
     return prefs.getString("AccountPassword");
+  }
+
+  static Future updatePeople(String _name) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> _currentPeople = prefs.getStringList("People");
+    for (var i = 0; i < _currentPeople.length; i++) {
+      if (_currentPeople[i] == _name) {
+        _currentPeople.remove(_name);
+        return prefs.setStringList('People', _currentPeople);
+      }
+    }
+    _currentPeople.add(_name);
+    return prefs.setStringList("People", _currentPeople);
+  }
+
+  static Future<List<String>> getPeople() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList('People');
   }
 }

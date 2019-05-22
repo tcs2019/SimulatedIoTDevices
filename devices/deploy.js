@@ -14,19 +14,20 @@ const compileContract = require('./compile');
 // let argv = require('minimist')(process.argv.slice(2));
 
 // TODO: change to structure where gateway.js is inside ethdata
-// const ethKeystore = '/Users/mac/ChainSkills/private';
-// const ethAccount = '8acd17e6f4fef86fdf75078d179ec2612fb354ae'; //private
-// const ethPassword = 'aa';
+const ethKeystore = '/Users/kainguyen/EthPoA/node1';
+const ethAccount = 'b222636f4b0db0b493d465ef4e8fb98f01be72ff'; // private
+const ethPassword = '123';
 
-const ethAccount = 'bD54Aa1B52e2d550E8caA789eeaABF144d2Af02F'; //ganache
+// const ethAccount = 'bD54Aa1B52e2d550E8caA789eeaABF144d2Af02F'; // ganache
 
-// const ethObject = keythereum.importFromFile(ethAccount, ethKeystore);
-// const ethKey = keythereum.recover(ethPassword, ethObject);
-const ethKey = '91fd0bb9c0735d750279cfc92728e53fcd70116e6e69f8299c3e33c6d6cb5bb5'; // TODO: hardcode for testing purpose
+const ethObject = keythereum.importFromFile(ethAccount, ethKeystore);
+const ethKey = keythereum.recover(ethPassword, ethObject);
+// const ethKey =
+//   '91fd0bb9c0735d750279cfc92728e53fcd70116e6e69f8299c3e33c6d6cb5bb5'; // TODO: hardcode for testing purpose
 
 // Ganache or Private Ethereum Blockchain
-const selectedHost = 'http://10.201.20.51:7545';
-const htmlcode = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Scan it</title></head><body><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' + selectedHost + '" /></body></html>';
+const selectedHost = 'http://127.0.0.1:8545';
+const htmlcode = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Scan it</title></head><body><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${selectedHost}" /></body></html>`;
 const web3 = new Web3(new Web3.providers.HttpProvider(selectedHost));
 
 const contract = 'LightBulbs.sol';
@@ -41,7 +42,7 @@ const jsonFile = `./.built_contracts/${jsonOutputName}`;
 // Check if .built_contracts exist, if not, make 1
 const webJsonDir = './public/CSS';
 if (!fs.existsSync(webJsonDir)) {
-    fs.mkdirSync(webJsonDir);
+  fs.mkdirSync(webJsonDir);
 }
 // After the smart deployment, it will generate another simple json file for web frontend.
 const webJsonFile = `${webJsonDir}/${jsonOutputName}`;
@@ -61,13 +62,13 @@ const { abi } = jsonOutput.contracts[contract][path.parse(contract).name];
 
 // Retrieve the byte code
 const bytecode =
-    jsonOutput.contracts[contract][path.parse(contract).name].evm.bytecode.object;
+  jsonOutput.contracts[contract][path.parse(contract).name].evm.bytecode.object;
 
 // let tokenContract = new web3.eth.Contract(abi);
 let contractData = null;
-var chainid;
+let chainid;
 web3.eth.net.getId().then(id => {
-    chainid = id;
+  chainid = id;
 });
 
 // Prepare the smart contract deployment payload
@@ -81,70 +82,71 @@ contractData = `0x${bytecode}`;
 
 // Prepare the raw transaction information
 const objTx = {
-    gasPrice: web3.utils.toHex(web3.eth.gasPrice),
-    gasLimit: web3.utils.toHex(6000000),
-    data: contractData,
-    from: ethAccount,
+  // gasPrice: web3.utils.toHex(web3.eth.gasPrice),
+  gasPrice: 0,
+  gasLimit: web3.utils.toHex(6000000),
+  data: contractData,
+  from: ethAccount,
 };
 
 web3.eth.getTransactionCount(ethAccount, 'pending').then(nonce => {
-    objTx.nonce = nonce;
+  objTx.nonce = nonce;
 
-    const rawTx = new Tx(objTx);
-    // Get the account private key, need to use it to sign the transaction later.
-    const privateKey = Buffer.from(ethKey, 'hex');
-    // Sign the transaction
-    rawTx.sign(privateKey);
-    const serializedTx = rawTx.serialize();
-    const signedTx = `0x${serializedTx.toString('hex')}`;
+  const rawTx = new Tx(objTx);
+  // Get the account private key, need to use it to sign the transaction later.
+  const privateKey = Buffer.from(ethKey, 'hex');
+  // Sign the transaction
+  rawTx.sign(privateKey);
+  const serializedTx = rawTx.serialize();
+  const signedTx = `0x${serializedTx.toString('hex')}`;
 
-    // Submit the smart contract deployment transaction
-    web3.eth.sendSignedTransaction(signedTx, (error, txHash) => {
-        // console.log(chalk.green("sendSignedTransaction error, txHash"), error, txHash);
-        if (error) {
-            console.log(error);
-        }
-        // else
-        console.log(`Successful: ${txHash}`);
-        console.log('waiting for Transaction Receipt');
+  // Submit the smart contract deployment transaction
+  web3.eth.sendSignedTransaction(signedTx, (error, txHash) => {
+    // console.log(chalk.green("sendSignedTransaction error, txHash"), error, txHash);
+    if (error) {
+      console.log(error);
+    }
+    // else
+    console.log(`Successful: ${txHash}`);
+    console.log('waiting for Transaction Receipt');
 
-        // wait 3s before moving foward
-        setTimeout(function() {
-            web3.eth
-                .getTransactionReceipt(txHash)
-                .then(receipt => {
-                    console.log(receipt.contractAddress);
-                    // Update JSON
-                    jsonOutput.contracts[contract].contractAddress =
-                        receipt.contractAddress;
-                    // Web frontend only need abi & contract address
-                    const webJsonOutput = {
-                        abi,
-                        contractAddress: receipt.contractAddress,
-                        // keyObject: ethObject,
-                    };
-                    const ContractOutput = {
-                        contractAddress: receipt.contractAddress,
-                        // keyObject: ethObject,
-                    };
-                    const formattedJson = JSON.stringify(jsonOutput, null, 4);
-                    const formattedWebJson = JSON.stringify(webJsonOutput);
-                    const formattedABIJson = JSON.stringify(abi);
-                    const formattedContractAddress = JSON.stringify(ContractOutput);
-                    // const formattedKeystoreJson = JSON.stringify();
-                    const formattedPrivatekeyJson = JSON.stringify(ethKey);
-                    const formattedChainIDJson = JSON.stringify(chainid);
-                    fs.writeFileSync(jsonFile, formattedJson);
-                    fs.writeFileSync(webJsonFile, formattedWebJson);
-                    fs.writeFileSync(abiFileName, formattedABIJson);
-                    fs.writeFileSync(privateFileName, formattedPrivatekeyJson);
-                    fs.writeFileSync(contractAddressFileName, formattedContractAddress);
-                    fs.writeFileSync(chainIDFileName, formattedChainIDJson);
-                    fs.writeFileSync(htmlFileName, htmlcode);
-                })
-                .catch(error => {
-                    console.log(error);
-                });
-        }, 3000);
-    });
+    // wait 3s before moving foward
+    setTimeout(function() {
+      web3.eth
+        .getTransactionReceipt(txHash)
+        .then(receipt => {
+          console.log(receipt.contractAddress);
+          // Update JSON
+          jsonOutput.contracts[contract].contractAddress =
+            receipt.contractAddress;
+          // Web frontend only need abi & contract address
+          const webJsonOutput = {
+            abi,
+            contractAddress: receipt.contractAddress,
+            // keyObject: ethObject,
+          };
+          const ContractOutput = {
+            contractAddress: receipt.contractAddress,
+            // keyObject: ethObject,
+          };
+          const formattedJson = JSON.stringify(jsonOutput, null, 4);
+          const formattedWebJson = JSON.stringify(webJsonOutput);
+          const formattedABIJson = JSON.stringify(abi);
+          const formattedContractAddress = JSON.stringify(ContractOutput);
+          // const formattedKeystoreJson = JSON.stringify();
+          const formattedPrivatekeyJson = JSON.stringify(ethKey);
+          const formattedChainIDJson = JSON.stringify(chainid);
+          fs.writeFileSync(jsonFile, formattedJson);
+          fs.writeFileSync(webJsonFile, formattedWebJson);
+          fs.writeFileSync(abiFileName, formattedABIJson);
+          fs.writeFileSync(privateFileName, formattedPrivatekeyJson);
+          fs.writeFileSync(contractAddressFileName, formattedContractAddress);
+          fs.writeFileSync(chainIDFileName, formattedChainIDJson);
+          fs.writeFileSync(htmlFileName, htmlcode);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }, 3000);
+  });
 });
