@@ -133,12 +133,15 @@ web3.eth.getTransactionCount(ethAccount, 'pending').then(nonce => {
           const formattedWebJson = JSON.stringify(webJsonOutput);
           const formattedABIJson = JSON.stringify(abi);
           const formattedContractAddress = JSON.stringify(ContractOutput);
-          // const formattedKeystoreJson = JSON.stringify();
-          const formattedPrivatekeyJson = JSON.stringify(ethKey);
+          const formattedKeystoreJson = JSON.stringify(ethObject);
+          const formattedPrivatekeyJson = JSON.stringify(
+            ethKey.toString('hex')
+          );
           const formattedChainIDJson = JSON.stringify(chainid);
           fs.writeFileSync(jsonFile, formattedJson);
           fs.writeFileSync(webJsonFile, formattedWebJson);
           fs.writeFileSync(abiFileName, formattedABIJson);
+          fs.writeFileSync(keystoreFileName, formattedKeystoreJson);
           fs.writeFileSync(privateFileName, formattedPrivatekeyJson);
           fs.writeFileSync(contractAddressFileName, formattedContractAddress);
           fs.writeFileSync(chainIDFileName, formattedChainIDJson);

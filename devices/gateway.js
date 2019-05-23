@@ -29,7 +29,7 @@ client.on('error', function(err) {
 // };
 
 // LightBulbs contract
-const parsedJson = JSON.parse(fs.readFileSync('./public/CSS/LightBulbs.json'));
+const parsedJson = JSON.parse(fs.readFileSync('./public/json/LightBulbs.json'));
 const contractLB = {
     abi: parsedJson.abi,
     contractAddress: parsedJson.contractAddress
