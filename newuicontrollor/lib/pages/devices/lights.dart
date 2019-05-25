@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:newuicontrollor/class/event.dart';
 import 'package:newuicontrollor/class/shareddata.dart';
+import 'package:newuicontrollor/class/orchestration.dart';
+import 'package:newuicontrollor/class/qrcode.dart';
 import 'package:newuicontrollor/pages/setting/changeserver.dart';
 import 'package:newuicontrollor/web3/web3.dart';
 import 'package:newuicontrollor/web3/web3p.dart';
@@ -15,6 +17,7 @@ class LightsHomePage extends StatefulWidget {
 }
 
 class _LightsHomePageState extends State<LightsHomePage> {
+  final globalKey = new GlobalKey<ScaffoldState>();
   bool loaded = false;
   bool private = true;
   String accountjson;
@@ -81,6 +84,7 @@ class _LightsHomePageState extends State<LightsHomePage> {
     if (address == null) {
       SharedData.saveServerAddress("");
     }
+    await Web3P.init();
     devicelist = new List();
     try {
       number = await Web3P.web3getnumberofdevice();
@@ -114,11 +118,24 @@ class _LightsHomePageState extends State<LightsHomePage> {
     _getNetwork();
   }
 
+  _scan() async {
+    var _barcode = await QRCode.scanBarcode();
+    var _message = 'Welcome home, ';
+    var _status = await Orchestration.updatePeopleStatus(_barcode);
+    if (!_status) {
+      _message = 'Goodbye, ';
+    }
+    globalKey.currentState.showSnackBar(new SnackBar(
+      content: new Text(_message + _barcode),
+    ));
+    Orchestration.homeOrchestrate(_barcode);
+  }
+
   _eventHandler() async {
     Event.eventBus.on<DeviceAdd>().listen((event) {
       Future.delayed(new Duration(seconds: 3), () {
-      print("fired");
-      _getDevicelist();
+        print("fired");
+        _getDevicelist();
       });
     });
     Event.eventBus.on<ServerChanged>().listen((event) {
@@ -142,6 +159,7 @@ class _LightsHomePageState extends State<LightsHomePage> {
     return new Container(
       color: Colors.lightGreen[200], //Color(0xFFA4B4A9)
       child: Scaffold(
+        key: globalKey,
         backgroundColor: Colors.transparent,
         body: Stack(
           fit: StackFit.expand,
@@ -172,8 +190,8 @@ class _LightsHomePageState extends State<LightsHomePage> {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (BuildContext context) =>
                                   new ChangeServerPage(
-                                    // img: accountjson,
-                                  )));
+                                      // img: accountjson,
+                                      )));
                         },
                       )
                     ],
@@ -410,6 +428,13 @@ class _LightsHomePageState extends State<LightsHomePage> {
             )
           ],
         ),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.camera_alt),
+          onPressed: () {
+            _scan();
+          },
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       ),
     );
   }

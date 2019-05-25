@@ -117,11 +117,15 @@ class SharedData {
   static Future updatePeople(String _name) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> _currentPeople = prefs.getStringList("People");
-    for (var i = 0; i < _currentPeople.length; i++) {
-      if (_currentPeople[i] == _name) {
-        _currentPeople.remove(_name);
-        return prefs.setStringList('People', _currentPeople);
+    if (_currentPeople != null) {
+      for (var i = 0; i < _currentPeople.length; i++) {
+        if (_currentPeople[i] == _name) {
+          _currentPeople.remove(_name);
+          return prefs.setStringList('People', _currentPeople);
+        }
       }
+    } else {
+      _currentPeople = new List();
     }
     _currentPeople.add(_name);
     return prefs.setStringList("People", _currentPeople);

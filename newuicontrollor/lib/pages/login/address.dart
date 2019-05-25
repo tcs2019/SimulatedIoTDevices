@@ -274,8 +274,8 @@ class _AddressPageState extends State<AddressPage> {
                   });
                 }
               },
-              tooltip: 'Scan Something',
-              child: Icon(Icons.camera_alt),
+              tooltip: 'Scan Address',
+              child: Icon(Icons.navigate_next),
             ),
             // FloatingActionButton(
             //   onPressed: () {

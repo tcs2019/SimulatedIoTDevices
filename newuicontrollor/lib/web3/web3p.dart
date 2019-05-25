@@ -25,55 +25,35 @@ import 'package:web3dart/web3dart.dart';
 // final File abiFile = File(abi);
 
 class Web3P {
-  static final EthereumAddress contractAddr =
-      EthereumAddress.fromHex('0x791a8291982DA8E3aac8618c76dd3Cb61d778227');
-  static var apiUrl = "http://10.0.0.50:7545"; //Ganache
-  // static var privatekey =
-  //     '91fd0bb9c0735d750279cfc92728e53fcd70116e6e69f8299c3e33c6d6cb5bb5';
-  // static var credentials = EthPrivateKey.fromHex(privatekey);
+  static EthereumAddress contractAddress;
+  static String serverAddress;
+  static Credentials credentials;
+  static int chainID;
+  static String jsonContent;
+
+  static Future<void> init() async {
+    serverAddress = await SharedData.getServerAddress();
+    contractAddress =
+        EthereumAddress.fromHex(await SharedData.getContractAddress());
+    chainID = await SharedData.getChainID();
+    jsonContent =
+        await rootBundle.loadString(await SharedData.getABIFilePath());
+    credentials = EthPrivateKey.fromHex(await SharedData.getPrivateKey());
+  }
 
   static Future<String> web3adddevice(String name, String description) async {
-    // String accountjson = await rootBundle.loadString(account);
-    // Wallet wallet = Wallet.fromJson(accountjson, "aa");
-    // credentials = wallet.privateKey;
-    String privatekey = await SharedData.getPrivateKey();
-    var credentials = EthPrivateKey.fromHex(privatekey);
-    int chainid = await SharedData.getChainID();
-    String contractaddress = await SharedData.getContractAddress();
-    print(contractaddress);
-    EthereumAddress contractAddress = EthereumAddress.fromHex(contractaddress);
-    String serveraddress = await SharedData.getServerAddress();
-    if (serveraddress.length > 5) {
-      apiUrl = serveraddress;
-    }
-    final client = Web3Client(apiUrl, Client());
-    String jsonContent = await rootBundle.loadString(abi);
-    // final ownAddress = await credentials.extractAddress();
-    // final abiCode = await abiFile.readAsString();
+    final client = Web3Client(serverAddress, Client());
     final contract = DeployedContract(
         ContractAbi.fromJson(jsonContent, 'LightBulbs'), contractAddress);
     final addnewlightbulb = contract.function('_addNewLightBulb');
-    String res;
-    try {
-      res = await client
-          .sendTransaction(
-              credentials,
-              Transaction.callContract(
-                  contract: contract,
-                  function: addnewlightbulb,
-                  maxGas: 6521975,
-                  parameters: [name, description]),
-              chainId: chainid)
-          .timeout(Duration(seconds: 4));
-      print(res);
-    } on SocketException {
-      print("Private is Wrong");
-      res = "wrong";
-    } on TimeoutException {
-      print("Timeout");
-      res = "wrong";
-    }
-
+    var res = await client.sendTransaction(
+        credentials,
+        Transaction.callContract(
+            contract: contract, function: addnewlightbulb, maxGas: 6521975,
+            // gasPrice: EtherAmount.inWei(BigInt.from(0)),
+            parameters: [name, description]),
+        chainId: chainID);
+    print(res);
     if (res.toString().contains("0x")) {
       return "success";
     } else {
@@ -82,26 +62,13 @@ class Web3P {
   }
 
   static Future<DeployedContract> deployedcontract() async {
-    String contractaddress = await SharedData.getContractAddress();
-    print(contractaddress);
-    EthereumAddress contractAddress = EthereumAddress.fromHex(contractaddress);
-    String jsonContent = await rootBundle.loadString(abi);
     final contract = DeployedContract(
         ContractAbi.fromJson(jsonContent, 'LightBulbs'), contractAddress);
     return contract;
   }
 
   static Future<DeviceStatus> web3fetchdevicestatus(String id) async {
-    String contractaddress = await SharedData.getContractAddress();
-    print(contractaddress);
-    EthereumAddress contractAddress = EthereumAddress.fromHex(contractaddress);
-    String serveraddress = await SharedData.getServerAddress();
-    if (serveraddress.length > 5) {
-      apiUrl = serveraddress;
-    }
-    final client = Web3Client(apiUrl, Client());
-    String jsonContent = await rootBundle.loadString(abi);
-    // final abiCode = await abiFile.readAsString();
+    final client = Web3Client(serverAddress, Client());
     int ininum = int.parse(id);
     BigInt bid = BigInt.from(ininum);
     final contract = DeployedContract(
@@ -117,20 +84,7 @@ class Web3P {
   }
 
   static Future<bool> web3changedevicecolor(BigInt bid, RGB color) async {
-    String privatekey = await SharedData.getPrivateKey();
-    var credentials = EthPrivateKey.fromHex(privatekey);
-    int chainid = await SharedData.getChainID();
-    String contractaddress = await SharedData.getContractAddress();
-    print(contractaddress);
-    EthereumAddress contractAddress = EthereumAddress.fromHex(contractaddress);
-    String serveraddress = await SharedData.getServerAddress();
-    if (serveraddress.length > 5) {
-      apiUrl = serveraddress;
-    }
-    final client = Web3Client(apiUrl, Client());
-    String jsonContent = await rootBundle.loadString(abi);
-    final ownAddress = await credentials.extractAddress();
-    // final abiCode = await abiFile.readAsString();
+    final client = Web3Client(serverAddress, Client());
     final contract = DeployedContract(
         ContractAbi.fromJson(jsonContent, 'LightBulbs'), contractAddress);
     final changeColor = contract.function('_changeColor');
@@ -143,13 +97,14 @@ class Web3P {
             contract: contract,
             function: changeColor,
             maxGas: 6521975,
+            // gasPrice: EtherAmount.inWei(BigInt.from(0)),
             parameters: [
               bid,
               BigInt.from(color.red),
               BigInt.from(color.green),
               BigInt.from(color.blue)
             ]),
-        chainId: chainid);
+        chainId: chainID);
     print(res);
 
     if (res.toString().contains("0x")) {
@@ -159,23 +114,10 @@ class Web3P {
     }
   }
 
-  static Future<bool> web3changedevicestatus(BigInt bid) async {
-    String privatekey = await SharedData.getPrivateKey();
-    var credentials = EthPrivateKey.fromHex(privatekey);
-    int chainid = await SharedData.getChainID();
-    String contractaddress = await SharedData.getContractAddress();
-    print(contractaddress);
-    EthereumAddress contractAddress = EthereumAddress.fromHex(contractaddress);
-    String serveraddress = await SharedData.getServerAddress();
-    if (serveraddress.length > 5) {
-      apiUrl = serveraddress;
-    }
-    final client = Web3Client(apiUrl, Client());
-    String jsonContent = await rootBundle.loadString(abi);
-    final ownAddress = await credentials.extractAddress();
-    // final abiCode = await abiFile.readAsString();
+  static Future<bool> web3changedevicestatus(BigInt bid, bool status) async {
+    final client = Web3Client(serverAddress, Client());
     final contract = DeployedContract(
-        ContractAbi.fromJson(jsonContent, 'LightBulbs'), contractAddr);
+        ContractAbi.fromJson(jsonContent, 'LightBulbs'), contractAddress);
     final changeStatus = contract.function('_changeStatus');
 
     var res = await client.sendTransaction(
@@ -184,8 +126,8 @@ class Web3P {
             contract: contract,
             function: changeStatus,
             maxGas: 6521975,
-            parameters: [bid]),
-        chainId: chainid);
+            parameters: [bid, status]),
+        chainId: chainID);
     print(res);
 
     if (res.toString().contains("0x")) {
@@ -196,40 +138,41 @@ class Web3P {
   }
 
   static Future<int> web3getnumberofdevice() async {
-    String contractaddress = await SharedData.getContractAddress();
-    print(contractaddress);
-    EthereumAddress contractAddress = EthereumAddress.fromHex(contractaddress);
-
-    String abifilepath = await SharedData.getABIFilePath();
-    File abiFile = new File(abifilepath);
-    final abiCode = await abiFile.readAsString();
-
-    String serveraddress = await SharedData.getServerAddress();
-    if (serveraddress.length > 5) {
-      apiUrl = serveraddress;
-    }
-    final client = Web3Client(apiUrl, Client());
-    // String jsonContent = await rootBundle.loadString(abi);
-
+    final client = Web3Client(serverAddress, Client());
     final contract = DeployedContract(
-        ContractAbi.fromJson(abiCode, 'LightBulbs'), contractAddress);
+        ContractAbi.fromJson(jsonContent, 'LightBulbs'), contractAddress);
     final getNumberOfdevices = contract.function('getNumberOfdevices');
-    int number=10000;
+    int number = 10000;
 
-    try {
-      final response = await client.call(
-          contract: contract,
-          function: getNumberOfdevices,
-          params: []).timeout(Duration(seconds: 4));
-
-      print(response);
-      number = response[0].toInt();
-    } on SocketException {
-      print("Private is Wrong");
-    } on TimeoutException {
-      print("Timeout");
-    }
+    final response = await client
+        .call(contract: contract, function: getNumberOfdevices, params: []);
+    print(response);
+    number = response[0].toInt();
 
     return number;
+  }
+
+  // Orchestration
+  static Future<bool> web3orchestration(String _func) async {
+    final client = Web3Client(serverAddress, Client());
+    final contract = DeployedContract(
+        ContractAbi.fromJson(jsonContent, 'LightBulbs'), contractAddress);
+    final function = contract.function(_func);
+
+    var res = await client.sendTransaction(
+        credentials,
+        Transaction.callContract(
+            contract: contract,
+            function: function,
+            maxGas: 6521975,
+            parameters: []),
+        chainId: chainID);
+    print(res);
+
+    if (res.toString().contains("0x")) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

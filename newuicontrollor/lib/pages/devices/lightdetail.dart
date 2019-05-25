@@ -52,7 +52,7 @@ class _LightDetailPageState extends State<LightDetailPage> {
   _listenevent() async {
     network = await SharedData.getNetwork();
     DeployedContract contract;
-    var apiUrl = Web3P.apiUrl;
+    var apiUrl = Web3P.serverAddress;
     if (network == "Private") {
       contract = await Web3P.deployedcontract();
       String serveraddress = await SharedData.getServerAddress();

@@ -123,15 +123,13 @@ contract LightBulbs {
       emit NameChange(lightBulbs[_lightBulbId].hash_id, _name);
   }
 
-  function _changeStatus(uint _lightBulbId) public {
+  function _changeStatus(uint _lightBulbId, bool _status) public {
       require(msg.sender == lightBulbToOwner[_lightBulbId], "Error: Incorrect LightBulb owner (_changeStatus)");
-      if (lightBulbs[_lightBulbId].status == true) {
-        lightBulbs[_lightBulbId].status = false;
+      lightBulbs[_lightBulbId].status = _status;
+      if (_status != true) {
         _changeColor(_lightBulbId, 0, 0, 0);
-      } else {
-        lightBulbs[_lightBulbId].status = true;
       }
-      emit StatusChange(lightBulbs[_lightBulbId].hash_id, lightBulbs[_lightBulbId].status);
+      emit StatusChange(lightBulbs[_lightBulbId].hash_id, _status);
   }
 
   function _changeDescription(uint _lightBulbId, string memory _description) public {
@@ -155,5 +153,64 @@ contract LightBulbs {
   }
 
   // function () external payable {}
+  // Ochestration
+  function _onlyKai() public {
+    _changeStatus(0, true);
+    _changeColor(0, 244, 67, 54);
+    _changeStatus(1, false);
+    _changeStatus(2, false);
+  }
 
+  function _onlyKang() public {
+    _changeStatus(0, false);
+    _changeStatus(1, true);
+    _changeColor(1, 244, 67, 54);
+    _changeStatus(2, false);
+  }
+
+  function _onlyJustin() public {
+    _changeStatus(0, false);
+    _changeStatus(1, false);
+    _changeStatus(2, true);
+    _changeColor(2, 244, 67, 54);
+  }
+
+  function _bothKaiAndKang() public {
+    _changeStatus(0, true);
+    _changeColor(0, 244, 67, 54);
+    _changeStatus(1, true);
+    _changeColor(1, 244, 67, 54);
+    _changeStatus(2, false);
+  }
+
+  function _bothKaiAndJustin() public {
+    _changeStatus(0, true);
+    _changeColor(0, 244, 67, 54);
+    _changeStatus(1, false);
+    _changeStatus(2, true);
+    _changeColor(2, 244, 67, 54);
+  }
+
+  function _bothJustinAndKang() public {
+    _changeStatus(0, false);
+    _changeStatus(1, true);
+    _changeColor(1, 244, 67, 54);
+    _changeStatus(2, true);
+    _changeColor(2, 244, 67, 54);
+  }
+
+  function _allThree() public {
+    _changeStatus(0, true);
+    _changeColor(0, 244, 67, 54);
+    _changeStatus(1, true);
+    _changeColor(1, 244, 67, 54);
+    _changeStatus(2, true);
+    _changeColor(2, 244, 67, 54);
+  }
+
+  function _nobodyHome() public {
+    _changeStatus(0, false);
+    _changeStatus(1, false);
+    _changeStatus(2, false);
+  }
 } // end of contract

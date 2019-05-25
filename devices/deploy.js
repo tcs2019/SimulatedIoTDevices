@@ -15,15 +15,15 @@ const compileContract = require('./compile');
 
 // TODO: change to structure where gateway.js is inside ethdata
 const ethKeystore = '/Users/kainguyen/EthPoA/node1';
-const ethAccount = 'b222636f4b0db0b493d465ef4e8fb98f01be72ff'; // private
+const ethAccount = '5bf8e8f927e1a4742322b9d6d66f7ac729952498'; // private
 const ethPassword = '123';
 
-// const ethAccount = 'bD54Aa1B52e2d550E8caA789eeaABF144d2Af02F'; // ganache
+// const ethAccount = '5a3ced6161d467eaa0d6d46b618523dead9abeb3'; // ganache
 
 const ethObject = keythereum.importFromFile(ethAccount, ethKeystore);
 const ethKey = keythereum.recover(ethPassword, ethObject);
 // const ethKey =
-//   '91fd0bb9c0735d750279cfc92728e53fcd70116e6e69f8299c3e33c6d6cb5bb5'; // TODO: hardcode for testing purpose
+//   '112dfeb9f4f8900e2fe9bff18865162411eb0e1bde5d0b18c47da11666211f1a'; // ganache
 
 // Ganache or Private Ethereum Blockchain
 const selectedHost = 'http://127.0.0.1:8545';
@@ -133,15 +133,16 @@ web3.eth.getTransactionCount(ethAccount, 'pending').then(nonce => {
           const formattedWebJson = JSON.stringify(webJsonOutput);
           const formattedABIJson = JSON.stringify(abi);
           const formattedContractAddress = JSON.stringify(ContractOutput);
-          const formattedKeystoreJson = JSON.stringify(ethObject);
+          // const formattedKeystoreJson = JSON.stringify(ethObject);
           const formattedPrivatekeyJson = JSON.stringify(
             ethKey.toString('hex')
           );
+          // const formattedPrivatekeyJson = JSON.stringify(ethKey);
           const formattedChainIDJson = JSON.stringify(chainid);
           fs.writeFileSync(jsonFile, formattedJson);
           fs.writeFileSync(webJsonFile, formattedWebJson);
           fs.writeFileSync(abiFileName, formattedABIJson);
-          fs.writeFileSync(keystoreFileName, formattedKeystoreJson);
+          // fs.writeFileSync(keystoreFileName, formattedKeystoreJson);
           fs.writeFileSync(privateFileName, formattedPrivatekeyJson);
           fs.writeFileSync(contractAddressFileName, formattedContractAddress);
           fs.writeFileSync(chainIDFileName, formattedChainIDJson);

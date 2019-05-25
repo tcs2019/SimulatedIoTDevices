@@ -106,10 +106,11 @@ function LightBulbsEvents() {
                     'blue': data.blue,
                     'intensity': data.intensity
                 }
-
             );
             // call sadd(KEY_NAME VALUE1..VALUEN) to store the set of hash_id
             client.sadd('LightBulbs', data.hash_id);
+            console.log('Add device');
+            console.log(data);
         })
         .on('error', console.error);
 
@@ -134,6 +135,7 @@ function LightBulbsEvents() {
         .on('data', function(event) {
             const data = event.returnValues;
             client.hmset(data.hash_id, { 'status': data.status });
+            console.log('Status change');
             console.log(data);
         })
         .on('error', console.error);
@@ -149,6 +151,7 @@ function LightBulbsEvents() {
                     'blue': data.blue
                 }
             );
+            console.log('Color change');
             console.log(data);
         })
         .on('error', console.error);

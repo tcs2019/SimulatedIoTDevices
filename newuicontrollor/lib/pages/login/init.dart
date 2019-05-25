@@ -1,11 +1,9 @@
 import 'dart:async';
-import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:barcode_scan/barcode_scan.dart';
 import 'package:newuicontrollor/pages/login/address.dart';
-import 'package:newuicontrollor/class/shareddata.dart';
 import 'package:newuicontrollor/class/orchestration.dart';
+import 'package:newuicontrollor/class/qrcode.dart';
 
 class InitPage extends StatefulWidget {
   @override
@@ -39,28 +37,17 @@ class _InitPageState extends State<InitPage> {
     Timer(Duration(milliseconds: 2000), _navigatorPage);
   }
 
-  // QR Code Scanner
-  Future<void> _scanBarcode() async {
-    String _barcode;
-    try {
-      _barcode = await BarcodeScanner.scan();
-      // TODO: call orchestration, return true or false (back home/leave)
-      globalKey.currentState.showSnackBar(new SnackBar(
-        content: new Text('Welcome home, ' + _barcode),
-      ));
-    } on PlatformException catch (e) {
-      if (e.code == BarcodeScanner.CameraAccessDenied) {
-        _barcode = 'The user did not grant the camera permission!';
-      } else {
-        _barcode = 'Unknown error: $e';
-      }
-    } on FormatException {
-      _barcode =
-          'null (User returned using the "back"-button before scanning anything. Result)';
-    } catch (e) {
-      _barcode = 'Unknown error: $e';
+  _scan() async {
+    var _barcode = await QRCode.scanBarcode();
+    var _status = await Orchestration.updatePeopleStatus(_barcode);
+    var _message = 'Welcome home, ';
+    if (!_status) {
+      _message = 'Goodbye, ';
     }
-    print(_barcode);
+    globalKey.currentState.showSnackBar(new SnackBar(
+      content: new Text(_message + _barcode),
+    ));
+    Orchestration.homeOrchestrate(_barcode);
   }
 
   void _navigatorPage() {
@@ -201,21 +188,13 @@ class _InitPageState extends State<InitPage> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // if (auth) {
-          //   _nextstep();
-          // } else {
-          //   globalKey.currentState.showSnackBar(new SnackBar(
-          //     content:
-          //         new Text("Use your Fingerprint or FaceID to get started."),
-          //   ));
-          // }
-          _scanBarcode();
-        },
-        tooltip: 'Scan QR Code',
-        child: Icon(Icons.camera_alt),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     _scan();
+      //   },
+      //   tooltip: 'Scan QR Code',
+      //   child: Icon(Icons.camera_alt),
+      // ),
     );
   }
 }
