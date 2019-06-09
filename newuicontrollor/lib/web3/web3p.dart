@@ -9,22 +9,6 @@ import 'package:newuicontrollor/web3/web3.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:web_socket_channel/io.dart';
 
-// const abi = './assets/abi/contracts_IoTdevices.abi';
-// const account = './assets/abi/account.json';
-
-// var privatekey =
-//     "91fd0bb9c0735d750279cfc92728e53fcd70116e6e69f8299c3e33c6d6cb5bb5"; //Ganache
-
-// var privatekey =
-//     "9F1A7E0B0220589436824383080ABB1A1CDCAAA7DEEE79B877818D51C45EEAEE";//Ropsten
-// final EthereumAddress contractAddr =
-//     EthereumAddress.fromHex('0x5ae2f4c118c7c125325df35c369f3fb9715f9b11');//Ropsten
-
-// var apiUrl =
-//     "https://ropsten.infura.io/v3/4164c4424c7d465daab94864544fa622"; //Ropsten
-
-// final File abiFile = File(abi);
-
 class Web3P {
   static EthereumAddress contractAddress;
   static String serverAddress;
@@ -184,10 +168,9 @@ class Web3P {
 
   // Event listening
   static Future web3orchestrationevent(DateTime _scanned) async {
-    // final client = Web3Client(serverAddress, Client(), socketConnector: () {
-    //   return IOWebSocketChannel.connect(serverAddressWS).cast<String>();
-    // });
-    final client = Web3Client(serverAddress, Client());
+    final client = Web3Client(serverAddress, Client(), socketConnector: () {
+      return IOWebSocketChannel.connect(serverAddressWS).cast<String>();
+    });
     final contract = DeployedContract(
         ContractAbi.fromJson(jsonContent, contractName), contractAddress);
     // extracting events that we'll need later
@@ -197,9 +180,6 @@ class Web3P {
         .events(FilterOptions.events(contract: contract, event: orchesEvent))
         .take(1)
         .listen((event) {
-      // final decoded = orchesEvent.decodeResults(event.topics, event.data);
-
-      // final _function = decoded[0] as String;
       var _eventReceived = new DateTime.now();
       print(_eventReceived);
       var diff = _eventReceived.difference(_scanned);
