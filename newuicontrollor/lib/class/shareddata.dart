@@ -69,6 +69,30 @@ class SharedData {
     return prefs.getString("ServerAddress");
   }
 
+  static Future<String> saveServerAddressWS(String address) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("ServerAddressWS", address);
+    print(address);
+    return "success";
+  }
+
+  static Future<String> getServerAddressWS() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    print("getting address WS");
+    return prefs.getString("ServerAddressWS");
+  }
+
+  static Future<String> saveServerIP(String address) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("ServerIP", address);
+    return "success";
+  }
+
+  static Future<String> getServerIP() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString("ServerIP");
+  }
+
   static Future setNetwork(String net) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("Network", net);

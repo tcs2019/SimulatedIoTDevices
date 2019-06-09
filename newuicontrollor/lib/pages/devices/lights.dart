@@ -27,6 +27,10 @@ class _LightsHomePageState extends State<LightsHomePage> {
   String curnetwork = 'Getting';
   List<DeviceStatus> devicelist = new List();
 
+  // for timestamps
+  var qrScanned;
+  var diffOrchesEventReceived;
+
   _getDevicelist() async {
     print("getting devicelist");
     devicelist.clear();
@@ -120,6 +124,9 @@ class _LightsHomePageState extends State<LightsHomePage> {
 
   _scan() async {
     var _barcode = await QRCode.scanBarcode();
+    qrScanned = new DateTime.now();
+    print(qrScanned);
+    Web3P.web3orchestrationevent(qrScanned);
     var _message = 'Welcome home, ';
     var _status = await Orchestration.updatePeopleStatus(_barcode);
     if (!_status) {
@@ -128,8 +135,17 @@ class _LightsHomePageState extends State<LightsHomePage> {
     globalKey.currentState.showSnackBar(new SnackBar(
       content: new Text(_message + _barcode),
     ));
-    Orchestration.homeOrchestrate(_barcode);
+    // TODO: call Web3P directly
+    // Orchestration.homeOrchestrate(_barcode);
+    Web3P.web3orchestration('namesOrchestration', _barcode);
   }
+
+  // _web3Event() async {
+  //   var _eventReceived = await Web3P.web3orchestrationevent();
+  //   // print(_eventReceived);
+  //   // diffOrchesEventReceived = _eventReceived.difference(qrScanned);
+  //   // print(diffOrchesEventReceived);
+  // }
 
   _eventHandler() async {
     Event.eventBus.on<DeviceAdd>().listen((event) {

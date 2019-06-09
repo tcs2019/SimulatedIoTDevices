@@ -37,18 +37,18 @@ class _InitPageState extends State<InitPage> {
     Timer(Duration(milliseconds: 2000), _navigatorPage);
   }
 
-  _scan() async {
-    var _barcode = await QRCode.scanBarcode();
-    var _status = await Orchestration.updatePeopleStatus(_barcode);
-    var _message = 'Welcome home, ';
-    if (!_status) {
-      _message = 'Goodbye, ';
-    }
-    globalKey.currentState.showSnackBar(new SnackBar(
-      content: new Text(_message + _barcode),
-    ));
-    Orchestration.homeOrchestrate(_barcode);
-  }
+  // _scan() async {
+  //   var _barcode = await QRCode.scanBarcode();
+  //   var _status = await Orchestration.updatePeopleStatus(_barcode);
+  //   var _message = 'Welcome home, ';
+  //   if (!_status) {
+  //     _message = 'Goodbye, ';
+  //   }
+  //   globalKey.currentState.showSnackBar(new SnackBar(
+  //     content: new Text(_message + _barcode),
+  //   ));
+  //   Orchestration.homeOrchestrate(_barcode);
+  // }
 
   void _navigatorPage() {
     _check();

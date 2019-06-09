@@ -1,12 +1,5 @@
 pragma solidity ^0.5.0;
 
-// interface Aion
-// contract Aion {
-//     uint256 public serviceFee;
-//     function ScheduleCall(uint256 blocknumber, address to, uint256 value, uint256 gaslimit, uint256 gasprice, bytes memory data, bool schedType) public payable returns (uint,address);
-
-// }
-
 // main Contract
 contract LightBulbs {
 
@@ -29,22 +22,12 @@ contract LightBulbs {
     uint8 intensity; // 0-100
   }
 
-  // Aion aion;
-  uint deviceCounter = 0;
   LightBulb[] public lightBulbs;
 
   mapping (uint => address) public lightBulbToOwner;
 
-  // function _scheduleChangeStatus(uint _lightBulbId, bool _status) public {
-  //   aion = Aion(0x4d06bD288125d8D3Cb966a95aa019ddb3E5ca933);
-  //   bytes memory data = abi.encodeWithSelector(bytes4(keccak256('_changeStatus(uint, bool)')), _lightBulbId, _status);
-  //   uint callCost = 200000*1e9 + aion.serviceFee();
-  //   aion.ScheduleCall.value(callCost)(block.timestamp + 5, address(this), 0, 200000, 1e9, data, false);
-  // }
-
   // fetch the number of  deviceslist in the contract
   function getNumberOfdevices() public view returns (uint) {
-    // return  deviceCounter;
     return lightBulbs.length;
   }
 
@@ -150,67 +133,5 @@ contract LightBulbs {
       require(msg.sender == lightBulbToOwner[_lightBulbId], "Error: Incorrect LightBulb owner (_changeIntensity)");
       lightBulbs[_lightBulbId].intensity = _intensity;
       emit IntensityChange(lightBulbs[_lightBulbId].hash_id, _intensity);
-  }
-
-  // function () external payable {}
-  // Ochestration
-  function _onlyKai() public {
-    _changeStatus(0, true);
-    _changeColor(0, 244, 67, 54);
-    _changeStatus(1, false);
-    _changeStatus(2, false);
-  }
-
-  function _onlyKang() public {
-    _changeStatus(0, false);
-    _changeStatus(1, true);
-    _changeColor(1, 244, 67, 54);
-    _changeStatus(2, false);
-  }
-
-  function _onlyJustin() public {
-    _changeStatus(0, false);
-    _changeStatus(1, false);
-    _changeStatus(2, true);
-    _changeColor(2, 244, 67, 54);
-  }
-
-  function _bothKaiAndKang() public {
-    _changeStatus(0, true);
-    _changeColor(0, 244, 67, 54);
-    _changeStatus(1, true);
-    _changeColor(1, 244, 67, 54);
-    _changeStatus(2, false);
-  }
-
-  function _bothKaiAndJustin() public {
-    _changeStatus(0, true);
-    _changeColor(0, 244, 67, 54);
-    _changeStatus(1, false);
-    _changeStatus(2, true);
-    _changeColor(2, 244, 67, 54);
-  }
-
-  function _bothJustinAndKang() public {
-    _changeStatus(0, false);
-    _changeStatus(1, true);
-    _changeColor(1, 244, 67, 54);
-    _changeStatus(2, true);
-    _changeColor(2, 244, 67, 54);
-  }
-
-  function _allThree() public {
-    _changeStatus(0, true);
-    _changeColor(0, 244, 67, 54);
-    _changeStatus(1, true);
-    _changeColor(1, 244, 67, 54);
-    _changeStatus(2, true);
-    _changeColor(2, 244, 67, 54);
-  }
-
-  function _nobodyHome() public {
-    _changeStatus(0, false);
-    _changeStatus(1, false);
-    _changeStatus(2, false);
   }
 } // end of contract

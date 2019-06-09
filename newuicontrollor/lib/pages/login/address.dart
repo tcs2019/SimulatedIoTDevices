@@ -19,8 +19,7 @@ class _AddressPageState extends State<AddressPage> {
   final globalKey = new GlobalKey<ScaffoldState>();
   bool loaded = true;
   bool success = false;
-  TextEditingController addresscontroller =
-      new TextEditingController(text: "http://");
+  TextEditingController addresscontroller = new TextEditingController(text: "");
 
   Future<void> _scanBarcodeaddress() async {
     String _barcode;
@@ -53,9 +52,10 @@ class _AddressPageState extends State<AddressPage> {
       loaded = false;
     });
     String res;
-    int ippos = addresscontroller.text.indexOf("://");
-    int iplast = addresscontroller.text.lastIndexOf(":");
-    String ip = addresscontroller.text.substring(ippos + 3, iplast);
+    // int ippos = addresscontroller.text.indexOf("://");
+    // int iplast = addresscontroller.text.lastIndexOf(":");
+    // String ip = addresscontroller.text.substring(ippos + 3, iplast);
+    String ip = addresscontroller.text;
     print(ip);
     List<ServerAPI> list = List();
     ServerAPI serverdata = new ServerAPI();
@@ -130,10 +130,10 @@ class _AddressPageState extends State<AddressPage> {
   }
 
   _fetchserver() async {
-    String address = await SharedData.getServerAddress();
-    if (address.length > 10) {
+    String ip = await SharedData.getServerIP();
+    if (ip != null) {
       setState(() {
-        addresscontroller.text = address;
+        addresscontroller.text = ip;
       });
     }
   }
@@ -258,7 +258,11 @@ class _AddressPageState extends State<AddressPage> {
                 if (addresscontroller.text.length < 10) {
                   _scanBarcodeaddress();
                 } else {
-                  SharedData.saveServerAddress(addresscontroller.text);
+                  SharedData.saveServerIP(addresscontroller.text);
+                  SharedData.saveServerAddress(
+                      'http://' + addresscontroller.text + ':8545');
+                  SharedData.saveServerAddressWS(
+                      'ws://' + addresscontroller.text + ':8546');
                   _fetchdata();
                   Future.delayed(new Duration(seconds: 1), () {
                     if (success) {

@@ -14,23 +14,21 @@ const compileContract = require('./compile');
 // let argv = require('minimist')(process.argv.slice(2));
 
 // TODO: change to structure where gateway.js is inside ethdata
-const ethKeystore = '/Users/kainguyen/EthPoA/node1';
-const ethAccount = '5bf8e8f927e1a4742322b9d6d66f7ac729952498'; // private
-const ethPassword = '123';
+// const ethKeystore = '/Users/kainguyen/EthPoW/node1';
+const ethAccount = '0x790daef654ab5a0e4ac36eaa9706046ece2a02a9'; // private
+// const ethPassword = '123';
 
-// const ethAccount = '5a3ced6161d467eaa0d6d46b618523dead9abeb3'; // ganache
-
-const ethObject = keythereum.importFromFile(ethAccount, ethKeystore);
-const ethKey = keythereum.recover(ethPassword, ethObject);
-// const ethKey =
-//   '112dfeb9f4f8900e2fe9bff18865162411eb0e1bde5d0b18c47da11666211f1a'; // ganache
+// const ethObject = keythereum.importFromFile(ethAccount, ethKeystore);
+// const ethKey = keythereum.recover(ethPassword, ethObject);
+const ethKey =
+  'd1b4cce779cf4c4e51950f39af3bbcf35cf1d239ac6ed90e5cc9165c6b624603'; // ganache
 
 // Ganache or Private Ethereum Blockchain
 const selectedHost = 'http://127.0.0.1:8545';
 const htmlcode = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Scan it</title></head><body><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${selectedHost}" /></body></html>`;
 const web3 = new Web3(new Web3.providers.HttpProvider(selectedHost));
 
-const contract = 'LightBulbs.sol';
+const contract = 'Orchestration.sol';
 
 // Compile contracts
 compileContract.buildContract(contract);

@@ -7,6 +7,7 @@ import 'package:newuicontrollor/class/color.dart';
 import 'package:newuicontrollor/class/shareddata.dart';
 import 'package:newuicontrollor/web3/web3.dart';
 import 'package:web3dart/web3dart.dart';
+import 'package:web_socket_channel/io.dart';
 
 // const abi = './assets/abi/contracts_IoTdevices.abi';
 // const account = './assets/abi/account.json';
@@ -27,12 +28,17 @@ import 'package:web3dart/web3dart.dart';
 class Web3P {
   static EthereumAddress contractAddress;
   static String serverAddress;
+  static String serverAddressWS;
   static Credentials credentials;
   static int chainID;
   static String jsonContent;
+  static String contractName = 'Orchestration';
 
   static Future<void> init() async {
     serverAddress = await SharedData.getServerAddress();
+    print(serverAddress);
+    serverAddressWS = await SharedData.getServerAddressWS();
+    print(serverAddressWS);
     contractAddress =
         EthereumAddress.fromHex(await SharedData.getContractAddress());
     chainID = await SharedData.getChainID();
@@ -44,13 +50,14 @@ class Web3P {
   static Future<String> web3adddevice(String name, String description) async {
     final client = Web3Client(serverAddress, Client());
     final contract = DeployedContract(
-        ContractAbi.fromJson(jsonContent, 'LightBulbs'), contractAddress);
+        ContractAbi.fromJson(jsonContent, contractName), contractAddress);
     final addnewlightbulb = contract.function('_addNewLightBulb');
     var res = await client.sendTransaction(
         credentials,
         Transaction.callContract(
-            contract: contract, function: addnewlightbulb, maxGas: 6521975,
-            // gasPrice: EtherAmount.inWei(BigInt.from(0)),
+            contract: contract,
+            function: addnewlightbulb,
+            maxGas: 6521975,
             parameters: [name, description]),
         chainId: chainID);
     print(res);
@@ -63,7 +70,7 @@ class Web3P {
 
   static Future<DeployedContract> deployedcontract() async {
     final contract = DeployedContract(
-        ContractAbi.fromJson(jsonContent, 'LightBulbs'), contractAddress);
+        ContractAbi.fromJson(jsonContent, contractName), contractAddress);
     return contract;
   }
 
@@ -72,7 +79,7 @@ class Web3P {
     int ininum = int.parse(id);
     BigInt bid = BigInt.from(ininum);
     final contract = DeployedContract(
-        ContractAbi.fromJson(jsonContent, 'LightBulbs'), contractAddress);
+        ContractAbi.fromJson(jsonContent, contractName), contractAddress);
     final fetchDeviceStatus = contract.function('fetchDeviceStatus');
     final response = await client
         .call(contract: contract, function: fetchDeviceStatus, params: [bid]);
@@ -86,7 +93,7 @@ class Web3P {
   static Future<bool> web3changedevicecolor(BigInt bid, RGB color) async {
     final client = Web3Client(serverAddress, Client());
     final contract = DeployedContract(
-        ContractAbi.fromJson(jsonContent, 'LightBulbs'), contractAddress);
+        ContractAbi.fromJson(jsonContent, contractName), contractAddress);
     final changeColor = contract.function('_changeColor');
     print('changedevicecolorred${color.red}');
     print('changedevicecologreen${color.green}');
@@ -97,7 +104,6 @@ class Web3P {
             contract: contract,
             function: changeColor,
             maxGas: 6521975,
-            // gasPrice: EtherAmount.inWei(BigInt.from(0)),
             parameters: [
               bid,
               BigInt.from(color.red),
@@ -117,7 +123,7 @@ class Web3P {
   static Future<bool> web3changedevicestatus(BigInt bid, bool status) async {
     final client = Web3Client(serverAddress, Client());
     final contract = DeployedContract(
-        ContractAbi.fromJson(jsonContent, 'LightBulbs'), contractAddress);
+        ContractAbi.fromJson(jsonContent, contractName), contractAddress);
     final changeStatus = contract.function('_changeStatus');
 
     var res = await client.sendTransaction(
@@ -140,7 +146,7 @@ class Web3P {
   static Future<int> web3getnumberofdevice() async {
     final client = Web3Client(serverAddress, Client());
     final contract = DeployedContract(
-        ContractAbi.fromJson(jsonContent, 'LightBulbs'), contractAddress);
+        ContractAbi.fromJson(jsonContent, contractName), contractAddress);
     final getNumberOfdevices = contract.function('getNumberOfdevices');
     int number = 10000;
 
@@ -153,10 +159,10 @@ class Web3P {
   }
 
   // Orchestration
-  static Future<bool> web3orchestration(String _func) async {
+  static Future<bool> web3orchestration(String _func, String _name) async {
     final client = Web3Client(serverAddress, Client());
     final contract = DeployedContract(
-        ContractAbi.fromJson(jsonContent, 'LightBulbs'), contractAddress);
+        ContractAbi.fromJson(jsonContent, contractName), contractAddress);
     final function = contract.function(_func);
 
     var res = await client.sendTransaction(
@@ -165,7 +171,7 @@ class Web3P {
             contract: contract,
             function: function,
             maxGas: 6521975,
-            parameters: []),
+            parameters: [_name]),
         chainId: chainID);
     print(res);
 
@@ -174,5 +180,34 @@ class Web3P {
     } else {
       return false;
     }
+  }
+
+  // Event listening
+  static Future web3orchestrationevent(DateTime _scanned) async {
+    // final client = Web3Client(serverAddress, Client(), socketConnector: () {
+    //   return IOWebSocketChannel.connect(serverAddressWS).cast<String>();
+    // });
+    final client = Web3Client(serverAddress, Client());
+    final contract = DeployedContract(
+        ContractAbi.fromJson(jsonContent, contractName), contractAddress);
+    // extracting events that we'll need later
+    final orchesEvent = contract.event('orchestrationCall');
+    // listen for the Transfer event when it's emitted by the contract above
+    final subscription = client
+        .events(FilterOptions.events(contract: contract, event: orchesEvent))
+        .take(1)
+        .listen((event) {
+      // final decoded = orchesEvent.decodeResults(event.topics, event.data);
+
+      // final _function = decoded[0] as String;
+      var _eventReceived = new DateTime.now();
+      print(_eventReceived);
+      var diff = _eventReceived.difference(_scanned);
+      print(diff);
+      return;
+    });
+
+    await subscription.asFuture();
+    await subscription.cancel();
   }
 }
