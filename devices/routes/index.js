@@ -5,9 +5,10 @@
 const express = require('express');
 
 const router = express.Router();
-const fs = require('fs');
-
 const redis = require('redis');
+const longpoll = require('../node_modules/express-longpoll/index')(router);
+
+longpoll.create('/routerpoll');
 
 const client = redis.createClient();
 
@@ -63,7 +64,16 @@ router.get('/', function(req, res, next) {
 
 router.get('/lightbulbs', function(req, res, next) {
   getAllLightbulbs();
-  res.render('lightbulbs', { lightbulbs: AllLightbulbs });
+
+  // Publish every 5 seconds
+  setInterval(function() {
+    getAllLightbulbs();
+    longpoll.publish('/routerpoll', {
+      lightbulbs: AllLightbulbs,
+    });
+  }, 5000);
+
+  res.json({ lightbulbs: AllLightbulbs });
 });
 
 router.get('/electricplugs', function(req, res, next) {

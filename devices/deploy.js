@@ -15,13 +15,13 @@ const compileContract = require('./compile');
 
 // TODO: change to structure where gateway.js is inside ethdata
 // const ethKeystore = '/Users/kainguyen/EthPoW/node1';
-const ethAccount = '0x790daef654ab5a0e4ac36eaa9706046ece2a02a9'; // private
+const ethAccount = '0xe433a56cf1730f77b7a7c26a790874af3ea40b29'; // private
 // const ethPassword = '123';
 
 // const ethObject = keythereum.importFromFile(ethAccount, ethKeystore);
 // const ethKey = keythereum.recover(ethPassword, ethObject);
 const ethKey =
-  'd1b4cce779cf4c4e51950f39af3bbcf35cf1d239ac6ed90e5cc9165c6b624603'; // ganache
+  'd658b95bf6c4e14a2c2cf0444fc47ae787eec5158dabab1e8a655557910bdabf'; // ganache
 
 // Ganache or Private Ethereum Blockchain
 const selectedHost = 'http://127.0.0.1:8545';

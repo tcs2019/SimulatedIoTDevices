@@ -7,8 +7,8 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch Deploy",
-      "program": "${workspaceFolder}/deploy.js"
+      "name": "Launch Program",
+      "program": "${workspaceFolder}/bin/www"
     }
   ]
 }

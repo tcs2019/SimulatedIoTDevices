@@ -9,7 +9,7 @@ const Web3 = require('web3');
 const redis = require('redis');
 
 // Ethereum Blockchain
-const host = 'ws://127.0.0.1:8546';
+const host = 'http://127.0.0.1:8545';
 const web3js = new Web3(Web3.givenProvider || new Web3.providers.WebsocketProvider(host));
 
 // create new Redis client
@@ -29,7 +29,7 @@ client.on('error', function(err) {
 // };
 
 // LightBulbs contract
-const parsedJson = JSON.parse(fs.readFileSync('./public/json/LightBulbs.json'));
+const parsedJson = JSON.parse(fs.readFileSync('./public/json/Orchestration.json'));
 const contractLB = {
     abi: parsedJson.abi,
     contractAddress: parsedJson.contractAddress
