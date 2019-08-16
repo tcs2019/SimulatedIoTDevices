@@ -19,7 +19,7 @@
     "pug": "^2.0.3",
     "redis": "^2.8.0",
     "solc": "^0.5.8",
-    "web3": "^1.0.0-beta.55"
+    "web3": "^1.2.1"
   },
   "main": "app.js",
   "devDependencies": {},
