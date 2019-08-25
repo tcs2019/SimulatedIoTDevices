@@ -34,14 +34,20 @@ class _LightsHomePageState extends State<LightsHomePage> {
   _getDevicelist() async {
     print("getting devicelist");
     devicelist.clear();
-    setState(() {
-      loaded = false;
-    });
+    if (mounted) {
+      setState(() {
+        loaded = false;
+      });
+    }
+
     String readaccountjson = await rootBundle.loadString(account);
     String network = await SharedData.getNetwork();
-    setState(() {
-      curnetwork = network;
-    });
+    if (mounted) {
+      setState(() {
+        curnetwork = network;
+      });
+    }
+
     print(network);
     print(devicenumber);
     if (devicenumber != 0) {

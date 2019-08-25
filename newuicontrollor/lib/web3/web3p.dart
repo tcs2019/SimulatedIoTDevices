@@ -65,13 +65,24 @@ class Web3P {
     final contract = DeployedContract(
         ContractAbi.fromJson(jsonContent, contractName), contractAddress);
     final fetchDeviceStatus = contract.function('fetchDeviceStatus');
+    var before = new DateTime.now();
+
     final response = await client
         .call(contract: contract, function: fetchDeviceStatus, params: [bid]);
     var curdevice = new DeviceStatus.fromResponse(bid, response);
+    var after = new DateTime.now();
+    Duration readtime = after.difference(before);
+    print("Readtime is ${readtime.inMilliseconds}ms");
+
     print("red${curdevice.red.toInt()}");
     print("green${curdevice.green.toInt()}");
     print("blue${curdevice.blue.toInt()}");
     return curdevice;
+  }
+
+
+  static void recordReadtime(Duration time){
+    
   }
 
   static Future<bool> web3changedevicecolor(BigInt bid, RGB color) async {

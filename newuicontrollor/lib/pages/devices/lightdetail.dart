@@ -314,7 +314,7 @@ class _LightDetailPageState extends State<LightDetailPage> {
                                         "Light Name:",
                                         style: TextStyle(
                                             color: Colors.white,
-                                            fontSize: 20,
+                                            fontSize: 14,
                                             fontWeight: FontWeight.w600),
                                       ),
                                     ),
@@ -324,7 +324,7 @@ class _LightDetailPageState extends State<LightDetailPage> {
                                         curdevices.name,
                                         style: TextStyle(
                                           color: Colors.white,
-                                          fontSize: 20,
+                                          fontSize: 14,
                                         ),
                                       ),
                                     )
