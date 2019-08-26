@@ -6,6 +6,7 @@ import 'package:http/http.dart';
 import 'package:newuicontrollor/class/color.dart';
 import 'package:newuicontrollor/class/shareddata.dart';
 import 'package:newuicontrollor/web3/web3.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:web_socket_channel/io.dart';
 
@@ -72,6 +73,7 @@ class Web3P {
     var curdevice = new DeviceStatus.fromResponse(bid, response);
     var after = new DateTime.now();
     Duration readtime = after.difference(before);
+    recordReadtime(readtime);
     print("Readtime is ${readtime.inMilliseconds}ms");
 
     print("red${curdevice.red.toInt()}");
@@ -80,9 +82,22 @@ class Web3P {
     return curdevice;
   }
 
+  static Future recordReadtime(Duration curtime) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> time = prefs.getStringList("readtime");
+    if (time == null) {
+      time = new List();
+      time.add(curtime.inMilliseconds.toString());
+    } else {
+      time.add(curtime.inMilliseconds.toString());
+    }
+    prefs.setStringList("readtime", time);
+  }
 
-  static void recordReadtime(Duration time){
-    
+    static Future<List<String>> fetchReadtime() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> time = prefs.getStringList("readtime");
+    return time;
   }
 
   static Future<bool> web3changedevicecolor(BigInt bid, RGB color) async {

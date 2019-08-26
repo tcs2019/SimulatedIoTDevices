@@ -5,6 +5,7 @@ import 'package:newuicontrollor/class/shareddata.dart';
 import 'package:newuicontrollor/class/orchestration.dart';
 import 'package:newuicontrollor/class/qrcode.dart';
 import 'package:newuicontrollor/pages/setting/changeserver.dart';
+import 'package:newuicontrollor/pages/setting/output.dart';
 import 'package:newuicontrollor/web3/web3.dart';
 import 'package:newuicontrollor/web3/web3p.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -211,7 +212,7 @@ class _LightsHomePageState extends State<LightsHomePage> {
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (BuildContext context) =>
-                                  new ChangeServerPage(
+                                  new OutputPage(
                                       // img: accountjson,
                                       )));
                         },
