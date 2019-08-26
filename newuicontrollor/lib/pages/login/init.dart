@@ -4,6 +4,7 @@ import 'package:local_auth/local_auth.dart';
 import 'package:newuicontrollor/pages/login/address.dart';
 import 'package:newuicontrollor/class/orchestration.dart';
 import 'package:newuicontrollor/class/qrcode.dart';
+import 'package:newuicontrollor/web3/web3p.dart';
 
 class InitPage extends StatefulWidget {
   @override
@@ -27,6 +28,7 @@ class _InitPageState extends State<InitPage> {
   }
 
   _nextstep() {
+    Web3P.cleanReadtime();
     Future.delayed(new Duration(milliseconds: 30), () {
       Navigator.of(context).push(MaterialPageRoute(
           builder: (BuildContext context) => new AddressPage()));

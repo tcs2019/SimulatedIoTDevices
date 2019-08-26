@@ -82,6 +82,12 @@ class Web3P {
     return curdevice;
   }
 
+    static Future cleanReadtime() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> time = new List();
+    prefs.setStringList("readtime", time);
+  }
+
   static Future recordReadtime(Duration curtime) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> time = prefs.getStringList("readtime");
