@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'package:newuicontrollor/class/color.dart';
+import 'package:newuicontrollor/class/dateconvert.dart';
 import 'package:newuicontrollor/class/shareddata.dart';
 import 'package:newuicontrollor/web3/web3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -82,7 +83,7 @@ class Web3P {
     return curdevice;
   }
 
-    static Future cleanReadtime() async {
+  static Future cleanReadtime() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> time = new List();
     prefs.setStringList("readtime", time);
@@ -100,10 +101,20 @@ class Web3P {
     prefs.setStringList("readtime", time);
   }
 
-    static Future<List<String>> fetchReadtime() async {
+  static Future<List<String>> fetchReadtime() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> time = prefs.getStringList("readtime");
     return time;
+  }
+
+  static void _recordsubmittime() {
+    int eventtime = DateTime.now().millisecondsSinceEpoch;
+    Dateconvert.storedifftime("SubmitTime", eventtime);
+  }
+
+  static void _recordreceipttime() {
+    int eventtime = DateTime.now().millisecondsSinceEpoch;
+    Dateconvert.storedifftime("ReceiptTime", eventtime);
   }
 
   static Future<bool> web3changedevicecolor(BigInt bid, RGB color) async {
@@ -114,6 +125,8 @@ class Web3P {
     print('changedevicecolorred${color.red}');
     print('changedevicecologreen${color.green}');
     print('changedevicecoloblue${color.blue}');
+    _recordsubmittime();
+
     var res = await client.sendTransaction(
         credentials,
         Transaction.callContract(
@@ -127,6 +140,7 @@ class Web3P {
               BigInt.from(color.blue)
             ]),
         chainId: chainID);
+    _recordreceipttime();
     print(res);
 
     if (res.toString().contains("0x")) {

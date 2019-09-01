@@ -8,6 +8,7 @@ import 'package:flutter_colorpicker/block_picker.dart';
 import 'package:flutter_colorpicker/utils.dart';
 import 'package:http/http.dart';
 import 'package:newuicontrollor/class/color.dart';
+import 'package:newuicontrollor/class/dateconvert.dart';
 import 'package:newuicontrollor/class/event.dart';
 import 'package:newuicontrollor/class/shareddata.dart';
 import 'package:newuicontrollor/web3/web3.dart';
@@ -41,12 +42,28 @@ class _LightDetailPageState extends State<LightDetailPage> {
     setState(() {
       currentColor = color;
     });
+    _recordchoosetime();
     // print(color.toString());
 
     Timer(const Duration(milliseconds: 500), () => Navigator.of(context).pop());
     Future.delayed(new Duration(seconds: 1), () {
       _webchangecolor();
     });
+  }
+
+  _recordchoosetime() {
+    int eventtime = DateTime.now().millisecondsSinceEpoch;
+    Dateconvert.storedifftime("ChooseColorTime", eventtime);
+  }
+
+  _recordeventtime() {
+    int eventtime = DateTime.now().millisecondsSinceEpoch;
+    Dateconvert.storedifftime("EventTime", eventtime);
+  }
+
+  _recordchangetime() {
+    int eventtime = DateTime.now().millisecondsSinceEpoch;
+    Dateconvert.storedifftime("StatusChangeTime", eventtime);
   }
 
   _listenevent() async {
@@ -66,6 +83,7 @@ class _LightDetailPageState extends State<LightDetailPage> {
               FilterOptions.events(contract: contract, event: colorChangeEvent))
           .take(5)
           .listen((event) {
+        _recordeventtime();
         final decoded =
             colorChangeEvent.decodeResults(event.topics, event.data);
 
@@ -79,6 +97,7 @@ class _LightDetailPageState extends State<LightDetailPage> {
         print("event:blue:${blue.toInt()}");
         var curid = widget.curdevice.bid.toInt().toString();
         if (deviceid.contains(curid)) {
+          _recordchangetime();
           print("this device changed!");
           var devcolor =
               TransColor.trancolor(red.toInt(), green.toInt(), blue.toInt());
