@@ -11,6 +11,7 @@ import 'package:newuicontrollor/class/color.dart';
 import 'package:newuicontrollor/class/dateconvert.dart';
 import 'package:newuicontrollor/class/event.dart';
 import 'package:newuicontrollor/class/shareddata.dart';
+import 'package:newuicontrollor/pages/timeline/timeline.dart';
 import 'package:newuicontrollor/web3/web3.dart';
 import 'package:newuicontrollor/web3/web3p.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -81,7 +82,7 @@ class _LightDetailPageState extends State<LightDetailPage> {
       subscription = client
           .events(
               FilterOptions.events(contract: contract, event: colorChangeEvent))
-          .take(5)
+          .take(15)
           .listen((event) {
         _recordeventtime();
         final decoded =
@@ -110,6 +111,10 @@ class _LightDetailPageState extends State<LightDetailPage> {
             });
           }
           Event.eventBus.fire(new DeviceAdd(curdevices.name));
+          Future.delayed(new Duration(seconds: 1), () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (BuildContext context) => new TimelinePage()));
+          });
         }
       });
       await subscription.asFuture();
