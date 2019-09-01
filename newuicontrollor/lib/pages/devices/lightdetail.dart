@@ -91,10 +91,12 @@ class _LightDetailPageState extends State<LightDetailPage> {
         final red = decoded[1] as BigInt;
         final green = decoded[2] as BigInt;
         final blue = decoded[3] as BigInt;
+        final blocktime = decoded[4] as BigInt;
         print("event:ID:$deviceid");
         print("event:red:${red.toInt()}");
         print("event:green:${green.toInt()}");
         print("event:blue:${blue.toInt()}");
+        print("event:blocktime:${blocktime.toInt()}");
         var curid = widget.curdevice.bid.toInt().toString();
         if (deviceid.contains(curid)) {
           _recordchangetime();

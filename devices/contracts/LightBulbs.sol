@@ -8,7 +8,7 @@ contract LightBulbs {
   event NameChange(string hash_id, string name);
   event DescriptionChange(string hash_id, string description);
   event StatusChange(string hash_id, bool status);
-  event ColorChange(string hash_id, uint8 red, uint8 green, uint8 blue);
+  event ColorChange(string hash_id, uint8 red, uint8 green, uint8 blue, uint timestamp);
   event IntensityChange(string hash_id, uint8 intensity);
 
   struct LightBulb {
@@ -126,7 +126,8 @@ contract LightBulbs {
       lightBulbs[_lightBulbId].red = _red;
       lightBulbs[_lightBulbId].green = _green;
       lightBulbs[_lightBulbId].blue = _blue;
-      emit ColorChange(lightBulbs[_lightBulbId].hash_id, _red, _green, _blue);
+      uint time = block.timestamp;
+      emit ColorChange(lightBulbs[_lightBulbId].hash_id, _red, _green, _blue, time);
   }
 
   function _changeIntensity(uint _lightBulbId, uint8 _intensity) public {
