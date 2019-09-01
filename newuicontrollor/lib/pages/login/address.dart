@@ -255,7 +255,7 @@ class _AddressPageState extends State<AddressPage> {
           children: <Widget>[
             FloatingActionButton(
               onPressed: () {
-                if (addresscontroller.text.length < 10) {
+                if (addresscontroller.text.length < 4) {
                   _scanBarcodeaddress();
                 } else {
                   SharedData.saveServerIP(addresscontroller.text);
