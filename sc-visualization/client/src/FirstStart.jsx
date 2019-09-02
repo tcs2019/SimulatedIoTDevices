@@ -22,12 +22,18 @@ class FirstStart extends React.Component {
   };
 
   onClickHandler = () => {
+    const { address, abiFile } = this.state;
     // eslint-disable-next-line no-undef
     const data = new FormData();
-    data.append('file', this.state.abiFile);
-    axios.post('/upload', data).then(res => {
-      console.log(res.statusText);
-    });
+    data.append('file', abiFile);
+    axios
+      .post('/upload', {
+        address,
+        data,
+      })
+      .then(res => {
+        console.log(res.statusText);
+      });
   };
 
   render() {
@@ -48,7 +54,7 @@ class FirstStart extends React.Component {
               </label>
               <input type="file" name="abi" onChange={this.onABIChange} />
             </div>
-            <button className="ui button" onClick={this.onClickHandler}>
+            <button type="button" className="ui button" onClick={this.onClickHandler}>
               Start
             </button>
           </form>
