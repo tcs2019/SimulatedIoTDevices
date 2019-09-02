@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:newuicontrollor/web3/web3p.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timeline_list/timeline.dart';
 import 'package:timeline_list/timeline_model.dart';
@@ -11,18 +12,22 @@ class TimelinePage extends StatefulWidget {
 
 class _TimelinePageState extends State<TimelinePage> {
   List<Doodle> doodles = [];
-  int totallytime = 0;
+  double totallytime = 0;
   _initData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> readtimesnow = await Web3P.fetchReadtime();
+    int readtimems = int.parse(readtimesnow[readtimesnow.length - 1]);
     int choosecolortime = prefs.getInt("ChooseColorTime");
     int submittime = prefs.getInt("SubmitTime");
     int receipttime = prefs.getInt("ReceiptTime");
+
     int eventtime = prefs.getInt("EventTime");
+    int blocktime = eventtime - readtimems;
     int statuschangetime = prefs.getInt("StatusChangeTime");
 
     if (mounted) {
       setState(() {
-        totallytime = statuschangetime - choosecolortime;
+        totallytime = (statuschangetime - choosecolortime)/1000.toDouble();
         doodles = [
           Doodle(
               timestamp: choosecolortime,
@@ -61,11 +66,23 @@ class _TimelinePageState extends State<TimelinePage> {
               iconBackground: Colors.yellow),
           Doodle(
               timestamp: eventtime,
-              name: "Transaction Complete Time",
+              name: "Block Time/ Transaction Complete Time",
+              time: DateTime.fromMillisecondsSinceEpoch(blocktime).toString(),
+              content: "",
+              doodle: "",
+              diff: blocktime - receipttime,
+              icon: Icon(
+                Icons.attach_money,
+                color: Colors.black87,
+              ),
+              iconBackground: Colors.amber),
+          Doodle(
+              timestamp: eventtime,
+              name: "APP Receive Confirmation Time",
               time: DateTime.fromMillisecondsSinceEpoch(eventtime).toString(),
               content: "",
               doodle: "",
-              diff: eventtime - receipttime,
+              diff: eventtime - blocktime,
               icon: Icon(
                 Icons.cloud_download,
                 color: Colors.black87,
@@ -85,6 +102,7 @@ class _TimelinePageState extends State<TimelinePage> {
               ),
               iconBackground: Colors.green),
         ];
+        // doodles.sort();
       });
     }
   }
@@ -143,7 +161,7 @@ class _TimelinePageState extends State<TimelinePage> {
                 const SizedBox(
                   height: 8.0,
                 ),
-                Text("${doodle.diff.toString()}/$totallytime",
+                Text("${doodle.diff.toString()} ms/$totallytime s",
                     style: textTheme.caption),
               ],
             ),
