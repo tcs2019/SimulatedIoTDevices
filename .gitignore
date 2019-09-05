@@ -10,3 +10,4 @@
 devices/node_modules/
 /node_modules/
 devices/public/json/
+devices/deploy.js
