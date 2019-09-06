@@ -54,11 +54,10 @@ function BlockEvents() {
             });
         }
     });
-
 }
 
 /*
  * ----- Start of the main server code -----
  */
-setInterval(BlockEvents, 3000);
+setInterval(BlockEvents, 1);
 // BlockEvents();

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:newuicontrollor/class/connectdatabase.dart';
 import 'package:newuicontrollor/web3/web3p.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timeline_list/timeline.dart';
@@ -13,6 +14,11 @@ class TimelinePage extends StatefulWidget {
 class _TimelinePageState extends State<TimelinePage> {
   List<Doodle> doodles = [];
   double totallytime = 0;
+  List<Block> blocks = new List();
+  _getBlock() async {
+    blocks = await ConnectData.getblock();
+  }
+
   _initData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> readtimesnow = await Web3P.fetchReadtime();
@@ -25,86 +31,105 @@ class _TimelinePageState extends State<TimelinePage> {
     int blocktime = eventtime - readtimems;
     int statuschangetime = prefs.getInt("StatusChangeTime");
 
-    if (mounted) {
-      setState(() {
-        totallytime = (statuschangetime - choosecolortime)/1000.toDouble();
-        doodles = [
-          Doodle(
-              timestamp: choosecolortime,
-              name: "Choose Color Time",
-              time: DateTime.fromMillisecondsSinceEpoch(choosecolortime)
-                  .toString(),
-              content: "",
-              doodle: "",
-              diff: choosecolortime - choosecolortime,
-              icon: Icon(Icons.color_lens, color: Colors.white),
-              iconBackground: Colors.cyan),
-          Doodle(
-              timestamp: submittime,
-              name: "Transaction Submit Time",
-              time: DateTime.fromMillisecondsSinceEpoch(submittime).toString(),
-              content: "",
-              doodle: "",
-              diff: submittime - choosecolortime,
-              icon: Icon(
-                Icons.cloud_upload,
-                color: Colors.white,
-              ),
-              iconBackground: Colors.redAccent),
-          Doodle(
-              timestamp: receipttime,
-              name: "Blockchain Receive Request Time",
-              time: DateTime.fromMillisecondsSinceEpoch(receipttime).toString(),
-              content: "",
-              doodle: "",
-              diff: receipttime - submittime,
-              icon: Icon(
-                Icons.check_circle,
-                color: Colors.black87,
-                size: 32.0,
-              ),
-              iconBackground: Colors.yellow),
-          Doodle(
-              timestamp: eventtime,
-              name: "Block Time/ Transaction Complete Time",
-              time: DateTime.fromMillisecondsSinceEpoch(blocktime).toString(),
-              content: "",
-              doodle: "",
-              diff: blocktime - receipttime,
-              icon: Icon(
-                Icons.attach_money,
-                color: Colors.black87,
-              ),
-              iconBackground: Colors.amber),
-          Doodle(
-              timestamp: eventtime,
-              name: "APP Receive Confirmation Time",
-              time: DateTime.fromMillisecondsSinceEpoch(eventtime).toString(),
-              content: "",
-              doodle: "",
-              diff: eventtime - blocktime,
-              icon: Icon(
-                Icons.cloud_download,
-                color: Colors.black87,
-              ),
-              iconBackground: Colors.amber),
-          Doodle(
-              timestamp: statuschangetime,
-              name: "Color Change Time",
-              time: DateTime.fromMillisecondsSinceEpoch(statuschangetime)
-                  .toString(),
-              content: "",
-              doodle: "",
-              diff: statuschangetime - eventtime,
-              icon: Icon(
-                Icons.lightbulb_outline,
-                color: Colors.white,
-              ),
-              iconBackground: Colors.green),
-        ];
-        // doodles.sort();
-      });
-    }
+    Future.delayed(new Duration(seconds: 10), () {
+      _getBlock();
+      if (mounted) {
+        setState(() {
+          totallytime = (statuschangetime - choosecolortime) / 1000.toDouble();
+          doodles = [
+            Doodle(
+                timestamp: choosecolortime,
+                name: "Choose Color Time",
+                time: DateTime.fromMillisecondsSinceEpoch(choosecolortime)
+                    .toString(),
+                content: "",
+                doodle: "",
+                diff: choosecolortime - choosecolortime,
+                icon: Icon(Icons.color_lens, color: Colors.white),
+                iconBackground: Colors.cyan),
+            Doodle(
+                timestamp: submittime,
+                name: "Transaction Submit Time",
+                time:
+                    DateTime.fromMillisecondsSinceEpoch(submittime).toString(),
+                content: "",
+                doodle: "",
+                diff: submittime - choosecolortime,
+                icon: Icon(
+                  Icons.cloud_upload,
+                  color: Colors.white,
+                ),
+                iconBackground: Colors.redAccent),
+            Doodle(
+                timestamp: receipttime,
+                name: "Blockchain Receive Request Time",
+                time:
+                    DateTime.fromMillisecondsSinceEpoch(receipttime).toString(),
+                content: "",
+                doodle: "",
+                diff: receipttime - submittime,
+                icon: Icon(
+                  Icons.check_circle,
+                  color: Colors.black87,
+                  size: 32.0,
+                ),
+                iconBackground: Colors.yellow),
+            Doodle(
+                timestamp: blocks[0].blocktime * 1000,
+                name: "Block Time from Database",
+                time: DateTime.fromMillisecondsSinceEpoch(
+                        blocks[0].blocktime * 1000)
+                    .toString(),
+                content: "",
+                doodle: "",
+                diff: blocktime - receipttime,
+                icon: Icon(
+                  Icons.add_a_photo,
+                  color: Colors.black87,
+                ),
+                iconBackground: Colors.amber),
+            Doodle(
+                timestamp: eventtime,
+                name: "Block Time/ Transaction Complete Time",
+                time: DateTime.fromMillisecondsSinceEpoch(blocktime).toString(),
+                content: "",
+                doodle: "",
+                diff: blocktime - receipttime,
+                icon: Icon(
+                  Icons.attach_money,
+                  color: Colors.black87,
+                ),
+                iconBackground: Colors.amber),
+            Doodle(
+                timestamp: eventtime,
+                name: "APP Receive Confirmation Time",
+                time: DateTime.fromMillisecondsSinceEpoch(eventtime).toString(),
+                content: "",
+                doodle: "",
+                diff: eventtime - blocktime,
+                icon: Icon(
+                  Icons.cloud_download,
+                  color: Colors.black87,
+                ),
+                iconBackground: Colors.amber),
+            Doodle(
+                timestamp: statuschangetime,
+                name: "Color Change Time",
+                time: DateTime.fromMillisecondsSinceEpoch(statuschangetime)
+                    .toString(),
+                content: "",
+                doodle: "",
+                diff: statuschangetime - eventtime,
+                icon: Icon(
+                  Icons.lightbulb_outline,
+                  color: Colors.white,
+                ),
+                iconBackground: Colors.green),
+          ];
+          // doodles.sort();
+        });
+      }
+    });
   }
 
   @override
