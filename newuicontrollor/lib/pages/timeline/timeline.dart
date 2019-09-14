@@ -8,6 +8,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 // import 'data.dart';
 
 class TimelinePage extends StatefulWidget {
+  List<int> blockstimestamp;
+  List<int> transactionstimestamp;
+  TimelinePage(
+      {Key key, @required this.blockstimestamp, this.transactionstimestamp})
+      : super(key: key);
   @override
   _TimelinePageState createState() => _TimelinePageState();
 }
@@ -61,12 +66,12 @@ class _TimelinePageState extends State<TimelinePage> {
                 left: true),
             Doodle(
                 timestamp: receipttime,
-                name: "Blockchain Receive Request Time",
+                name: "Receive Transaction Receipt Time",
                 time:
                     DateTime.fromMillisecondsSinceEpoch(receipttime).toString(),
                 content: "",
                 doodle: "",
-                diff: receipttime - submittime,
+                diff: receipttime - widget.transactionstimestamp[0],
                 icon: Icon(
                   Icons.check_circle,
                   color: Colors.black87,
@@ -74,38 +79,86 @@ class _TimelinePageState extends State<TimelinePage> {
                 ),
                 iconBackground: Colors.yellow,
                 left: true),
+            Doodle(
+                timestamp: widget.blockstimestamp[0],
+                name: "Block Time",
+                time: DateTime.fromMillisecondsSinceEpoch(
+                        widget.blockstimestamp[0])
+                    .toString(),
+                content: "",
+                doodle: "",
+                diff: 0,
+                icon: Icon(
+                  Icons.plus_one,
+                  color: Colors.black87,
+                ),
+                iconBackground: Colors.orange,
+                left: false),
+            Doodle(
+                timestamp: widget.blockstimestamp[1],
+                name: "Block Time",
+                time: DateTime.fromMillisecondsSinceEpoch(
+                        widget.blockstimestamp[1])
+                    .toString(),
+                content: "",
+                doodle: "",
+                diff: 0,
+                icon: Icon(
+                  Icons.plus_one,
+                  color: Colors.black87,
+                ),
+                iconBackground: Colors.orange,
+                left: false),
+            Doodle(
+                timestamp: widget.blockstimestamp[2],
+                name: "Block Time",
+                time: DateTime.fromMillisecondsSinceEpoch(
+                        widget.blockstimestamp[2])
+                    .toString(),
+                content: "",
+                doodle: "",
+                diff: 0,
+                icon: Icon(
+                  Icons.plus_one,
+                  color: Colors.black87,
+                ),
+                iconBackground: Colors.orange,
+                left: false),
+            Doodle(
+                timestamp: widget.transactionstimestamp[0],
+                name: "Transaction Come In Time",
+                time: DateTime.fromMillisecondsSinceEpoch(
+                        widget.transactionstimestamp[0])
+                    .toString(),
+                content: "",
+                doodle: "",
+                diff: widget.transactionstimestamp[0] - submittime,
+                icon: Icon(
+                  Icons.fiber_new,
+                  color: Colors.black87,
+                ),
+                iconBackground: Colors.blueAccent,
+                left: false),
             // Doodle(
-            //     timestamp: blocks[0].blocktime * 1000,
-            //     name: "Block Time from Database",
-            //     time: DateTime.fromMillisecondsSinceEpoch(blocks[0].blocktime * 1000).toString(),
+            //     timestamp: eventtime,
+            //     name: "Appliction Receive Comfirmation Time",
+            //     time: DateTime.fromMillisecondsSinceEpoch(blocktime).toString(),
             //     content: "",
             //     doodle: "",
             //     diff: blocktime - receipttime,
             //     icon: Icon(
-            //       Icons.add_a_photo,
+            //       Icons.attach_money,
             //       color: Colors.black87,
             //     ),
-            //     iconBackground: Colors.amber),
-            Doodle(
-                timestamp: eventtime,
-                name: "Block Time/ Transaction Complete Time",
-                time: DateTime.fromMillisecondsSinceEpoch(blocktime).toString(),
-                content: "",
-                doodle: "",
-                diff: blocktime - receipttime,
-                icon: Icon(
-                  Icons.attach_money,
-                  color: Colors.black87,
-                ),
-                iconBackground: Colors.amber,
-                left: true),
+            //     iconBackground: Colors.orange,
+            //     left: true),
             Doodle(
                 timestamp: eventtime,
                 name: "APP Receive Confirmation Time",
                 time: DateTime.fromMillisecondsSinceEpoch(eventtime).toString(),
                 content: "",
                 doodle: "",
-                diff: eventtime - blocktime,
+                diff: eventtime - receipttime,
                 icon: Icon(
                   Icons.cloud_download,
                   color: Colors.black87,
@@ -127,7 +180,7 @@ class _TimelinePageState extends State<TimelinePage> {
                 iconBackground: Colors.green,
                 left: true),
           ];
-          // doodles.sort();
+          doodles.sort((a, b) => a.timestamp.compareTo(b.timestamp));
         });
       });
     }

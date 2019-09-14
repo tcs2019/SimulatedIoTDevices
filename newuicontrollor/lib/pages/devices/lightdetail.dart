@@ -8,6 +8,7 @@ import 'package:flutter_colorpicker/block_picker.dart';
 import 'package:flutter_colorpicker/utils.dart';
 import 'package:http/http.dart';
 import 'package:newuicontrollor/class/color.dart';
+import 'package:newuicontrollor/class/connectdatabase.dart';
 import 'package:newuicontrollor/class/dateconvert.dart';
 import 'package:newuicontrollor/class/event.dart';
 import 'package:newuicontrollor/class/shareddata.dart';
@@ -33,6 +34,9 @@ class _LightDetailPageState extends State<LightDetailPage> {
   StreamSubscription<FilterEvent> subscription;
   Web3Client client;
   String network;
+
+  List<int> blockstimestamp = new List(5);
+  List<int> transactionstimestamp = new List(5);
 
   Color currentColor = const Color(0xff443a49);
   double _value = 0.0;
@@ -65,6 +69,19 @@ class _LightDetailPageState extends State<LightDetailPage> {
   _recordchangetime() {
     int eventtime = DateTime.now().millisecondsSinceEpoch;
     Dateconvert.storedifftime("StatusChangeTime", eventtime);
+  }
+
+  _readlogs() async {
+    blockstimestamp = await ConnectData.getblocklog();
+    transactionstimestamp = await ConnectData.gettransactionlog();
+    print(blockstimestamp.length);
+    print(transactionstimestamp.length);
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (BuildContext context) => new TimelinePage(
+              blockstimestamp: blockstimestamp,
+              transactionstimestamp: transactionstimestamp,
+            )));
+    // List<Transactionlog> transactions = await ConnectData.gettransactionlog();
   }
 
   _listenevent() async {
@@ -112,8 +129,12 @@ class _LightDetailPageState extends State<LightDetailPage> {
           }
           Event.eventBus.fire(new DeviceAdd(curdevices.name));
           Future.delayed(new Duration(seconds: 1), () {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (BuildContext context) => new TimelinePage()));
+            globalKey.currentState.showSnackBar(new SnackBar(
+              content: new Text("Generating Timeline now!"),
+            ));
+            Future.delayed(new Duration(seconds: 5), () {
+              _readlogs();
+            });
           });
         }
       });
