@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:newuicontrollor/class/connectdatabase.dart';
+import 'package:newuicontrollor/lib/timeline/timeline.dart';
+import 'package:newuicontrollor/lib/timeline/timeline_model.dart';
 import 'package:newuicontrollor/web3/web3p.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:timeline_list/timeline.dart';
-import 'package:timeline_list/timeline_model.dart';
+
 // import 'data.dart';
 
 class TimelinePage extends StatefulWidget {
@@ -14,10 +15,6 @@ class TimelinePage extends StatefulWidget {
 class _TimelinePageState extends State<TimelinePage> {
   List<Doodle> doodles = [];
   double totallytime = 0;
-  List<Block> blocks = new List();
-  _getBlock() async {
-    blocks = await ConnectData.getblock();
-  }
 
   _initData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -30,10 +27,10 @@ class _TimelinePageState extends State<TimelinePage> {
     int eventtime = prefs.getInt("EventTime");
     int blocktime = eventtime - readtimems;
     int statuschangetime = prefs.getInt("StatusChangeTime");
+    // List<Block> blocks = await ConnectData.getblock();
 
-    Future.delayed(new Duration(seconds: 10), () {
-      _getBlock();
-      if (mounted) {
+    if (mounted) {
+      Future.delayed(new Duration(seconds: 1), () {
         setState(() {
           totallytime = (statuschangetime - choosecolortime) / 1000.toDouble();
           doodles = [
@@ -46,7 +43,8 @@ class _TimelinePageState extends State<TimelinePage> {
                 doodle: "",
                 diff: choosecolortime - choosecolortime,
                 icon: Icon(Icons.color_lens, color: Colors.white),
-                iconBackground: Colors.cyan),
+                iconBackground: Colors.cyan,
+                left: true),
             Doodle(
                 timestamp: submittime,
                 name: "Transaction Submit Time",
@@ -59,7 +57,8 @@ class _TimelinePageState extends State<TimelinePage> {
                   Icons.cloud_upload,
                   color: Colors.white,
                 ),
-                iconBackground: Colors.redAccent),
+                iconBackground: Colors.redAccent,
+                left: true),
             Doodle(
                 timestamp: receipttime,
                 name: "Blockchain Receive Request Time",
@@ -73,21 +72,20 @@ class _TimelinePageState extends State<TimelinePage> {
                   color: Colors.black87,
                   size: 32.0,
                 ),
-                iconBackground: Colors.yellow),
-            Doodle(
-                timestamp: blocks[0].blocktime * 1000,
-                name: "Block Time from Database",
-                time: DateTime.fromMillisecondsSinceEpoch(
-                        blocks[0].blocktime * 1000)
-                    .toString(),
-                content: "",
-                doodle: "",
-                diff: blocktime - receipttime,
-                icon: Icon(
-                  Icons.add_a_photo,
-                  color: Colors.black87,
-                ),
-                iconBackground: Colors.amber),
+                iconBackground: Colors.yellow,
+                left: true),
+            // Doodle(
+            //     timestamp: blocks[0].blocktime * 1000,
+            //     name: "Block Time from Database",
+            //     time: DateTime.fromMillisecondsSinceEpoch(blocks[0].blocktime * 1000).toString(),
+            //     content: "",
+            //     doodle: "",
+            //     diff: blocktime - receipttime,
+            //     icon: Icon(
+            //       Icons.add_a_photo,
+            //       color: Colors.black87,
+            //     ),
+            //     iconBackground: Colors.amber),
             Doodle(
                 timestamp: eventtime,
                 name: "Block Time/ Transaction Complete Time",
@@ -99,7 +97,8 @@ class _TimelinePageState extends State<TimelinePage> {
                   Icons.attach_money,
                   color: Colors.black87,
                 ),
-                iconBackground: Colors.amber),
+                iconBackground: Colors.amber,
+                left: true),
             Doodle(
                 timestamp: eventtime,
                 name: "APP Receive Confirmation Time",
@@ -111,7 +110,8 @@ class _TimelinePageState extends State<TimelinePage> {
                   Icons.cloud_download,
                   color: Colors.black87,
                 ),
-                iconBackground: Colors.amber),
+                iconBackground: Colors.amber,
+                left: true),
             Doodle(
                 timestamp: statuschangetime,
                 name: "Color Change Time",
@@ -124,12 +124,13 @@ class _TimelinePageState extends State<TimelinePage> {
                   Icons.lightbulb_outline,
                   color: Colors.white,
                 ),
-                iconBackground: Colors.green),
+                iconBackground: Colors.green,
+                left: true),
           ];
           // doodles.sort();
         });
-      }
-    });
+      });
+    }
   }
 
   @override
@@ -144,7 +145,17 @@ class _TimelinePageState extends State<TimelinePage> {
       appBar: AppBar(
         title: Text("Timeline"),
       ),
-      body: timelineModel(TimelinePosition.Center),
+      body: Row(
+        children: <Widget>[
+          Flexible(
+            child: timelineModel(TimelinePosition.Center),
+          ),
+          // Flexible(
+          //   child: timelineModel(TimelinePosition.Right),
+          // ),
+          // timelineModel(TimelinePosition.Right)
+        ],
+      ),
     );
   }
 
@@ -192,8 +203,9 @@ class _TimelinePageState extends State<TimelinePage> {
             ),
           ),
         ),
-        position:
-            i % 2 == 0 ? TimelineItemPosition.right : TimelineItemPosition.left,
+        position: doodle.left
+            ? TimelineItemPosition.left
+            : TimelineItemPosition.right,
         isFirst: i == 0,
         isLast: i == doodles.length,
         iconBackground: doodle.iconBackground,
@@ -210,6 +222,7 @@ class Doodle {
   final Color iconBackground;
   final int diff;
   final Icon icon;
+  final bool left;
   const Doodle(
       {this.timestamp,
       this.name,
@@ -218,5 +231,6 @@ class Doodle {
       this.doodle,
       this.diff,
       this.icon,
-      this.iconBackground});
+      this.iconBackground,
+      this.left});
 }
