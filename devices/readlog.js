@@ -53,7 +53,7 @@ function BlockEvents() {
                         let fetchedblocktime2 = restlines.substring(newblock2 - 20, newblock2 - 2);
                         let newtransaction = lines.indexOf("Submitted transaction");
                         let fetchedtransactiontime = lines.substring(newtransaction - 20, newtransaction - 2);
-                        if (fetchedtransactiontime != transactiontime) {
+                        if (fetchedtransactiontime != transactiontime && fetchedtransactiontime != -1) {
                             transactiontime = fetchedtransactiontime;
                             console.log(transactiontime);
                             fetchedtransactiontime = fetchedtransactiontime.replace("-", ":");
@@ -65,7 +65,6 @@ function BlockEvents() {
                                 if (err) throw err;
                                 console.log("1 transaction record inserted");
                             });
-
                         }
 
                         if (currenttime == fetchedblocktime2) {
