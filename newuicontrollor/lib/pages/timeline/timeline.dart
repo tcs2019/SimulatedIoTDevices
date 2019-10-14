@@ -35,7 +35,7 @@ class _TimelinePageState extends State<TimelinePage> {
     // List<Block> blocks = await ConnectData.getblock();
 
     if (mounted) {
-      Future.delayed(new Duration(seconds: 1), () {
+      Future.delayed(new Duration(seconds: 3), () {
         setState(() {
           totallytime = (statuschangetime - choosecolortime) / 1000.toDouble();
           doodles = [
@@ -71,7 +71,7 @@ class _TimelinePageState extends State<TimelinePage> {
                     DateTime.fromMillisecondsSinceEpoch(receipttime).toString(),
                 content: "",
                 doodle: "",
-                diff: receipttime - widget.transactionstimestamp[0],
+                diff: 0,
                 icon: Icon(
                   Icons.check_circle,
                   color: Colors.black87,

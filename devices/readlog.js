@@ -53,7 +53,7 @@ function BlockEvents() {
                         let fetchedblocktime2 = restlines.substring(newblock2 - 20, newblock2 - 2);
                         let newtransaction = lines.indexOf("Submitted transaction");
                         let fetchedtransactiontime = lines.substring(newtransaction - 20, newtransaction - 2);
-                        if (fetchedtransactiontime != transactiontime && fetchedtransactiontime != -1) {
+                        if (fetchedtransactiontime != transactiontime) {
                             transactiontime = fetchedtransactiontime;
                             console.log(transactiontime);
                             fetchedtransactiontime = fetchedtransactiontime.replace("-", ":");
