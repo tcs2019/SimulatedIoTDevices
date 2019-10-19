@@ -52,7 +52,7 @@ class _LightDetailPageState extends State<LightDetailPage> {
     // print(color.toString());
 
     Timer(const Duration(milliseconds: 500), () => Navigator.of(context).pop());
-    Future.delayed(new Duration(seconds: 1), () {
+    Future.delayed(new Duration(milliseconds: 100), () {
       _webchangecolor();
     });
   }

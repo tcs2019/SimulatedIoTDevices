@@ -21,13 +21,18 @@ class _TimelinePageState extends State<TimelinePage> {
   List<Doodle> doodles = [];
   double totallytime = 0;
   int transactiontimeinblock;
+  int correctness = 0;
+  int blocktime1 = 0;
+  int blocktime2 = 0;
+  bool correctrecord = true;
 
   _initData() async {
     if (widget.transactionstimestamp[0] == null) {
-      transactiontimeinblock = widget.transactionstimestamp[1];
+      transactiontimeinblock = widget.transactionstimestamp[0];
     } else {
       transactiontimeinblock = widget.transactionstimestamp[0];
     }
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> readtimesnow = await Web3P.fetchReadtime();
     int readtimems = int.parse(readtimesnow[readtimesnow.length - 1]);
@@ -38,6 +43,33 @@ class _TimelinePageState extends State<TimelinePage> {
     int eventtime = prefs.getInt("EventTime");
     int blocktime = eventtime - readtimems;
     int statuschangetime = prefs.getInt("StatusChangeTime");
+    correctness = transactiontimeinblock - (receipttime + submittime) ~/ 2 - 60;
+    for (int i = 0; i < widget.blockstimestamp.length; i++) {
+      widget.blockstimestamp[i] = widget.blockstimestamp[i]-correctness;
+    }
+    print("------------------------");
+    print(transactiontimeinblock);
+    print(receipttime);
+    print(submittime);
+    print(correctness);
+    print("------------------------");
+
+    if (widget.blockstimestamp[0] > eventtime) {
+      blocktime1 = widget.blockstimestamp[2];
+      blocktime2 = widget.blockstimestamp[1];
+    } else if (widget.blockstimestamp[0] < eventtime &&
+        widget.blockstimestamp[1] < eventtime) {
+      blocktime1 = widget.blockstimestamp[2];
+      blocktime2 = widget.blockstimestamp[1];
+    } else if (widget.blockstimestamp[0] < eventtime &&
+        widget.blockstimestamp[0] > receipttime) {
+      blocktime1 = widget.blockstimestamp[1];
+      blocktime2 = widget.blockstimestamp[0];
+    } else {
+      blocktime1 = widget.blockstimestamp[1];
+      blocktime2 = widget.blockstimestamp[0];
+      correctrecord = false;
+    }
     // List<Block> blocks = await ConnectData.getblock();
 
     if (mounted) {
@@ -77,7 +109,7 @@ class _TimelinePageState extends State<TimelinePage> {
                     DateTime.fromMillisecondsSinceEpoch(receipttime).toString(),
                 content: "",
                 doodle: "",
-                diff: 0,
+                diff: receipttime - (transactiontimeinblock - correctness),
                 icon: Icon(
                   Icons.check_circle,
                   color: Colors.black87,
@@ -86,59 +118,57 @@ class _TimelinePageState extends State<TimelinePage> {
                 iconBackground: Colors.yellow,
                 left: true),
             Doodle(
-                timestamp: widget.blockstimestamp[0],
+                timestamp: blocktime1,
                 name: "Block Time",
-                time: DateTime.fromMillisecondsSinceEpoch(
-                        widget.blockstimestamp[0])
-                    .toString(),
-                content: "",
-                doodle: "",
-                diff: 0,
-                icon: Icon(
-                  Icons.plus_one,
-                  color: Colors.black87,
-                ),
-                iconBackground: Colors.orange,
-                left: false),
-            Doodle(
-                timestamp: widget.blockstimestamp[1],
-                name: "Block Time",
-                time: DateTime.fromMillisecondsSinceEpoch(
-                        widget.blockstimestamp[1])
-                    .toString(),
-                content: "",
-                doodle: "",
-                diff: 0,
-                icon: Icon(
-                  Icons.plus_one,
-                  color: Colors.black87,
-                ),
-                iconBackground: Colors.orange,
-                left: false),
-            Doodle(
-                timestamp: widget.blockstimestamp[2],
-                name: "Block Time",
-                time: DateTime.fromMillisecondsSinceEpoch(
-                        widget.blockstimestamp[2])
-                    .toString(),
-                content: "",
-                doodle: "",
-                diff: 0,
-                icon: Icon(
-                  Icons.plus_one,
-                  color: Colors.black87,
-                ),
-                iconBackground: Colors.orange,
-                left: false),
-            Doodle(
-                timestamp: transactiontimeinblock,
-                name: "Transaction Come In Time",
                 time:
-                    DateTime.fromMillisecondsSinceEpoch(transactiontimeinblock)
-                        .toString(),
+                    DateTime.fromMillisecondsSinceEpoch(blocktime1).toString(),
                 content: "",
                 doodle: "",
-                diff: transactiontimeinblock - submittime,
+                diff: 0,
+                icon: Icon(
+                  Icons.plus_one,
+                  color: Colors.black87,
+                ),
+                iconBackground: Colors.orange,
+                left: false),
+            Doodle(
+                timestamp: blocktime2,
+                name: "Block Time",
+                time:
+                    DateTime.fromMillisecondsSinceEpoch(blocktime2).toString(),
+                content: "",
+                doodle: "",
+                diff: blocktime2 - receipttime,
+                icon: Icon(
+                  Icons.plus_one,
+                  color: Colors.black87,
+                ),
+                iconBackground: Colors.orange,
+                left: false),
+            // Doodle(
+            //     timestamp: widget.blockstimestamp[2],
+            //     name: "Block Time",
+            //     time: DateTime.fromMillisecondsSinceEpoch(
+            //             widget.blockstimestamp[2])
+            //         .toString(),
+            //     content: "",
+            //     doodle: "",
+            //     diff: 0,
+            //     icon: Icon(
+            //       Icons.plus_one,
+            //       color: Colors.black87,
+            //     ),
+            //     iconBackground: Colors.orange,
+            //     left: false),
+            Doodle(
+                timestamp: transactiontimeinblock - correctness,
+                name: "Transaction Come In Time",
+                time: DateTime.fromMillisecondsSinceEpoch(
+                        transactiontimeinblock - correctness)
+                    .toString(),
+                content: "",
+                doodle: "",
+                diff: transactiontimeinblock - correctness - submittime,
                 icon: Icon(
                   Icons.fiber_new,
                   color: Colors.black87,
@@ -164,7 +194,7 @@ class _TimelinePageState extends State<TimelinePage> {
                 time: DateTime.fromMillisecondsSinceEpoch(eventtime).toString(),
                 content: "",
                 doodle: "",
-                diff: eventtime - receipttime,
+                diff: eventtime - blocktime2,
                 icon: Icon(
                   Icons.cloud_download,
                   color: Colors.black87,
