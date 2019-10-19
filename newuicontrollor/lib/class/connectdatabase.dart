@@ -46,6 +46,15 @@ class ConnectData {
   }
 
   ///////////////////////////////////////////////////////////////////////////////
+
+  static Future<Null> uploadtimestamp(
+      int ts1, int ts2, int ts3, int ts4, int ts5) async {
+    final response = await http.get(
+        "http://www.lightningrepair.com.au/smarthomephp/addtimestamp.php?TS1=$ts1&TS2=$ts2&TS3=$ts3&TS4=$ts4&TS5=$ts5");
+    print("upload, ${response.body.toString()}");
+  }
+
+  ///////////////////////////////////////////////////////////////////////////////
   static Future<List<int>> gettransactionlog() async {
     List<Transactionlog> list = List(5);
     List<int> transactionstimestamp = new List(5);
@@ -56,7 +65,7 @@ class ConnectData {
         .map((data) => new Transactionlog.fromJson(data))
         .toList();
 
-            for (int i = 0; i < list.length; i++) {
+    for (int i = 0; i < list.length; i++) {
       String blocktimestring = list[i].transactiontime;
       if (blocktimestring.length >= 2) {
         List<String> blocktimesplit = blocktimestring.split(":");

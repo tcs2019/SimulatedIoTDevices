@@ -16,6 +16,7 @@ import 'package:newuicontrollor/pages/timeline/timeline.dart';
 import 'package:newuicontrollor/web3/web3.dart';
 import 'package:newuicontrollor/web3/web3p.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/status.dart' as status;
@@ -72,6 +73,13 @@ class _LightDetailPageState extends State<LightDetailPage> {
   }
 
   _readlogs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int choosecolortime = prefs.getInt("ChooseColorTime");
+    int submittime = prefs.getInt("SubmitTime");
+    int receipttime = prefs.getInt("ReceiptTime");
+    int eventtime = prefs.getInt("EventTime");
+    int statuschangetime = prefs.getInt("StatusChangeTime");
+    ConnectData.uploadtimestamp(choosecolortime, submittime, receipttime, eventtime, statuschangetime);
     blockstimestamp = await ConnectData.getblocklog();
     transactionstimestamp = await ConnectData.gettransactionlog();
     print(blockstimestamp.length);

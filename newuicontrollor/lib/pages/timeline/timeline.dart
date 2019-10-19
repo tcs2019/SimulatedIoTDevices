@@ -20,8 +20,14 @@ class TimelinePage extends StatefulWidget {
 class _TimelinePageState extends State<TimelinePage> {
   List<Doodle> doodles = [];
   double totallytime = 0;
+  int transactiontimeinblock;
 
   _initData() async {
+    if (widget.transactionstimestamp[0] == null) {
+      transactiontimeinblock = widget.transactionstimestamp[1];
+    } else {
+      transactiontimeinblock = widget.transactionstimestamp[0];
+    }
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> readtimesnow = await Web3P.fetchReadtime();
     int readtimems = int.parse(readtimesnow[readtimesnow.length - 1]);
@@ -35,7 +41,7 @@ class _TimelinePageState extends State<TimelinePage> {
     // List<Block> blocks = await ConnectData.getblock();
 
     if (mounted) {
-      Future.delayed(new Duration(seconds: 3), () {
+      Future.delayed(new Duration(seconds: 1), () {
         setState(() {
           totallytime = (statuschangetime - choosecolortime) / 1000.toDouble();
           doodles = [
@@ -125,14 +131,14 @@ class _TimelinePageState extends State<TimelinePage> {
                 iconBackground: Colors.orange,
                 left: false),
             Doodle(
-                timestamp: widget.transactionstimestamp[0],
+                timestamp: transactiontimeinblock,
                 name: "Transaction Come In Time",
-                time: DateTime.fromMillisecondsSinceEpoch(
-                        widget.transactionstimestamp[0])
-                    .toString(),
+                time:
+                    DateTime.fromMillisecondsSinceEpoch(transactiontimeinblock)
+                        .toString(),
                 content: "",
                 doodle: "",
-                diff: widget.transactionstimestamp[0] - submittime,
+                diff: transactiontimeinblock - submittime,
                 icon: Icon(
                   Icons.fiber_new,
                   color: Colors.black87,

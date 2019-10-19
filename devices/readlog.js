@@ -52,8 +52,10 @@ function BlockEvents() {
                         let newblock2 = restlines.indexOf("Successfully sealed new block");
                         let fetchedblocktime2 = restlines.substring(newblock2 - 20, newblock2 - 2);
                         let newtransaction = lines.indexOf("Submitted transaction");
+                        console.log(newtransaction);
                         let fetchedtransactiontime = lines.substring(newtransaction - 20, newtransaction - 2);
-                        if (fetchedtransactiontime != transactiontime) {
+                        console.log(fetchedtransactiontime);
+                        if (fetchedtransactiontime != transactiontime && newtransaction != -1) {
                             transactiontime = fetchedtransactiontime;
                             console.log(transactiontime);
                             fetchedtransactiontime = fetchedtransactiontime.replace("-", ":");
