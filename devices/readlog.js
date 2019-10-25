@@ -35,7 +35,7 @@ var currentline;
 
 // // This function listenning to all LightBulbs events
 function BlockEvents() {
-    readLastLines.read('public/json/log.txt', 3)
+    readLastLines.read('public/json/log.txt', 15)
         .then((firstlines) => {
             if (currentline == firstlines) {
                 console.log("no update");
@@ -43,25 +43,33 @@ function BlockEvents() {
             } else {
                 currentline = firstlines;
                 // console.log(currentline);
-                readLastLines.read('public/json/log.txt', 10)
+                readLastLines.read('public/json/log.txt', 15)
                     .then((lines) => {
                         console.log(lines);
                         let newblock = lines.indexOf("Successfully sealed new block");
+                        console.log("---------------")
                         let fetchedblocktime = lines.substring(newblock - 20, newblock - 2);
+                        console.log(fetchedblocktime);
                         var restlines = lines.substring(newblock + 30);
                         let newblock2 = restlines.indexOf("Successfully sealed new block");
                         let fetchedblocktime2 = restlines.substring(newblock2 - 20, newblock2 - 2);
+                        console.log(fetchedblocktime2);
+                        // var restlines2 = lines.substring(newblock2 + 30);
+                        // let newblock3 = restlines2.indexOf("Successfully sealed new block");
+                        // let fetchedblocktime3 = restlines2.substring(newblock2 - 20, newblock2 - 2);
+                        // console.log(fetchedblocktime3);
+                        console.log(currenttime);
                         let newtransaction = lines.indexOf("Submitted transaction");
-                        console.log(newtransaction);
+                        // console.log(newtransaction);
                         let fetchedtransactiontime = lines.substring(newtransaction - 20, newtransaction - 2);
-                        console.log(fetchedtransactiontime);
+                        // console.log(fetchedtransactiontime);
                         if (fetchedtransactiontime != transactiontime && newtransaction != -1) {
                             transactiontime = fetchedtransactiontime;
-                            console.log(transactiontime);
+                            // console.log(transactiontime);
                             fetchedtransactiontime = fetchedtransactiontime.replace("-", ":");
                             fetchedtransactiontime = fetchedtransactiontime.replace("|", ":");
                             fetchedtransactiontime = fetchedtransactiontime.replace(".", ":");
-                            console.log(fetchedtransactiontime);
+                            // console.log(fetchedtransactiontime);
                             var sql = "INSERT INTO transactionfromlog (transactiontime) VALUES (?)";
                             con.query(sql, fetchedtransactiontime, function(err, result) {
                                 if (err) throw err;
@@ -96,6 +104,22 @@ function BlockEvents() {
                         } else {
                             currenttime = fetchedblocktime2;
                             console.log("Too many blocks lack");
+                            fetchedblocktime = fetchedblocktime.replace("-", ":");
+                            fetchedblocktime = fetchedblocktime.replace("|", ":");
+                            fetchedblocktime = fetchedblocktime.replace(".", ":");
+                            var sql = "INSERT INTO blockfromlog (blocktime) VALUES (?)";
+                            con.query(sql, fetchedblocktime, function(err, result) {
+                                if (err) throw err;
+                                console.log("1 block record inserted");
+                            });
+                            fetchedblocktime2 = fetchedblocktime2.replace("-", ":");
+                            fetchedblocktime2 = fetchedblocktime2.replace("|", ":");
+                            fetchedblocktime2 = fetchedblocktime2.replace(".", ":");
+                            var sql = "INSERT INTO blockfromlog (blocktime) VALUES (?)";
+                            con.query(sql, fetchedblocktime2, function(err, result) {
+                                if (err) throw err;
+                                console.log("2 block record inserted");
+                            });
                         }
 
                     });
@@ -127,5 +151,5 @@ function BlockEvents() {
 /*
  * ----- Start of the main server code -----
  */
-setInterval(BlockEvents, 2000);
+setInterval(BlockEvents, 80);
 // BlockEvents();

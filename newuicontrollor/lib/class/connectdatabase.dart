@@ -18,8 +18,8 @@ class ConnectData {
 
 ///////////////////////////////////////////////////////////////////////////////
   static Future<List<int>> getblocklog() async {
-    List<Blocklog> list = List(5);
-    List<int> blockstimestamp = new List(5);
+    List<Blocklog> list = List(20);
+    List<int> blockstimestamp = new List(20);
     final response = await http
         .get("http://www.lightningrepair.com.au/smarthomephp/readblocklog.php");
 
@@ -45,12 +45,62 @@ class ConnectData {
     return blockstimestamp;
   }
 
+
+  ///////////////////////////////////////////////////////////////////////////////
+  static Future<TS> getts() async {
+    List<TS> list = List(3);
+    final response = await http
+        .get("http://www.lightningrepair.com.au/smarthomephp/readts.php");
+
+    list = (json.decode(response.body) as List)
+        .map((data) => new TS.fromJson(data))
+        .toList();
+
+    return list[0];
+  }
+
   ///////////////////////////////////////////////////////////////////////////////
 
-  static Future<Null> uploadtimestamp(
-      int ts1, int ts2, int ts3, int ts4, int ts5) async {
+  // static Future<Null> uploadtimestamp(
+  //     int ts1, int ts2, int ts3, int ts4, int ts5) async {
+  //   final response = await http.get(
+  //       "http://www.lightningrepair.com.au/smarthomephp/addtimestamp.php?TS1=$ts1&TS2=$ts2&TS3=$ts3&TS4=$ts4&TS5=$ts5");
+  //   print("upload, ${response.body.toString()}");
+  // }
+
+  static Future<Null> uploadtimestamp1(int ts1, int ts2, int ts3) async {
     final response = await http.get(
-        "http://www.lightningrepair.com.au/smarthomephp/addtimestamp.php?TS1=$ts1&TS2=$ts2&TS3=$ts3&TS4=$ts4&TS5=$ts5");
+        "http://www.lightningrepair.com.au/smarthomephp/addtimestamp1.php?TS1=$ts1&TS2=$ts2&TS3=$ts3");
+    print("timestamp1 upload, ${response.body.toString()}");
+  }
+
+  static Future<Null> uploadtimestamp2(int ts4, int ts5) async {
+    final response = await http.get(
+        "http://www.lightningrepair.com.au/smarthomephp/addtimestamp2.php?TS4=$ts4&TS5=$ts5");
+    print("timestamp2 upload, ${response.body.toString()}");
+  }
+
+  static Future<Null> uploadsum(
+      int ts1,
+      int ts2,
+      int ts3,
+      int ts4,
+      int ts5,
+      int ts6,
+      int ts7,
+      int ts8,
+      int blockgap,
+      int actgap,
+      int d1,
+      int d2,
+      int d3,
+      int d4,
+      int d5,
+      int d6,
+      int bd1,
+      int bd2) async {
+    final response = await http.get(
+        "http://www.lightningrepair.com.au/smarthomephp/addsum.php?TS1=$ts1&TS2=$ts2&TS3=$ts3&TS4=$ts4&TS5=$ts5&TS6=$ts6&TS7=$ts7&TS8=$ts8&GAP1=$blockgap&GAP2=$actgap&D1=$d1&D2=$d2&D3=$d3&D4=$d4&D5=$d5&D6=$d6&BD1=$bd1&BD2=$bd2");
     print("upload, ${response.body.toString()}");
   }
 
@@ -141,6 +191,39 @@ class Transactionlog {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['transactionid'] = this.transactionid;
     data['transactiontime'] = this.transactiontime;
+    return data;
+  }
+}
+
+class TS {
+  String ts1;
+  String ts2;
+  String ts3;
+  String ts4;
+  String ts5;
+
+  TS({this.ts1, this.ts2, this.ts3, this.ts4, this.ts5});
+
+  TS.fromJson(Map<String, dynamic> json) {
+    ts1 = json['ts1'];
+    ts2 = json['ts2'];
+    ts3 = json['ts3'];
+    ts4 = json['ts4'];
+    ts5 = json['ts5'];
+    print("=====ts1 from database is $ts1");
+    print("=====ts2 from database is $ts2");
+    print("=====ts3 from database is $ts3");
+    print("=====ts4 from database is $ts4");
+    print("=====ts5 from database is $ts5");
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['ts1'] = this.ts1;
+    data['ts2'] = this.ts2;
+    data['ts3'] = this.ts3;
+    data['ts4'] = this.ts4;
+    data['ts5'] = this.ts5;
     return data;
   }
 }

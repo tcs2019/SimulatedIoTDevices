@@ -12,6 +12,7 @@ import 'package:newuicontrollor/class/connectdatabase.dart';
 import 'package:newuicontrollor/class/dateconvert.dart';
 import 'package:newuicontrollor/class/event.dart';
 import 'package:newuicontrollor/class/shareddata.dart';
+import 'package:newuicontrollor/pages/timeline/generatetimeline.dart';
 import 'package:newuicontrollor/pages/timeline/timeline.dart';
 import 'package:newuicontrollor/web3/web3.dart';
 import 'package:newuicontrollor/web3/web3p.dart';
@@ -30,6 +31,7 @@ class LightDetailPage extends StatefulWidget {
 }
 
 class _LightDetailPageState extends State<LightDetailPage> {
+  bool isController = true;
   final globalKey = new GlobalKey<ScaffoldState>();
   DeviceStatus curdevices;
   StreamSubscription<FilterEvent> subscription;
@@ -72,20 +74,29 @@ class _LightDetailPageState extends State<LightDetailPage> {
     Dateconvert.storedifftime("StatusChangeTime", eventtime);
   }
 
-  _readlogs() async {
+  _uploadtimestamp1() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int choosecolortime = prefs.getInt("ChooseColorTime");
     int submittime = prefs.getInt("SubmitTime");
     int receipttime = prefs.getInt("ReceiptTime");
+    ConnectData.uploadtimestamp1(choosecolortime, submittime, receipttime);
+  }
+
+  _uploadtimestamp2() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     int eventtime = prefs.getInt("EventTime");
-    int statuschangetime = prefs.getInt("StatusChangeTime");
-    ConnectData.uploadtimestamp(choosecolortime, submittime, receipttime, eventtime, statuschangetime);
+    int changetime = prefs.getInt("StatusChangeTime");
+    ConnectData.uploadtimestamp2(eventtime, changetime);
+  }
+
+  _readlogs() async {
     blockstimestamp = await ConnectData.getblocklog();
     transactionstimestamp = await ConnectData.gettransactionlog();
+    _uploadtimestamp2();
     print(blockstimestamp.length);
     print(transactionstimestamp.length);
     Navigator.of(context).push(MaterialPageRoute(
-        builder: (BuildContext context) => new TimelinePage(
+        builder: (BuildContext context) => new GenerateTimelinePage(
               blockstimestamp: blockstimestamp,
               transactionstimestamp: transactionstimestamp,
             )));
@@ -107,7 +118,7 @@ class _LightDetailPageState extends State<LightDetailPage> {
       subscription = client
           .events(
               FilterOptions.events(contract: contract, event: colorChangeEvent))
-          .take(15)
+          .take(50)
           .listen((event) {
         _recordeventtime();
         final decoded =
@@ -136,14 +147,16 @@ class _LightDetailPageState extends State<LightDetailPage> {
             });
           }
           Event.eventBus.fire(new DeviceAdd(curdevices.name));
-          Future.delayed(new Duration(seconds: 1), () {
-            globalKey.currentState.showSnackBar(new SnackBar(
-              content: new Text("Generating Timeline now!"),
-            ));
-            Future.delayed(new Duration(seconds: 5), () {
-              _readlogs();
+          if (!isController) {
+            Future.delayed(new Duration(seconds: 1), () {
+              globalKey.currentState.showSnackBar(new SnackBar(
+                content: new Text("Generating Timeline now!"),
+              ));
+              Future.delayed(new Duration(seconds: 2), () {
+                _readlogs();
+              });
             });
-          });
+          }
         }
       });
       await subscription.asFuture();
@@ -203,6 +216,10 @@ class _LightDetailPageState extends State<LightDetailPage> {
     }
 
     if (res == true) {
+      if (isController) {
+        _uploadtimestamp1();
+      }
+
       globalKey.currentState.showSnackBar(new SnackBar(
         content: new Text("Change the color successfully!"),
       ));
@@ -350,7 +367,7 @@ class _LightDetailPageState extends State<LightDetailPage> {
                     Center(
                       child: Container(
                           width: mediaQueryData.size.width * 8 / 10,
-                          height: 280,
+                          height: 340,
                           decoration: BoxDecoration(
                               color: Colors.white24,
                               borderRadius: BorderRadius.circular(8)),
@@ -474,6 +491,26 @@ class _LightDetailPageState extends State<LightDetailPage> {
                                     ),
                                   ),
                                 ), //
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text(
+                                      "Is Controller?",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    Switch(
+                                      value: isController,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          isController = value;
+                                          print(isController);
+                                        });
+                                      },
+                                      activeTrackColor: Colors.lightGreenAccent,
+                                      activeColor: Colors.green,
+                                    ),
+                                  ],
+                                )
                               ],
                             ),
                           )),

@@ -45,9 +45,11 @@ function BlockEvents() {
             web3http.eth.getBlock(res, function(err, ress) {
                 currenttime = ress.timestamp;
                 console.log(blocknumber);
+                console.log(ress.difficulty);
+
                 console.log(currenttime);
-                var sql = "INSERT INTO block (blockid, blocktime) VALUES (?,?)";
-                con.query(sql, [blocknumber, currenttime], function(err, result) {
+                var sql = "INSERT INTO block (blockid, blocktime, difficulty) VALUES (?,?,?)";
+                con.query(sql, [blocknumber, currenttime, ress.difficulty], function(err, result) {
                     if (err) throw err;
                     console.log("1 record inserted");
                 });
