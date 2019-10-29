@@ -53,190 +53,191 @@ class _GenerateTimelinePageState extends State<GenerateTimelinePage> {
     //   transactiontimeinblock = widget.transactionstimestamp[0];
     // }
     TS apptimes = await ConnectData.getts();
-    int choosecolortime = int.parse(apptimes.ts1);
-    int submittime = int.parse(apptimes.ts2);
-    int receipttime = int.parse(apptimes.ts3);
-    int eventtime = int.parse(apptimes.ts4);
-    int statuschangetime = int.parse(apptimes.ts5);
-
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
-    // List<String> readtimesnow = await Web3P.fetchReadtime();
-    // int readtimems = int.parse(readtimesnow[readtimesnow.length - 1]);
-    // int choosecolortime = prefs.getInt("ChooseColorTime");
-    // int submittime = prefs.getInt("SubmitTime");
-    // int receipttime = prefs.getInt("ReceiptTime");
-
-    // int eventtime = prefs.getInt("EventTime");
-    // int blocktime = eventtime - readtimems;
-    // int statuschangetime = prefs.getInt("StatusChangeTime");
-    correctness = transactiontimeinblock - (receipttime + submittime) ~/ 2 - 50;
-    // for (int i = 0; i < widget.blockstimestamp.length; i++) {
-    //   widget.blockstimestamp[i] = widget.blockstimestamp[i] - correctness;
-    // }
-    // print("------------------------");
-    // print(transactiontimeinblock);
-    // print(receipttime);
-    // print(submittime);
-    // print(correctness);
-    // print("------------------------");
-    // if (widget.blockstimestamp[1] > eventtime) {
-    //   print("case0");
-    //   blocktime1 = widget.blockstimestamp[3];
-    //   blocktime2 = widget.blockstimestamp[2];
-    // } else if (widget.blockstimestamp[0] > eventtime) {
-    //   print("case1");
-    //   blocktime1 = widget.blockstimestamp[2];
-    //   blocktime2 = widget.blockstimestamp[1];
-    // } else if (widget.blockstimestamp[0] < eventtime &&
-    //     widget.blockstimestamp[1] < eventtime &&
-    //     widget.blockstimestamp[1] > receipttime) {
-    //   print("case2");
-    //   blocktime1 = widget.blockstimestamp[1];
-    //   blocktime2 = widget.blockstimestamp[0];
-    // } else if (widget.blockstimestamp[0] < eventtime &&
-    //     widget.blockstimestamp[0] > receipttime) {
-    //   print("case3");
-    //   blocktime1 = widget.blockstimestamp[1];
-    //   blocktime2 = widget.blockstimestamp[0];
-    // } else {
-    //   print("case4");
-    //   blocktime1 = widget.blockstimestamp[1];
-    //   blocktime2 = widget.blockstimestamp[0];
-    // }
-    // List<Block> blocks = await ConnectData.getblock();
-
-    if (mounted) {
+    if (apptimes.ts4 == null) {
       Future.delayed(new Duration(seconds: 1), () {
-        setState(() {
-          totallytime = (statuschangetime - choosecolortime) / 1000.toDouble();
-          doodles = [
-            Doodle(
-                timestamp: choosecolortime,
-                name: "Choose Color Time",
-                time: DateTime.fromMillisecondsSinceEpoch(choosecolortime)
-                    .toString(),
-                content: "",
-                doodle: "",
-                diff: choosecolortime - choosecolortime,
-                icon: Icon(Icons.color_lens, color: Colors.white),
-                iconBackground: Colors.cyan,
-                left: true),
-            Doodle(
-                timestamp: submittime,
-                name: "Transaction Submit Time",
-                time:
-                    DateTime.fromMillisecondsSinceEpoch(submittime).toString(),
-                content: "",
-                doodle: "",
-                diff: submittime - choosecolortime,
-                icon: Icon(
-                  Icons.cloud_upload,
-                  color: Colors.white,
-                ),
-                iconBackground: Colors.redAccent,
-                left: true),
-            Doodle(
-                timestamp: receipttime,
-                name: "Receive Transaction Receipt Time",
-                time:
-                    DateTime.fromMillisecondsSinceEpoch(receipttime).toString(),
-                content: "",
-                doodle: "",
-                diff: receipttime - (transactiontimeinblock - correctness),
-                icon: Icon(
-                  Icons.check_circle,
-                  color: Colors.black87,
-                  size: 32.0,
-                ),
-                iconBackground: Colors.yellow,
-                left: true),
-            Doodle(
-                timestamp: blocktime1,
-                name: "Block Time",
-                time:
-                    DateTime.fromMillisecondsSinceEpoch(blocktime1).toString(),
-                content: "",
-                doodle: "",
-                diff: 0,
-                icon: Icon(
-                  Icons.plus_one,
-                  color: Colors.black87,
-                ),
-                iconBackground: Colors.orange,
-                left: false),
-            Doodle(
-                timestamp: blocktime2,
-                name: "Block Time",
-                time:
-                    DateTime.fromMillisecondsSinceEpoch(blocktime2).toString(),
-                content: "",
-                doodle: "",
-                diff: blocktime2 - receipttime,
-                icon: Icon(
-                  Icons.plus_one,
-                  color: Colors.black87,
-                ),
-                iconBackground: Colors.orange,
-                left: false),
-            Doodle(
-                timestamp: transactiontimeinblock - correctness,
-                name: "Transaction Come In Time",
-                time: DateTime.fromMillisecondsSinceEpoch(
-                        transactiontimeinblock - correctness)
-                    .toString(),
-                content: "",
-                doodle: "",
-                diff: transactiontimeinblock - correctness - submittime,
-                icon: Icon(
-                  Icons.fiber_new,
-                  color: Colors.black87,
-                ),
-                iconBackground: Colors.blueAccent,
-                left: false),
-            Doodle(
-                timestamp: eventtime,
-                name: "APP Receive Confirmation Time",
-                time: DateTime.fromMillisecondsSinceEpoch(eventtime).toString(),
-                content: "",
-                doodle: "",
-                diff: eventtime - blocktime2,
-                icon: Icon(
-                  Icons.cloud_download,
-                  color: Colors.black87,
-                ),
-                iconBackground: Colors.amber,
-                left: true),
-            Doodle(
-                timestamp: statuschangetime,
-                name: "Color Change Time",
-                time: DateTime.fromMillisecondsSinceEpoch(statuschangetime)
-                    .toString(),
-                content: "",
-                doodle: "",
-                diff: statuschangetime - eventtime,
-                icon: Icon(
-                  Icons.lightbulb_outline,
-                  color: Colors.white,
-                ),
-                iconBackground: Colors.green,
-                left: true),
-          ];
-          doodles.sort((a, b) => a.timestamp.compareTo(b.timestamp));
-        });
-        Future.delayed(new Duration(seconds: 2), () {
-          if (mounted) {
-            setState(() {
-              loading = false;
-            });
-          }
-        });
-        Navigator.pop(context);
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (BuildContext context) => new TimelinePage(
-                  doodles: doodles,totallytime:totallytime
-                )));
+        _initData();
+      });
+    } else {
+      int choosecolortime = int.parse(apptimes.ts1);
+      int submittime = int.parse(apptimes.ts2);
+      int receipttime = int.parse(apptimes.ts3);
+      int eventtime = int.parse(apptimes.ts4);
+      int statuschangetime = int.parse(apptimes.ts5);
 
-        if (blocktime2 > receipttime && blocktime2 < eventtime) {
+      // SharedPreferences prefs = await SharedPreferences.getInstance();
+      // List<String> readtimesnow = await Web3P.fetchReadtime();
+      // int readtimems = int.parse(readtimesnow[readtimesnow.length - 1]);
+      // int choosecolortime = prefs.getInt("ChooseColorTime");
+      // int submittime = prefs.getInt("SubmitTime");
+      // int receipttime = prefs.getInt("ReceiptTime");
+
+      // int eventtime = prefs.getInt("EventTime");
+      // int blocktime = eventtime - readtimems;
+      // int statuschangetime = prefs.getInt("StatusChangeTime");
+      correctness =
+          transactiontimeinblock - (receipttime + submittime) ~/ 2 - 50;
+      // for (int i = 0; i < widget.blockstimestamp.length; i++) {
+      //   widget.blockstimestamp[i] = widget.blockstimestamp[i] - correctness;
+      // }
+      // print("------------------------");
+      // print(transactiontimeinblock);
+      // print(receipttime);
+      // print(submittime);
+      // print(correctness);
+      // print("------------------------");
+      // if (widget.blockstimestamp[1] > eventtime) {
+      //   print("case0");
+      //   blocktime1 = widget.blockstimestamp[3];
+      //   blocktime2 = widget.blockstimestamp[2];
+      // } else if (widget.blockstimestamp[0] > eventtime) {
+      //   print("case1");
+      //   blocktime1 = widget.blockstimestamp[2];
+      //   blocktime2 = widget.blockstimestamp[1];
+      // } else if (widget.blockstimestamp[0] < eventtime &&
+      //     widget.blockstimestamp[1] < eventtime &&
+      //     widget.blockstimestamp[1] > receipttime) {
+      //   print("case2");
+      //   blocktime1 = widget.blockstimestamp[1];
+      //   blocktime2 = widget.blockstimestamp[0];
+      // } else if (widget.blockstimestamp[0] < eventtime &&
+      //     widget.blockstimestamp[0] > receipttime) {
+      //   print("case3");
+      //   blocktime1 = widget.blockstimestamp[1];
+      //   blocktime2 = widget.blockstimestamp[0];
+      // } else {
+      //   print("case4");
+      //   blocktime1 = widget.blockstimestamp[1];
+      //   blocktime2 = widget.blockstimestamp[0];
+      // }
+      // List<Block> blocks = await ConnectData.getblock();
+
+      if (mounted) {
+        Future.delayed(new Duration(seconds: 1), () {
+          setState(() {
+            totallytime =
+                (statuschangetime - choosecolortime) / 1000.toDouble();
+            doodles = [
+              Doodle(
+                  timestamp: choosecolortime,
+                  name: "Choose Color Time",
+                  time: DateTime.fromMillisecondsSinceEpoch(choosecolortime)
+                      .toString(),
+                  content: "",
+                  doodle: "",
+                  diff: choosecolortime - choosecolortime,
+                  icon: Icon(Icons.color_lens, color: Colors.white),
+                  iconBackground: Colors.cyan,
+                  left: true),
+              Doodle(
+                  timestamp: submittime,
+                  name: "Transaction Submit Time",
+                  time: DateTime.fromMillisecondsSinceEpoch(submittime)
+                      .toString(),
+                  content: "",
+                  doodle: "",
+                  diff: submittime - choosecolortime,
+                  icon: Icon(
+                    Icons.cloud_upload,
+                    color: Colors.white,
+                  ),
+                  iconBackground: Colors.redAccent,
+                  left: true),
+              Doodle(
+                  timestamp: receipttime,
+                  name: "Receive Transaction Receipt Time",
+                  time: DateTime.fromMillisecondsSinceEpoch(receipttime)
+                      .toString(),
+                  content: "",
+                  doodle: "",
+                  diff: receipttime - (transactiontimeinblock - correctness),
+                  icon: Icon(
+                    Icons.check_circle,
+                    color: Colors.black87,
+                    size: 32.0,
+                  ),
+                  iconBackground: Colors.yellow,
+                  left: true),
+              Doodle(
+                  timestamp: blocktime1,
+                  name: "Block Time",
+                  time: DateTime.fromMillisecondsSinceEpoch(blocktime1)
+                      .toString(),
+                  content: "",
+                  doodle: "",
+                  diff: 0,
+                  icon: Icon(
+                    Icons.plus_one,
+                    color: Colors.black87,
+                  ),
+                  iconBackground: Colors.orange,
+                  left: false),
+              Doodle(
+                  timestamp: blocktime2,
+                  name: "Block Time",
+                  time: DateTime.fromMillisecondsSinceEpoch(blocktime2)
+                      .toString(),
+                  content: "",
+                  doodle: "",
+                  diff: blocktime2 - receipttime,
+                  icon: Icon(
+                    Icons.plus_one,
+                    color: Colors.black87,
+                  ),
+                  iconBackground: Colors.orange,
+                  left: false),
+              Doodle(
+                  timestamp: transactiontimeinblock - correctness,
+                  name: "Transaction Come In Time",
+                  time: DateTime.fromMillisecondsSinceEpoch(
+                          transactiontimeinblock - correctness)
+                      .toString(),
+                  content: "",
+                  doodle: "",
+                  diff: transactiontimeinblock - correctness - submittime,
+                  icon: Icon(
+                    Icons.fiber_new,
+                    color: Colors.black87,
+                  ),
+                  iconBackground: Colors.blueAccent,
+                  left: false),
+              Doodle(
+                  timestamp: eventtime,
+                  name: "APP Receive Confirmation Time",
+                  time:
+                      DateTime.fromMillisecondsSinceEpoch(eventtime).toString(),
+                  content: "",
+                  doodle: "",
+                  diff: eventtime - blocktime2,
+                  icon: Icon(
+                    Icons.cloud_download,
+                    color: Colors.black87,
+                  ),
+                  iconBackground: Colors.amber,
+                  left: true),
+              Doodle(
+                  timestamp: statuschangetime,
+                  name: "Color Change Time",
+                  time: DateTime.fromMillisecondsSinceEpoch(statuschangetime)
+                      .toString(),
+                  content: "",
+                  doodle: "",
+                  diff: statuschangetime - eventtime,
+                  icon: Icon(
+                    Icons.lightbulb_outline,
+                    color: Colors.white,
+                  ),
+                  iconBackground: Colors.green,
+                  left: true),
+            ];
+            doodles.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+          });
+          Future.delayed(new Duration(seconds: 2), () {
+            if (mounted) {
+              setState(() {
+                loading = false;
+              });
+            }
+          });
           ConnectData.uploadsum(
               blocktime1,
               choosecolortime,
@@ -256,8 +257,12 @@ class _GenerateTimelinePageState extends State<GenerateTimelinePage> {
               statuschangetime - eventtime,
               transactiontimeinblock - correctness - blocktime1,
               blocktime2 - transactiontimeinblock + correctness);
-        }
-      });
+          Navigator.pop(context);
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (BuildContext context) => new TimelinePage(
+                  doodles: doodles, totallytime: totallytime)));
+        });
+      }
     }
   }
 
